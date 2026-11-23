@@ -28,10 +28,10 @@ A crash test dummy is crashed on purpose to see whether the safety systems work.
 
 ## Roadmap
 
-| Milestone | What ships |
-| --- | --- |
-| M1 | Tier 0: static analysis and integrity gates for Vitest and Jest, `git` and `files` change sources, `pretty` / `agent` / `json` output |
-| M2–M5 | Baselines and ratcheting, agent hooks and adapters, coverage (tier 1), mutation testing (tier 2) |
+| Milestone | What ships                                                                                                                            |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| M1        | Tier 0: static analysis and integrity gates for Vitest and Jest, `git` and `files` change sources, `pretty` / `agent` / `json` output |
+| M2–M5     | Baselines and ratcheting, agent hooks and adapters, coverage (tier 1), mutation testing (tier 2)                                      |
 
 See the full design in [docs/technical-plan.md](docs/technical-plan.md).
 
