@@ -13,6 +13,8 @@ import {
   child,
   children,
   isFunction,
+  isTsValueWrapper,
+  isTypeOnly,
   memberPath,
   sourceText,
   staticNumber,
@@ -36,11 +38,17 @@ export interface SummaryOptions {
 }
 
 /** Bump when the summary shape or its derivation changes, so stale caches are ignored. */
-export const SUMMARY_VERSION = 1;
+export const SUMMARY_VERSION = 2;
 
 export function hashText(text: string): string {
   return createHash('sha1').update(text).digest('hex').slice(0, 16);
 }
+
+/**
+ * Maps a call path through the file's imports: `spec` from `import { test as spec }` becomes
+ * `test`, and `vitest.test` from `import * as vitest` becomes `test`.
+ */
+type Norm = (path: string[] | undefined) => string[] | undefined;
 
 // ---------------------------------------------------------------------------------------------
 // Declarations: describe / it / test and their modifiers
@@ -79,41 +87,41 @@ const MODIFIER_WORDS: Record<string, TestModifier> = {
 /** `.each` / `.for` (table) forms. `skipIf` and `runIf` are conditional, so they set no modifier. */
 const TABLE_WORDS = new Set(['each', 'for']);
 const CONDITIONAL_WORDS = new Set(['skipIf', 'runIf', 'todoIf']);
+const KNOWN_FLAGS = new Set(['concurrent', 'sequential', 'serial', 'parallel', 'slow', 'shuffle']);
 
 /** Find the dotted path of a declaration callee, looking through `.each(table)` and templates. */
-function declPath(callee: AstNode): string[] | undefined {
+function declPath(callee: AstNode, norm: Norm): string[] | undefined {
   const c = unwrap(callee);
   if (c.type === 'TaggedTemplateExpression') {
     const tag = child(c, 'tag');
-    return tag ? declPath(tag) : undefined;
+    return tag ? declPath(tag, norm) : undefined;
   }
   if (c.type === 'CallExpression') {
     const inner = child(c, 'callee');
-    const path = inner ? memberPath(inner) : undefined;
+    const path = inner ? norm(memberPath(inner)) : undefined;
     const last = path?.[path.length - 1];
     if (path && last !== undefined && (TABLE_WORDS.has(last) || CONDITIONAL_WORDS.has(last))) {
       return path;
     }
     return undefined;
   }
-  return memberPath(c);
+  return norm(memberPath(c));
 }
 
-function parseDecl(call: AstNode): Decl | undefined {
+function parseDecl(call: AstNode, norm: Norm): Decl | undefined {
   const callee = child(call, 'callee');
   if (!callee) return undefined;
-  const path = declPath(callee);
+  const path = declPath(callee, norm);
   if (!path) return undefined;
 
-  let segments = path;
-  let base = BASES[segments[0] ?? ''];
+  const base = BASES[path[0] ?? ''];
   if (!base) return undefined;
   let kind = base.kind;
   const modifiers: TestModifier[] = base.modifier ? [base.modifier] : [];
-  segments = segments.slice(1);
+  let segments = path.slice(1);
 
   // Playwright: test.describe, test.describe.skip, ...
-  if (segments[0] === 'describe' && segments[0] !== undefined && path[0] === 'test') {
+  if (path[0] === 'test' && segments[0] === 'describe') {
     kind = 'describe';
     segments = segments.slice(1);
   }
@@ -157,8 +165,6 @@ function parseDecl(call: AstNode): Decl | undefined {
   return decl;
 }
 
-const KNOWN_FLAGS = new Set(['concurrent', 'sequential', 'serial', 'parallel', 'slow', 'shuffle']);
-
 /** `{ timeout, skip, only, todo }` option objects (Vitest, Playwright, node:test). */
 function applyOptions(obj: AstNode, decl: Decl): void {
   for (const prop of children(obj, 'properties')) {
@@ -199,12 +205,12 @@ interface Assertion {
   subject: AstNode | undefined;
 }
 
-function argKind(arg: AstNode | undefined): ArgKind {
+function argKind(arg: AstNode | undefined, norm: Norm): ArgKind {
   if (!arg) return 'none';
   const a = unwrap(arg);
   if (a.type === 'CallExpression') {
     const callee = child(a, 'callee');
-    const path = callee ? memberPath(callee) : undefined;
+    const path = callee ? norm(memberPath(callee)) : undefined;
     if (path?.join('.') === 'expect.anything') return 'anything';
     return 'other';
   }
@@ -230,13 +236,29 @@ const ASSERT_CALLEE_ARG: Record<string, number> = {
   'assert.doesNotReject': 1,
 };
 
+/** In strict mode (`node:assert/strict`, `assert.strict`) the loose methods are the strict ones. */
+const STRICT_METHODS: Record<string, string> = {
+  equal: 'strictEqual',
+  notEqual: 'notStrictEqual',
+  deepEqual: 'deepStrictEqual',
+  notDeepEqual: 'notDeepStrictEqual',
+};
+
+const ASSERT_MODULES = new Set(['assert', 'node:assert']);
+const ASSERT_STRICT_MODULES = new Set(['assert/strict', 'node:assert/strict']);
+
 class AssertionFinder {
   /** Locals bound to the default or namespace import of `node:assert`. */
   readonly assertLocals = new Set<string>(['assert']);
-  /** `import { strictEqual } from 'node:assert'` -> local name to imported name. */
-  readonly assertNamed = new Map<string, string>();
+  /** The subset of those locals that are the strict namespace. */
+  readonly strictLocals = new Set<string>();
+  /** `import { strictEqual } from 'node:assert'`: local name to imported name and strictness. */
+  readonly assertNamed = new Map<string, { imported: string; strict: boolean }>();
 
-  constructor(private readonly custom: readonly RegExp[]) {}
+  constructor(
+    private readonly custom: readonly RegExp[],
+    private readonly norm: Norm,
+  ) {}
 
   find(call: AstNode): Assertion | undefined {
     const callee = child(call, 'callee');
@@ -249,7 +271,7 @@ class AssertionFinder {
       if (chain) return chain;
     }
 
-    const path = memberPath(c);
+    const path = this.norm(memberPath(c));
     if (!path) return undefined;
     const asserted = this.assertCall(path, args);
     if (asserted) return asserted;
@@ -281,29 +303,40 @@ class AssertionFinder {
     }
     if (obj.type !== 'CallExpression') return undefined;
     const expectCallee = child(obj, 'callee');
-    const root = expectCallee ? memberPath(expectCallee)?.join('.') : undefined;
+    const root = expectCallee ? this.norm(memberPath(expectCallee))?.join('.') : undefined;
     if (!root || !EXPECT_ROOTS.has(root)) return undefined;
 
     const subject = children(obj, 'arguments')[0];
     return {
-      ref: { name: matcher, negated, arg: argKind(args[0]), modifiers },
+      ref: { name: matcher, negated, arg: argKind(args[0], this.norm), modifiers },
       subject: root === 'expect.poll' ? undefined : subject,
     };
   }
 
   private assertCall(path: string[], args: AstNode[]): Assertion | undefined {
     let p = path;
-    if (p[0] === 't' && p[1] === 'assert') p = p.slice(1); // node:test's t.assert.*
-    let name: string | undefined;
-    if (p.length === 1 && this.assertNamed.has(p[0]!)) {
-      name = `assert.${this.assertNamed.get(p[0]!)}`;
+    // node:test's t.assert.* is its own object, not the file's `assert` import
+    const viaTestContext = p[0] === 't' && p[1] === 'assert';
+    if (viaTestContext) p = p.slice(1);
+    let method: string | undefined; // 'ok' for a bare assert(...) call
+    let strict = false;
+
+    const named = p.length === 1 ? this.assertNamed.get(p[0]!) : undefined;
+    if (named) {
+      method = named.imported;
+      strict = named.strict;
     } else if (this.assertLocals.has(p[0] ?? '') && (p[0] !== 't' || path[0] === 't')) {
-      const rest = p.slice(1).filter((s) => s !== 'strict');
-      name = rest.length === 0 ? 'assert' : rest.length === 1 ? `assert.${rest[0]}` : undefined;
+      const rest = p.slice(1);
+      strict = (!viaTestContext && this.strictLocals.has(p[0]!)) || rest.includes('strict');
+      const names = rest.filter((s) => s !== 'strict');
+      if (names.length === 0) method = rest.length === 0 ? 'ok' : undefined;
+      else if (names.length === 1) method = names[0];
     }
-    if (!name) return undefined;
+    if (!method) return undefined;
+    if (strict) method = STRICT_METHODS[method] ?? method;
+    const name = `assert.${method}`;
     const argIndex = ASSERT_CALLEE_ARG[name] ?? 0;
-    return { ref: { name, arg: argKind(args[argIndex]) }, subject: args[0] };
+    return { ref: { name, arg: argKind(args[argIndex], this.norm) }, subject: args[0] };
   }
 }
 
@@ -326,7 +359,7 @@ interface SubjectSignals {
   viaMock: boolean;
 }
 
-function subjectSignals(subject: AstNode | undefined): SubjectSignals {
+function subjectSignals(subject: AstNode | undefined, norm: Norm): SubjectSignals {
   let n = subject ? unwrap(subject) : undefined;
   let viaMock = false;
   for (let guard = 0; n && guard < 50; guard++) {
@@ -341,7 +374,7 @@ function subjectSignals(subject: AstNode | undefined): SubjectSignals {
       n = o ? unwrap(o) : undefined;
     } else if (n.type === 'CallExpression') {
       const callee = child(n, 'callee');
-      const path = callee ? memberPath(callee) : undefined;
+      const path = callee ? norm(memberPath(callee)) : undefined;
       if (path && MOCK_FACTORIES.has(path.join('.'))) viaMock = true;
       n = callee ? unwrap(callee) : undefined;
     } else {
@@ -368,7 +401,11 @@ const HASH_SKIP = new Set([
   'optional',
 ]);
 
-/** Hash of an AST subtree that ignores positions, comments, formatting and type annotations. */
+/**
+ * Hash of an AST subtree that ignores positions, comments, formatting and type annotations.
+ * Primitive values keep their type, so `1` and `'1'` differ. Runtime TypeScript (namespaces,
+ * enums) is hashed; type-only nodes are not.
+ */
 export function hashNode(node: AstNode | undefined): string {
   const h = createHash('sha1');
   const feed = (v: unknown): void => {
@@ -378,10 +415,13 @@ export function hashNode(node: AstNode | undefined): string {
       h.update(']');
     } else if (typeof v === 'object' && v !== null) {
       const obj = v as Record<string, unknown>;
-      if (typeof obj['type'] === 'string' && (obj['type'] as string).startsWith('TS')) {
-        const wrapped = obj['expression'];
-        if (wrapped !== undefined) feed(wrapped); // `x as T` hashes like `x`
-        return;
+      if (typeof obj['type'] === 'string') {
+        const n = obj as AstNode;
+        if (isTypeOnly(n)) return;
+        if (isTsValueWrapper(n)) {
+          feed(obj['expression']); // `x as T` hashes like `x`
+          return;
+        }
       }
       h.update('{');
       for (const key of Object.keys(obj)) {
@@ -392,8 +432,8 @@ export function hashNode(node: AstNode | undefined): string {
       }
       h.update('}');
     } else {
-      h.update(typeof v === 'bigint' ? `${v}n` : String(v));
-      h.update(',');
+      // type-tagged and JSON-escaped, so 1, '1', true and 'true' are all different
+      h.update(`${typeof v}:${typeof v === 'bigint' ? `${v}n` : JSON.stringify(v)},`);
     }
   };
   feed(node ?? null);
@@ -410,31 +450,96 @@ const FRAMEWORK_MODULES: Record<string, TestSummary['framework']> = {
   'node:test': 'node-test',
   test: 'node-test',
 };
-const ASSERT_MODULES = new Set(['assert', 'assert/strict', 'node:assert', 'node:assert/strict']);
+
+// ---------------------------------------------------------------------------------------------
+// Lexical scopes
+//
+// Names are resolved through real scopes, not by spelling, so a mock or helper called `result` or
+// `check` in one test never leaks into another. Resolution happens when the walk is finished, so
+// a helper declared after the test that uses it is still found.
+
+interface HelperDef {
+  node: AstNode;
+  entries: Entry[];
+}
+
+interface Binding {
+  /** Created by `vi.fn()`, `jest.fn()`, `spyOn(...)` or `vi.mocked(...)`. */
+  mock: boolean;
+  /** For imports: the module they come from. Mocked when that module is `vi.mock`ed. */
+  importFrom?: string;
+  /** `const result = mockFn()`: a value derived from another binding. */
+  derivedFrom?: { scope: Scope; name: string };
+  /** A named function, followed one level deep when a test calls it. */
+  helper?: HelperDef;
+}
+
+class Scope {
+  readonly names = new Map<string, Binding>();
+
+  constructor(readonly parent?: Scope) {}
+
+  lookup(name: string): Binding | undefined {
+    return this.names.get(name) ?? this.parent?.lookup(name);
+  }
+}
+
+function patternNames(pattern: AstNode | undefined, out: string[]): void {
+  if (!pattern) return;
+  switch (pattern.type) {
+    case 'Identifier': {
+      const name = str(pattern, 'name');
+      if (name) out.push(name);
+      break;
+    }
+    case 'AssignmentPattern':
+      patternNames(child(pattern, 'left'), out);
+      break;
+    case 'RestElement':
+      patternNames(child(pattern, 'argument'), out);
+      break;
+    case 'TSParameterProperty':
+      patternNames(child(pattern, 'parameter'), out);
+      break;
+    case 'ArrayPattern':
+      for (const el of children(pattern, 'elements')) patternNames(el, out);
+      break;
+    case 'ObjectPattern':
+      for (const prop of children(pattern, 'properties')) {
+        patternNames(prop.type === 'Property' ? child(prop, 'value') : prop, out);
+      }
+      break;
+    default:
+      break;
+  }
+}
 
 // ---------------------------------------------------------------------------------------------
 // The collector
 
 interface Frame {
   node: AstNode;
-  kind: 'describe' | 'test';
   name: string;
   modifier: TestModifier | undefined;
   timeout: number | undefined;
 }
 
 type Entry =
-  { pos: number; ref: MatcherRef; signals: SubjectSignals } | { pos: number; helper: string };
+  | { pos: number; ref: MatcherRef; signals: SubjectSignals; scope: Scope }
+  /** A reference to a name that may be a local helper: `check()` or `items.forEach(check)`. */
+  | { pos: number; call: string; scope: Scope };
 
 interface RawTest {
   name: string;
   path: string[];
   loc: { line: number; col: number };
   modifier: TestModifier | undefined;
-  inheritedModifier: TestModifier | undefined;
   timeout: number | undefined;
-  inheritedTimeout: number | undefined;
-  bodyHash: string;
+  /** Describe frames around this test, outermost first. Their state is read when finished. */
+  ancestors: Frame[];
+  bodyHash: string | undefined;
+  /** For `test('x', namedFn)`: hashed after the name is resolved. */
+  fnRef: { node: AstNode; scope: Scope } | undefined;
   entries: Entry[];
 }
 
@@ -446,46 +551,55 @@ export interface SummaryCollector {
 
 export function createSummaryCollector(options: SummaryOptions = {}): SummaryCollector {
   const lattice: Lattice = createLattice(options.matchers ?? {});
-  const finder = new AssertionFinder((options.assertFunctionNames ?? []).map(globToRegExp));
+
+  const aliasOf = new Map<string, string>(); // local name -> exported name, for framework imports
+  const namespaces = new Set<string>(); // `import * as vitest from 'vitest'`
+  const norm: Norm = (path) => {
+    const head = path?.[0];
+    if (!path || head === undefined) return path;
+    const alias = aliasOf.get(head);
+    if (alias !== undefined) return [alias, ...path.slice(1)];
+    if (namespaces.has(head) && path.length > 1) return path.slice(1);
+    return path;
+  };
+  const finder = new AssertionFinder((options.assertFunctionNames ?? []).map(globToRegExp), norm);
 
   const imports: string[] = [];
   const frameworkImports: TestSummary['framework'][] = [];
-  const bindings = new Map<string, string>(); // local name -> module specifier
   const mockedModules = new Set<string>();
-  const mockFactoryVars = new Set<string>();
-  const derivedVars: { name: string; root: string }[] = [];
-  const helpers = new Map<string, Entry[]>();
   const tests: RawTest[] = [];
   let sawVi = false;
   let sawJest = false;
   let fileTimeout: number | undefined;
 
+  const root = new Scope();
+  let scope = root;
   const frames: Frame[] = [];
-  const helperStack: { node: AstNode; name: string; entries: Entry[] }[] = [];
+  /** Where assertions go: the innermost test or named function being walked. */
+  const targets: { node: AstNode; entries: Entry[] }[] = [];
   let currentTest: RawTest | undefined;
   let currentTestNode: AstNode | undefined;
 
   const addImport = (spec: string | undefined): void => {
     if (spec !== undefined && !imports.includes(spec)) imports.push(spec);
   };
-
-  const describePath = (): string[] =>
-    frames.filter((f) => f.kind === 'describe').map((f) => f.name);
-  const inherited = <K extends 'modifier' | 'timeout'>(key: K): Frame[K] | undefined => {
-    for (let i = frames.length - 1; i >= 0; i--) {
-      const v = frames[i]![key];
-      if (v !== undefined) return v;
-    }
-    return undefined;
+  const pathOf = (node: AstNode | undefined): string[] | undefined =>
+    node ? norm(memberPath(node)) : undefined;
+  const nameOf = (source: string, node: AstNode): string =>
+    staticString(node) ?? sourceText(source, unwrap(node));
+  const push = (entry: Entry): void => {
+    targets[targets.length - 1]?.entries.push(entry);
   };
-
-  const nameOf = (source: string, node: AstNode): string => {
-    return staticString(node) ?? sourceText(source, unwrap(node));
+  const pushScope = (): void => {
+    scope = new Scope(scope);
   };
-
-  const route = (entry: Entry): void => {
-    if (currentTest) currentTest.entries.push(entry);
-    else helperStack[helperStack.length - 1]?.entries.push(entry);
+  const popScope = (): void => {
+    scope = scope.parent ?? root;
+  };
+  const bindParams = (fn: AstNode): void => {
+    const names: string[] = [];
+    for (const param of children(fn, 'params')) patternNames(param, names);
+    for (const name of names) scope.names.set(name, { mock: false });
   };
 
   const timeoutCall = (call: AstNode, path: string[]): void => {
@@ -513,15 +627,15 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     }
     if (ms === undefined) return;
     if (currentTest) currentTest.timeout = ms;
-    else if (frames.length > 0) frames[frames.length - 1]!.timeout ??= ms;
+    // Suite configuration applies to the whole suite wherever it appears, and the last call wins.
+    else if (frames.length > 0) frames[frames.length - 1]!.timeout = ms;
     else fileTimeout = ms;
   };
 
   const onCall = (node: AstNode, ctx: WalkContext): void => {
     const callee = child(node, 'callee');
-    const calleePath = callee ? memberPath(callee) : undefined;
+    const calleePath = pathOf(callee);
 
-    // require('x') and vi.mock('x')
     if (calleePath) {
       const joined = calleePath.join('.');
       if (joined === 'require') addImport(staticString(children(node, 'arguments')[0] ?? node));
@@ -537,31 +651,32 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
 
     // describe / test declarations (not nested inside a test body)
     if (!currentTest) {
-      const decl = parseDecl(node);
+      const decl = parseDecl(node, norm);
       if (decl) {
         const name = nameOf(ctx.source, decl.nameNode);
         const mod = pickModifier(decl.modifiers);
         if (decl.kind === 'describe') {
-          frames.push({ node, kind: 'describe', name, modifier: mod, timeout: decl.timeout });
+          frames.push({ node, name, modifier: mod, timeout: decl.timeout });
         } else {
           const entries: Entry[] = [];
           const raw: RawTest = {
             name,
-            path: describePath(),
+            path: frames.map((f) => f.name),
             loc: ctx.loc(node.start),
             modifier: mod,
-            inheritedModifier: inherited('modifier'),
             timeout: decl.timeout,
-            inheritedTimeout: inherited('timeout'),
-            bodyHash: hashNode((decl.fn?.['body'] ?? decl.fnRef) as AstNode | undefined),
+            ancestors: [...frames],
+            bodyHash: decl.fn ? hashNode(child(decl.fn, 'body')) : undefined,
+            fnRef: decl.fnRef ? { node: decl.fnRef, scope } : undefined,
             entries,
           };
           if (decl.fnRef) {
-            entries.push({ pos: decl.fnRef.start, helper: str(decl.fnRef, 'name') ?? '' });
+            entries.push({ pos: decl.fnRef.start, call: str(decl.fnRef, 'name') ?? '', scope });
           }
           tests.push(raw);
           currentTest = raw;
           currentTestNode = node;
+          targets.push({ node, entries });
         }
         return;
       }
@@ -570,16 +685,29 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     // assertions
     const found = finder.find(node);
     if (found) {
-      route({ pos: node.start, ref: found.ref, signals: subjectSignals(found.subject) });
+      push({
+        pos: node.start,
+        ref: found.ref,
+        signals: subjectSignals(found.subject, norm),
+        scope,
+      });
       return;
     }
 
-    // calls to local helpers, followed one level deep when the summary is finished
-    if (currentTest && callee) {
-      const c = unwrap(callee);
-      if (c.type === 'Identifier')
-        currentTest.entries.push({ pos: node.start, helper: str(c, 'name') ?? '' });
+    // references to names that may be local helpers: check() and items.forEach(check)
+    if (targets.length > 0) {
+      const c = callee ? unwrap(callee) : undefined;
+      if (c?.type === 'Identifier') push({ pos: node.start, call: str(c, 'name') ?? '', scope });
+      for (const arg of children(node, 'arguments')) {
+        const a = unwrap(arg);
+        if (a.type === 'Identifier') push({ pos: a.start, call: str(a, 'name') ?? '', scope });
+      }
     }
+  };
+
+  const enterFunction = (node: AstNode): void => {
+    pushScope();
+    bindParams(node);
   };
 
   const visitor: Visitor = {
@@ -588,20 +716,34 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       const spec = src ? staticString(src) : undefined;
       if (spec === undefined || str(node, 'importKind') === 'type') return;
       addImport(spec);
-      const fw = FRAMEWORK_MODULES[spec];
-      if (fw) frameworkImports.push(fw);
+      const framework = FRAMEWORK_MODULES[spec];
+      if (framework) frameworkImports.push(framework);
+      const isAssert = ASSERT_MODULES.has(spec);
+      const isStrictAssert = ASSERT_STRICT_MODULES.has(spec);
       for (const s of children(node, 'specifiers')) {
         const local = child(s, 'local');
         const name = local ? str(local, 'name') : undefined;
         if (!name) continue;
-        bindings.set(name, spec);
-        if (ASSERT_MODULES.has(spec)) {
-          if (s.type === 'ImportSpecifier') {
-            const imported = child(s, 'imported');
-            const importedName = imported ? str(imported, 'name') : undefined;
-            if (importedName) finder.assertNamed.set(name, importedName);
+        root.names.set(name, { mock: false, importFrom: spec });
+        const imported = child(s, 'imported');
+        const importedName = imported
+          ? (str(imported, 'name') ?? staticString(imported))
+          : undefined;
+
+        if (framework) {
+          if (s.type === 'ImportNamespaceSpecifier') namespaces.add(name);
+          else if (s.type === 'ImportDefaultSpecifier') aliasOf.set(name, 'test');
+          else if (importedName && importedName !== name) aliasOf.set(name, importedName);
+        }
+        if (isAssert || isStrictAssert) {
+          if (s.type === 'ImportSpecifier' && importedName === 'strict') {
+            finder.assertLocals.add(name);
+            finder.strictLocals.add(name);
+          } else if (s.type === 'ImportSpecifier' && importedName) {
+            finder.assertNamed.set(name, { imported: importedName, strict: isStrictAssert });
           } else {
             finder.assertLocals.add(name);
+            if (isStrictAssert) finder.strictLocals.add(name);
           }
         }
       }
@@ -624,6 +766,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       if (node === currentTestNode) {
         currentTest = undefined;
         currentTestNode = undefined;
+        if (targets[targets.length - 1]?.node === node) targets.pop();
       }
       const top = frames[frames.length - 1];
       if (top && top.node === node) frames.pop();
@@ -632,95 +775,137 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     FunctionDeclaration(node) {
       const id = child(node, 'id');
       const name = id ? str(id, 'name') : undefined;
-      if (name && !currentTest) helperStack.push({ node, name, entries: [] });
+      if (name) {
+        // A named function is a helper: its assertions count only where it is called.
+        const def: HelperDef = { node, entries: [] };
+        scope.names.set(name, { mock: false, helper: def });
+        targets.push({ node, entries: def.entries });
+      }
+      enterFunction(node);
     },
     'FunctionDeclaration:exit'(node) {
-      const top = helperStack[helperStack.length - 1];
-      if (top && top.node === node) {
-        helpers.set(top.name, top.entries);
-        helperStack.pop();
-      }
+      popScope();
+      if (targets[targets.length - 1]?.node === node) targets.pop();
     },
+    FunctionExpression: enterFunction,
+    'FunctionExpression:exit': popScope,
+    ArrowFunctionExpression: enterFunction,
+    'ArrowFunctionExpression:exit': popScope,
+
+    BlockStatement: pushScope,
+    'BlockStatement:exit': popScope,
+    ForStatement: pushScope,
+    'ForStatement:exit': popScope,
+    ForInStatement: pushScope,
+    'ForInStatement:exit': popScope,
+    ForOfStatement: pushScope,
+    'ForOfStatement:exit': popScope,
+    CatchClause(node) {
+      pushScope();
+      const names: string[] = [];
+      patternNames(child(node, 'param'), names);
+      for (const name of names) scope.names.set(name, { mock: false });
+    },
+    'CatchClause:exit': popScope,
+
     VariableDeclarator(node) {
       const id = child(node, 'id');
       const initRaw = child(node, 'init');
-      const name = id && id.type === 'Identifier' ? str(id, 'name') : undefined;
-      if (!name || !initRaw) return;
-      const init = unwrap(initRaw);
-      if (isFunction(init)) {
-        if (!currentTest) helperStack.push({ node, name, entries: [] });
+      const names: string[] = [];
+      patternNames(id, names);
+      const init = initRaw ? unwrap(initRaw) : undefined;
+
+      if (init && isFunction(init) && id?.type === 'Identifier' && names[0]) {
+        const def: HelperDef = { node: init, entries: [] };
+        scope.names.set(names[0], { mock: false, helper: def });
+        targets.push({ node, entries: def.entries });
         return;
       }
-      const signals = subjectSignals(init);
-      const call = init.type === 'AwaitExpression' ? child(init, 'argument') : init;
-      const callee =
-        call && unwrap(call).type === 'CallExpression' ? child(unwrap(call), 'callee') : undefined;
-      const path = callee ? memberPath(callee) : undefined;
-      if (path && MOCK_FACTORIES.has(path.join('.'))) mockFactoryVars.add(name);
-      else if (signals.viaMock) mockFactoryVars.add(name);
-      else if (signals.root) derivedVars.push({ name, root: signals.root });
+
+      const binding: Binding = { mock: false };
+      if (init) {
+        const signals = subjectSignals(init, norm);
+        const call = init.type === 'AwaitExpression' ? child(init, 'argument') : init;
+        const inner = call ? unwrap(call) : undefined;
+        const factory =
+          inner?.type === 'CallExpression' ? pathOf(child(inner, 'callee')) : undefined;
+        if ((factory && MOCK_FACTORIES.has(factory.join('.'))) || signals.viaMock) {
+          binding.mock = true;
+        } else if (signals.root) {
+          binding.derivedFrom = { scope, name: signals.root };
+        }
+      }
+      for (const name of names) scope.names.set(name, { ...binding });
     },
     'VariableDeclarator:exit'(node) {
-      const top = helperStack[helperStack.length - 1];
-      if (top && top.node === node) {
-        helpers.set(top.name, top.entries);
-        helperStack.pop();
-      }
+      if (targets[targets.length - 1]?.node === node) targets.pop();
     },
   };
 
   const finish = (source: string): TestSummary => {
-    // Names that are mocks: factory results, imports of mocked modules, and values derived from them.
-    const mocks = new Set(mockFactoryVars);
-    for (const [local, spec] of bindings) if (mockedModules.has(spec)) mocks.add(local);
-    for (let changed = true, pass = 0; changed && pass < 5; pass++) {
-      changed = false;
-      for (const d of derivedVars) {
-        if (mocks.has(d.root) && !mocks.has(d.name)) {
-          mocks.add(d.name);
-          changed = true;
-        }
-      }
-    }
+    const isMock = (binding: Binding | undefined, depth = 0): boolean => {
+      if (!binding || depth > 8) return false;
+      if (binding.mock) return true;
+      if (binding.importFrom !== undefined && mockedModules.has(binding.importFrom)) return true;
+      const from = binding.derivedFrom;
+      return from ? isMock(from.scope.lookup(from.name), depth + 1) : false;
+    };
 
     const toUse = (e: Extract<Entry, { ref: MatcherRef }>): MatcherUse => {
       const resolved = lattice.resolveMatcher(e.ref);
+      const rootName = e.signals.root;
       return {
         name: e.ref.name,
         strength: resolved.strength,
         negated: resolved.negated,
         subjectIsMock:
-          e.signals.viaMock || (e.signals.root !== undefined && mocks.has(e.signals.root)),
+          e.signals.viaMock || (rootName !== undefined && isMock(e.scope.lookup(rootName))),
       };
     };
 
-    const seen = new Map<string, number>();
+    const used = new Set<string>();
+    const counters = new Map<string, number>();
     const cases: TestCase[] = tests.map((t) => {
       // Flatten helper calls (one level deep) into the call site, in order of appearance.
       const flat: MatcherUse[] = [];
       for (const entry of [...t.entries].sort((a, b) => a.pos - b.pos)) {
-        if ('ref' in entry) flat.push(toUse(entry));
-        else {
-          const helper = helpers.get(entry.helper);
-          if (helper) {
-            for (const inner of [...helper].sort((a, b) => a.pos - b.pos)) {
-              if ('ref' in inner) flat.push(toUse(inner));
-            }
-          }
+        if ('ref' in entry) {
+          flat.push(toUse(entry));
+          continue;
+        }
+        const helper = entry.scope.lookup(entry.call)?.helper;
+        if (!helper) continue;
+        for (const inner of [...helper.entries].sort((a, b) => a.pos - b.pos)) {
+          if ('ref' in inner) flat.push(toUse(inner));
         }
       }
+
+      // Ids are unique even when a title already looks like a suffixed one ('x', 'x', 'x #2').
       const base = [...t.path, t.name].join(' > ');
-      const n = (seen.get(base) ?? 0) + 1;
-      seen.set(base, n);
-      const tc: TestCase = {
-        id: n === 1 ? base : `${base} #${n}`,
-        loc: t.loc,
-        matchers: flat,
-        bodyHash: t.bodyHash,
-      };
-      const modifier = t.modifier ?? t.inheritedModifier;
+      let n = counters.get(base) ?? 0;
+      let id: string;
+      do {
+        n++;
+        id = n === 1 ? base : `${base} #${n}`;
+      } while (used.has(id));
+      counters.set(base, n);
+      used.add(id);
+
+      let bodyHash = t.bodyHash;
+      if (bodyHash === undefined) {
+        const helper = t.fnRef
+          ? t.fnRef.scope.lookup(str(t.fnRef.node, 'name') ?? '')?.helper
+          : undefined;
+        bodyHash = hashNode(helper ? child(helper.node, 'body') : t.fnRef?.node);
+      }
+
+      const tc: TestCase = { id, loc: t.loc, matchers: flat, bodyHash };
+      const modifier = t.modifier ?? [...t.ancestors].reverse().find((f) => f.modifier)?.modifier;
       if (modifier) tc.modifier = modifier;
-      const timeout = t.timeout ?? t.inheritedTimeout ?? fileTimeout;
+      const timeout =
+        t.timeout ??
+        [...t.ancestors].reverse().find((f) => f.timeout !== undefined)?.timeout ??
+        fileTimeout;
       if (timeout !== undefined) tc.timeoutMs = timeout;
       return tc;
     });

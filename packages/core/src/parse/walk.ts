@@ -1,4 +1,4 @@
-import { isNode, type AstNode, type LineIndex } from './ast.js';
+import { isNode, isTypeOnly, type AstNode, type LineIndex } from './ast.js';
 
 export interface WalkContext {
   readonly path: string;
@@ -32,15 +32,6 @@ const SKIP_KEYS = new Set([
   'implements',
 ]);
 
-// TypeScript nodes that wrap a value. Every other TS node is a type and is not entered.
-const TS_VALUE_NODES = new Set([
-  'TSAsExpression',
-  'TSNonNullExpression',
-  'TSSatisfiesExpression',
-  'TSTypeAssertion',
-  'TSInstantiationExpression',
-]);
-
 /**
  * One traversal for every registered visitor. N rules cost one walk, not N.
  */
@@ -72,7 +63,7 @@ export function walk(
   };
 
   const visit = (node: AstNode): void => {
-    if (node.type.startsWith('TS') && !TS_VALUE_NODES.has(node.type)) return;
+    if (isTypeOnly(node)) return;
     const onEnter = enter.get(node.type);
     if (onEnter) for (const h of onEnter) h(node, ctx);
 

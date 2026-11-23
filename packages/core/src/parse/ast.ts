@@ -50,6 +50,43 @@ export function unwrap(node: AstNode): AstNode {
   return n;
 }
 
+/** TypeScript nodes that wrap a value: `x as T`, `x!`, `x satisfies T`, `<T>x`, `f<T>`. */
+const TS_VALUE_WRAPPERS = new Set([
+  'TSAsExpression',
+  'TSNonNullExpression',
+  'TSSatisfiesExpression',
+  'TSTypeAssertion',
+  'TSInstantiationExpression',
+]);
+
+/** TypeScript nodes that exist at runtime and can contain code or values. */
+const TS_RUNTIME = new Set([
+  ...TS_VALUE_WRAPPERS,
+  'TSModuleDeclaration',
+  'TSModuleBlock',
+  'TSEnumDeclaration',
+  'TSEnumBody',
+  'TSEnumMember',
+  'TSImportEqualsDeclaration',
+  'TSExternalModuleReference',
+  'TSExportAssignment',
+  'TSParameterProperty',
+]);
+
+export function isTsValueWrapper(node: AstNode): boolean {
+  return TS_VALUE_WRAPPERS.has(node.type);
+}
+
+/**
+ * True for nodes that only describe types and never run: type annotations, interfaces, aliases,
+ * overload signatures, and anything marked `declare`. Namespaces and enums are NOT type-only:
+ * they contain code and values, so walking and hashing must see them.
+ */
+export function isTypeOnly(node: AstNode): boolean {
+  if (node['declare'] === true) return true;
+  return node.type.startsWith('TS') && !TS_RUNTIME.has(node.type);
+}
+
 export function isFunction(node: AstNode): boolean {
   return (
     node.type === 'FunctionExpression' ||

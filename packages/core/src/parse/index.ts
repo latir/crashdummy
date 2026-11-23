@@ -55,7 +55,7 @@ export function analyzeTestFile(
     lines: file.lines,
   });
   const raw = collector.finish(source);
-  if (file.errors.length === 0) options.cache?.set(cacheKey(raw.hash, options), raw);
+  if (file.errors.length === 0) options.cache?.set(cacheKey(raw.hash, path, options), raw);
   return { summary: finalize(raw, path, options.resolve), errors: file.errors, file };
 }
 
@@ -69,7 +69,7 @@ export function summarizeTestFile(
   source: string,
   options: Omit<AnalyzeOptions, 'visitors'> = {},
 ): TestSummary {
-  const key = cacheKey(hashText(source), options);
+  const key = cacheKey(hashText(source), path, options);
   const hit = options.cache?.get(key);
   if (hit) return finalize(hit, path, options.resolve);
   const analysis = analyzeTestFile(path, source, options);

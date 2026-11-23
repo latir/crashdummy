@@ -80,6 +80,43 @@ describe('tsconfig paths', () => {
     expect(resolveImport('#/format', 'a.test.ts', o)).toBe('src/lib/format.ts');
   });
 
+  test('an exact mapping beats a wildcard, whatever the order', () => {
+    // both files exist: src/util.tsx via the wildcard, shared/money.ts via the exact mapping
+    const a = { '@/*': ['src/*'], '@/util': ['shared/money'] };
+    const b = { '@/util': ['shared/money'], '@/*': ['src/*'] };
+    expect(resolveImport('@/util', 'x.test.ts', { cwd: root, paths: a })).toBe('shared/money.ts');
+    expect(resolveImport('@/util', 'x.test.ts', { cwd: root, paths: b })).toBe('shared/money.ts');
+  });
+
+  test('the wildcard with the longest prefix wins, and only its targets are tried', () => {
+    const paths = { '@/*': ['src/*'], '@/lib/*': ['shared/*'] };
+    expect(resolveImport('@/lib/money', 'x.test.ts', { cwd: root, paths })).toBe('shared/money.ts');
+    // '@/lib/format' exists only under src/lib, but the longer pattern owns '@/lib/*': no fallback
+    expect(resolveImport('@/lib/format', 'x.test.ts', { cwd: root, paths })).toBeUndefined();
+  });
+
+  test('a mapping that escapes the repo is refused, even if the file exists', () => {
+    const outside = mkdtempSync(join(tmpdir(), 'crashdummy-outside-'));
+    try {
+      writeFileSync(join(outside, 'secret.ts'), '');
+      const repo = join(outside, 'repo');
+      mkdirSync(repo);
+      const paths = { '@out/*': ['../*'] };
+      expect(resolveImport('@out/secret', 'x.test.ts', { cwd: repo, paths })).toBeUndefined();
+      expect(
+        resolveImport('@abs/secret', 'x.test.ts', {
+          cwd: repo,
+          paths: { '@abs/*': [`${outside}/*`] },
+        }),
+      ).toBeUndefined();
+      expect(
+        resolveImport('x', 'x.test.ts', { cwd: repo, baseUrl: '..', paths: { x: ['secret'] } }),
+      ).toBeUndefined();
+    } finally {
+      rmSync(outside, { recursive: true, force: true });
+    }
+  });
+
   test('a pattern that matches nothing is unresolved', () => {
     expect(resolveImport('@/nope', 'a.test.ts', { cwd: root, paths })).toBeUndefined();
   });

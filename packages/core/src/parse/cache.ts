@@ -1,13 +1,17 @@
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
-import { dirname } from 'node:path';
+import { dirname, extname } from 'node:path';
 import type { TestSummary } from '../types.js';
 import { SUMMARY_VERSION, hashText, type SummaryOptions } from './summary.js';
 
 /** Where the plan keeps the persisted cache, relative to the repo root. */
 export const DEFAULT_CACHE_FILE = '.crashdummy/cache/summaries.json';
 
-/** Everything besides the file content that changes what a summary contains. */
-export function cacheKey(contentHash: string, options: SummaryOptions): string {
+/**
+ * Everything besides the file content that changes what a summary contains. The extension is
+ * part of it because oxc picks the language from it: the same text can be valid in `.ts` and a
+ * syntax error in `.js`. Files with the same extension still share entries.
+ */
+export function cacheKey(contentHash: string, path: string, options: SummaryOptions): string {
   const fingerprint = hashText(
     JSON.stringify([
       SUMMARY_VERSION,
@@ -15,7 +19,7 @@ export function cacheKey(contentHash: string, options: SummaryOptions): string {
       options.matchers ?? {},
     ]),
   );
-  return `${fingerprint}:${contentHash}`;
+  return `${fingerprint}:${extname(path).toLowerCase()}:${contentHash}`;
 }
 
 /**

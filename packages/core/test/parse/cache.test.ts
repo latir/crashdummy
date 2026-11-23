@@ -2,6 +2,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, test } from 'vitest';
+import { ParseError } from '../../src/errors.js';
 import type { TestSummary } from '../../src/types.js';
 import {
   SummaryCache,
@@ -29,7 +30,7 @@ const tmp = (): string => (dir = mkdtempSync(join(tmpdir(), 'crashdummy-cache-')
 describe('summary cache', () => {
   test('an unchanged file is served from the cache, not parsed again', () => {
     const cache = new SummaryCache();
-    const key = cacheKey(hashText(SRC), {});
+    const key = cacheKey(hashText(SRC), 'a.test.ts', {});
     cache.set(key, fake('from-cache'));
     const s = summarizeTestFile('a.test.ts', SRC, { cache, resolve: false });
     expect(s.hash).toBe('from-cache'); // a real parse would give the content hash
@@ -45,7 +46,7 @@ describe('summary cache', () => {
   });
 
   test('changed content or options use a different key', () => {
-    const k = (src: string, o = {}) => cacheKey(hashText(src), o);
+    const k = (src: string, o = {}, path = 'a.test.ts') => cacheKey(hashText(src), path, o);
     expect(k(SRC)).not.toBe(k(SRC + '\n'));
     expect(k(SRC)).not.toBe(k(SRC, { assertFunctionNames: ['check*'] }));
     expect(k(SRC)).not.toBe(k(SRC, { matchers: { x: { strength: 3 } } }));
@@ -66,6 +67,16 @@ describe('summary cache', () => {
     });
     expect(a.imports).toEqual(['cart.ts']);
     expect(b.imports).toEqual([]);
+  });
+
+  test('the same text is not reused across languages: TypeScript cached for .ts is a syntax error in .js', () => {
+    const cache = new SummaryCache();
+    const ts = `test('x', () => { const a: number = 1; expect(a).toBe(1); });`;
+    expect(summarizeTestFile('a.test.ts', ts, { cache, resolve: false }).tests).toHaveLength(1);
+    // a cached call must agree with an uncached one
+    expect(() => summarizeTestFile('a.test.js', ts, { resolve: false })).toThrow(ParseError);
+    expect(() => summarizeTestFile('a.test.js', ts, { cache, resolve: false })).toThrow(ParseError);
+    expect(summarizeTestFile('b.test.ts', ts, { cache, resolve: false }).tests).toHaveLength(1);
   });
 
   test('evicts the least recently used entry past maxEntries', () => {

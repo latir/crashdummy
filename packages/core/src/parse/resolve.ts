@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { join, posix, resolve as resolvePath, sep } from 'node:path';
+import { isAbsolute, posix, relative, resolve as resolvePath, sep } from 'node:path';
 
 export interface ResolveOptions {
   /** Repo root. Resolved paths are relative to it. */
@@ -68,15 +68,27 @@ export function resolveImport(
     const joined = posix.normalize(posix.join(posix.dirname(toPosix(fromFile)), specifier));
     return joined.startsWith('..') ? undefined : probe(joined, opts);
   }
-  const baseUrl = opts.baseUrl ?? '.';
+
+  // Like TypeScript: an exact pattern wins, otherwise the wildcard with the longest prefix, and
+  // only that pattern's targets are tried.
+  let best: { captured: string; targets: readonly string[]; prefix: number } | undefined;
   for (const [pattern, targets] of Object.entries(opts.paths ?? {})) {
     const captured = matchPattern(pattern, specifier);
     if (captured === undefined) continue;
-    for (const target of targets) {
-      const mapped = posix.normalize(join(baseUrl, target.replace('*', captured)));
-      const hit = probe(toPosix(mapped), opts);
-      if (hit) return hit;
-    }
+    const prefix = pattern.includes('*') ? pattern.indexOf('*') : Infinity;
+    if (!best || prefix > best.prefix) best = { captured, targets, prefix };
+  }
+  if (!best) return undefined;
+
+  const baseUrl = toPosix(
+    isAbsolute(opts.baseUrl ?? '.') ? relative(opts.cwd, opts.baseUrl!) : (opts.baseUrl ?? '.'),
+  );
+  for (const target of best.targets) {
+    const mapped = posix.normalize(posix.join(baseUrl, target.replace('*', best.captured)));
+    // Only code in this repo can be under test: never follow a mapping out of it.
+    if (mapped.startsWith('..') || isAbsolute(mapped)) continue;
+    const hit = probe(mapped, opts);
+    if (hit) return hit;
   }
   return undefined;
 }

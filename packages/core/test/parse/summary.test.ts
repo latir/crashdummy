@@ -203,7 +203,7 @@ describe('node:test and node:assert', () => {
 
   test('assert.*, t.assert.*, named imports and bare assert()', () => {
     expect(shape(s)).toEqual({
-      'sum > adds': ['assert.equal:3', 'assert.deepStrictEqual:4', 'assert:1'],
+      'sum > adds': ['assert.strictEqual:4', 'assert.deepStrictEqual:4', 'assert.ok:1'], // bare assert(x) is assert.ok
       'sum > throws': [
         'assert.throws:2',
         'assert.throws:3',
