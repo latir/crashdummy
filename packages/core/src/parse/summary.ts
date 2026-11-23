@@ -139,10 +139,12 @@ function parseDecl(call: AstNode, norm: Norm): Decl | undefined {
   const fn = args.map(unwrap).find(isFunction);
   // A titled test can name its body: test('adds', addsCase). Needs a string title, so that
   // test.skip(isMobile, 'reason') inside a body is not mistaken for a declaration.
-  const second = args[1] ? unwrap(args[1]) : undefined;
   const fnRef =
-    !fn && staticString(nameNode) !== undefined && second?.type === 'Identifier'
-      ? second
+    !fn && staticString(nameNode) !== undefined
+      ? args
+          .slice(1)
+          .map(unwrap)
+          .find((a) => a.type === 'Identifier')
       : undefined;
   const isTodo = modifiers.includes('todo');
   // `test.skip(condition, 'reason')` inside a body is not a declaration: it needs a body.
@@ -271,7 +273,9 @@ class AssertionFinder {
       if (chain) return chain;
     }
 
-    const path = this.norm(memberPath(c));
+    // The path as written: `const assert = require('assert')` and `helpers.expectOk(...)` are
+    // local names, so they must not go through the framework-name normalizer.
+    const path = memberPath(c);
     if (!path) return undefined;
     const asserted = this.assertCall(path, args);
     if (asserted) return asserted;
@@ -398,7 +402,6 @@ const HASH_SKIP = new Set([
   'typeArguments',
   'returnType',
   'decorators',
-  'optional',
 ]);
 
 /**
@@ -426,6 +429,15 @@ export function hashNode(node: AstNode | undefined): string {
       h.update('{');
       for (const key of Object.keys(obj)) {
         if (HASH_SKIP.has(key)) continue;
+        // `optional` is a type-level marker on identifiers and parameters, but it changes what
+        // `a?.b()` and `a.b?.()` do at runtime.
+        if (
+          key === 'optional' &&
+          obj['type'] !== 'MemberExpression' &&
+          obj['type'] !== 'CallExpression'
+        ) {
+          continue;
+        }
         h.update(key);
         h.update(':');
         feed(obj[key]);
@@ -455,9 +467,11 @@ const FRAMEWORK_MODULES: Record<string, TestSummary['framework']> = {
 // Lexical scopes
 //
 // Names are resolved through real scopes, not by spelling, so a mock or helper called `result` or
-// `check` in one test never leaks into another. Resolution happens when the walk is finished, so
-// a helper declared after the test that uses it is still found.
+// `check` in one test never leaks into another, and a local `expect` is not the framework's.
+// Resolution happens when the walk is finished, so a helper declared after the test that uses it
+// is still found.
 
+/** Code that runs only when called: a named function, or a method of a local object. */
 interface HelperDef {
   node: AstNode;
   entries: Entry[];
@@ -468,10 +482,14 @@ interface Binding {
   mock: boolean;
   /** For imports: the module they come from. Mocked when that module is `vi.mock`ed. */
   importFrom?: string;
+  /** Set for imports from a framework module: what the local name stands for. */
+  framework?: { kind: 'named'; imported: string } | { kind: 'namespace' };
   /** `const result = mockFn()`: a value derived from another binding. */
   derivedFrom?: { scope: Scope; name: string };
   /** A named function, followed one level deep when a test calls it. */
   helper?: HelperDef;
+  /** `const page = { expectOk() {} }`: methods that run when called as `page.expectOk()`. */
+  methods?: Map<string, HelperDef>;
 }
 
 class Scope {
@@ -514,6 +532,36 @@ function patternNames(pattern: AstNode | undefined, out: string[]): void {
   }
 }
 
+/**
+ * APIs that call the function they are given. Passing a helper to anything else (`vi.fn(check)`,
+ * `register(check)`) does not run it, so it does not count as running its assertions.
+ */
+const CALLBACK_APIS = new Set([
+  'forEach',
+  'map',
+  'flatMap',
+  'filter',
+  'find',
+  'findIndex',
+  'findLast',
+  'findLastIndex',
+  'some',
+  'every',
+  'reduce',
+  'reduceRight',
+  'sort',
+  'then',
+  'catch',
+  'finally',
+  'step',
+  'waitFor',
+  'act',
+  'poll',
+]);
+
+/** Marks a path head that is a local declaration, so it cannot match a framework name. */
+const LOCAL = '\0local:';
+
 // ---------------------------------------------------------------------------------------------
 // The collector
 
@@ -526,8 +574,10 @@ interface Frame {
 
 type Entry =
   | { pos: number; ref: MatcherRef; signals: SubjectSignals; scope: Scope }
-  /** A reference to a name that may be a local helper: `check()` or `items.forEach(check)`. */
-  | { pos: number; call: string; scope: Scope };
+  /** A reference that may run a local helper: `check()`, `page.expectOk()`, `items.forEach(check)`. */
+  | { pos: number; call: string; method?: string; scope: Scope }
+  /** A timeout set from inside a test or a helper, applied to the test that runs it. */
+  | { pos: number; timeout: number };
 
 interface RawTest {
   name: string;
@@ -538,7 +588,7 @@ interface RawTest {
   /** Describe frames around this test, outermost first. Their state is read when finished. */
   ancestors: Frame[];
   bodyHash: string | undefined;
-  /** For `test('x', namedFn)`: hashed after the name is resolved. */
+  /** For `test('x', namedFn)`: resolved when finished. */
   fnRef: { node: AstNode; scope: Scope } | undefined;
   entries: Entry[];
 }
@@ -552,15 +602,24 @@ export interface SummaryCollector {
 export function createSummaryCollector(options: SummaryOptions = {}): SummaryCollector {
   const lattice: Lattice = createLattice(options.matchers ?? {});
 
-  const aliasOf = new Map<string, string>(); // local name -> exported name, for framework imports
-  const namespaces = new Set<string>(); // `import * as vitest from 'vitest'`
+  const root = new Scope();
+  let scope = root;
+
+  /**
+   * Resolves a framework name through the scope it is used in: an aliased import (`test as
+   * spec`) or a namespace import maps back to the framework name, and a local declaration with
+   * the same name (`const check = ...`) is not the framework at all.
+   */
   const norm: Norm = (path) => {
     const head = path?.[0];
     if (!path || head === undefined) return path;
-    const alias = aliasOf.get(head);
-    if (alias !== undefined) return [alias, ...path.slice(1)];
-    if (namespaces.has(head) && path.length > 1) return path.slice(1);
-    return path;
+    const binding = scope.lookup(head);
+    if (!binding) return path; // a global: jest, vi, expect, test
+    const fw = binding.framework;
+    if (fw?.kind === 'named') return [fw.imported, ...path.slice(1)];
+    if (fw?.kind === 'namespace') return path.length > 1 ? path.slice(1) : path;
+    // other imports (bun:test, chai, ...) stay recognised by name; locals shadow the framework
+    return binding.importFrom !== undefined ? path : [`${LOCAL}${head}`, ...path.slice(1)];
   };
   const finder = new AssertionFinder((options.assertFunctionNames ?? []).map(globToRegExp), norm);
 
@@ -572,10 +631,8 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
   let sawJest = false;
   let fileTimeout: number | undefined;
 
-  const root = new Scope();
-  let scope = root;
   const frames: Frame[] = [];
-  /** Where assertions go: the innermost test or named function being walked. */
+  /** Where assertions go: the innermost test or deferred function being walked. */
   const targets: { node: AstNode; entries: Entry[] }[] = [];
   let currentTest: RawTest | undefined;
   let currentTestNode: AstNode | undefined;
@@ -590,6 +647,9 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
   const push = (entry: Entry): void => {
     targets[targets.length - 1]?.entries.push(entry);
   };
+  const popTarget = (node: AstNode): void => {
+    if (targets[targets.length - 1]?.node === node) targets.pop();
+  };
   const pushScope = (): void => {
     scope = new Scope(scope);
   };
@@ -600,6 +660,20 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     const names: string[] = [];
     for (const param of children(fn, 'params')) patternNames(param, names);
     for (const name of names) scope.names.set(name, { mock: false });
+  };
+
+  /** What a value initialised from `init` is: a mock, derived from a name, or neither. */
+  const classify = (initRaw: AstNode | undefined): Pick<Binding, 'mock' | 'derivedFrom'> => {
+    if (!initRaw) return { mock: false };
+    const init = unwrap(initRaw);
+    const signals = subjectSignals(init, norm);
+    const call = init.type === 'AwaitExpression' ? child(init, 'argument') : init;
+    const inner = call ? unwrap(call) : undefined;
+    const factory = inner?.type === 'CallExpression' ? pathOf(child(inner, 'callee')) : undefined;
+    if ((factory && MOCK_FACTORIES.has(factory.join('.'))) || signals.viaMock)
+      return { mock: true };
+    if (signals.root) return { mock: false, derivedFrom: { scope, name: signals.root } };
+    return { mock: false };
   };
 
   const timeoutCall = (call: AstNode, path: string[]): void => {
@@ -626,7 +700,8 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       }
     }
     if (ms === undefined) return;
-    if (currentTest) currentTest.timeout = ms;
+    // Inside a test or a helper it is an effect of running that code, applied where it runs.
+    if (targets.length > 0) push({ pos: call.start, timeout: ms });
     // Suite configuration applies to the whole suite wherever it appears, and the last call wins.
     else if (frames.length > 0) frames[frames.length - 1]!.timeout = ms;
     else fileTimeout = ms;
@@ -659,7 +734,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
           frames.push({ node, name, modifier: mod, timeout: decl.timeout });
         } else {
           const entries: Entry[] = [];
-          const raw: RawTest = {
+          tests.push({
             name,
             path: frames.map((f) => f.name),
             loc: ctx.loc(node.start),
@@ -669,12 +744,8 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
             bodyHash: decl.fn ? hashNode(child(decl.fn, 'body')) : undefined,
             fnRef: decl.fnRef ? { node: decl.fnRef, scope } : undefined,
             entries,
-          };
-          if (decl.fnRef) {
-            entries.push({ pos: decl.fnRef.start, call: str(decl.fnRef, 'name') ?? '', scope });
-          }
-          tests.push(raw);
-          currentTest = raw;
+          });
+          currentTest = tests[tests.length - 1];
           currentTestNode = node;
           targets.push({ node, entries });
         }
@@ -694,10 +765,24 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       return;
     }
 
-    // references to names that may be local helpers: check() and items.forEach(check)
-    if (targets.length > 0) {
-      const c = callee ? unwrap(callee) : undefined;
-      if (c?.type === 'Identifier') push({ pos: node.start, call: str(c, 'name') ?? '', scope });
+    // references that may run a local helper
+    if (targets.length === 0 || !callee) return;
+    const c = unwrap(callee);
+    let calleeName: string | undefined;
+    if (c.type === 'Identifier') {
+      calleeName = str(c, 'name');
+      push({ pos: node.start, call: calleeName ?? '', scope }); // check()
+    } else if (c.type === 'MemberExpression' && c['computed'] !== true) {
+      const object = child(c, 'object');
+      const property = child(c, 'property');
+      calleeName = property ? str(property, 'name') : undefined;
+      const objectName =
+        object && unwrap(object).type === 'Identifier' ? str(unwrap(object), 'name') : undefined;
+      if (objectName && calleeName)
+        push({ pos: node.start, call: objectName, method: calleeName, scope }); // page.expectOk()
+    }
+    // a helper passed to an API that calls it: items.forEach(check), waitFor(check)
+    if (calleeName && CALLBACK_APIS.has(calleeName)) {
       for (const arg of children(node, 'arguments')) {
         const a = unwrap(arg);
         if (a.type === 'Identifier') push({ pos: a.start, call: str(a, 'name') ?? '', scope });
@@ -708,6 +793,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
   const enterFunction = (node: AstNode): void => {
     pushScope();
     bindParams(node);
+  };
+
+  /** A function value that is stored, not run: its body must not count for the enclosing test. */
+  const deferFunction = (node: AstNode): HelperDef => {
+    const def: HelperDef = { node, entries: [] };
+    targets.push({ node, entries: def.entries });
+    return def;
   };
 
   const visitor: Visitor = {
@@ -724,16 +816,18 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         const local = child(s, 'local');
         const name = local ? str(local, 'name') : undefined;
         if (!name) continue;
-        root.names.set(name, { mock: false, importFrom: spec });
+        const binding: Binding = { mock: false, importFrom: spec };
+        root.names.set(name, binding);
         const imported = child(s, 'imported');
         const importedName = imported
           ? (str(imported, 'name') ?? staticString(imported))
           : undefined;
 
         if (framework) {
-          if (s.type === 'ImportNamespaceSpecifier') namespaces.add(name);
-          else if (s.type === 'ImportDefaultSpecifier') aliasOf.set(name, 'test');
-          else if (importedName && importedName !== name) aliasOf.set(name, importedName);
+          if (s.type === 'ImportNamespaceSpecifier') binding.framework = { kind: 'namespace' };
+          else if (s.type === 'ImportDefaultSpecifier') {
+            binding.framework = { kind: 'named', imported: 'test' };
+          } else if (importedName) binding.framework = { kind: 'named', imported: importedName };
         }
         if (isAssert || isStrictAssert) {
           if (s.type === 'ImportSpecifier' && importedName === 'strict') {
@@ -766,7 +860,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       if (node === currentTestNode) {
         currentTest = undefined;
         currentTestNode = undefined;
-        if (targets[targets.length - 1]?.node === node) targets.pop();
+        popTarget(node);
       }
       const top = frames[frames.length - 1];
       if (top && top.node === node) frames.pop();
@@ -775,17 +869,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     FunctionDeclaration(node) {
       const id = child(node, 'id');
       const name = id ? str(id, 'name') : undefined;
-      if (name) {
-        // A named function is a helper: its assertions count only where it is called.
-        const def: HelperDef = { node, entries: [] };
-        scope.names.set(name, { mock: false, helper: def });
-        targets.push({ node, entries: def.entries });
-      }
+      // A named function is a helper: its assertions count only where it is called.
+      if (name) scope.names.set(name, { mock: false, helper: deferFunction(node) });
       enterFunction(node);
     },
     'FunctionDeclaration:exit'(node) {
       popScope();
-      if (targets[targets.length - 1]?.node === node) targets.pop();
+      popTarget(node);
     },
     FunctionExpression: enterFunction,
     'FunctionExpression:exit': popScope,
@@ -816,30 +906,73 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       const init = initRaw ? unwrap(initRaw) : undefined;
 
       if (init && isFunction(init) && id?.type === 'Identifier' && names[0]) {
-        const def: HelperDef = { node: init, entries: [] };
-        scope.names.set(names[0], { mock: false, helper: def });
-        targets.push({ node, entries: def.entries });
+        scope.names.set(names[0], { mock: false, helper: deferFunction(init) });
+        targets[targets.length - 1]!.node = node; // popped on the declarator's exit
         return;
       }
+      const classified = classify(initRaw);
+      for (const name of names) scope.names.set(name, { ...classified });
+    },
+    'VariableDeclarator:exit': popTarget,
 
-      const binding: Binding = { mock: false };
-      if (init) {
-        const signals = subjectSignals(init, norm);
-        const call = init.type === 'AwaitExpression' ? child(init, 'argument') : init;
-        const inner = call ? unwrap(call) : undefined;
-        const factory =
-          inner?.type === 'CallExpression' ? pathOf(child(inner, 'callee')) : undefined;
-        if ((factory && MOCK_FACTORIES.has(factory.join('.'))) || signals.viaMock) {
-          binding.mock = true;
-        } else if (signals.root) {
-          binding.derivedFrom = { scope, name: signals.root };
-        }
+    // const page = { expectOk() { ... }, check: () => ... }: functions stored in properties run
+    // only when called, so they are isolated, and `page.expectOk()` can find them.
+    Property(node, ctx) {
+      const value = child(node, 'value');
+      const fn = value ? unwrap(value) : undefined;
+      if (!fn || !isFunction(fn)) return;
+      const def = deferFunction(fn);
+      targets[targets.length - 1]!.node = node;
+      const object = ctx.ancestors[ctx.ancestors.length - 1];
+      const declarator = ctx.ancestors[ctx.ancestors.length - 2];
+      const declaredId = declarator ? child(declarator, 'id') : undefined;
+      const key = child(node, 'key');
+      const keyName = key ? (str(key, 'name') ?? staticString(key)) : undefined;
+      if (
+        object?.type === 'ObjectExpression' &&
+        declarator?.type === 'VariableDeclarator' &&
+        declaredId?.type === 'Identifier' &&
+        keyName
+      ) {
+        const binding = scope.names.get(str(declaredId, 'name') ?? '');
+        if (binding) (binding.methods ??= new Map()).set(keyName, def);
       }
-      for (const name of names) scope.names.set(name, { ...binding });
     },
-    'VariableDeclarator:exit'(node) {
-      if (targets[targets.length - 1]?.node === node) targets.pop();
+    'Property:exit': popTarget,
+    MethodDefinition(node) {
+      const value = child(node, 'value');
+      if (value && isFunction(value)) {
+        deferFunction(value);
+        targets[targets.length - 1]!.node = node;
+      }
     },
+    'MethodDefinition:exit': popTarget,
+
+    // fn = vi.fn(), helper = () => ..., obj.check = () => ...
+    AssignmentExpression(node) {
+      if (node['operator'] !== '=') return;
+      const leftRaw = child(node, 'left');
+      const rightRaw = child(node, 'right');
+      if (!leftRaw || !rightRaw) return;
+      const left = unwrap(leftRaw);
+      const right = unwrap(rightRaw);
+      const binding =
+        left.type === 'Identifier' ? scope.lookup(str(left, 'name') ?? '') : undefined;
+      if (isFunction(right)) {
+        const def = deferFunction(right);
+        targets[targets.length - 1]!.node = node;
+        if (binding) binding.helper = def;
+        return;
+      }
+      // only local bindings: assigning to an import or a global is not tracked
+      if (binding && binding.importFrom === undefined) {
+        const classified = classify(rightRaw);
+        binding.mock = classified.mock;
+        if (classified.derivedFrom) binding.derivedFrom = classified.derivedFrom;
+        else delete binding.derivedFrom;
+      }
+    },
+    'AssignmentExpression:exit': popTarget,
   };
 
   const finish = (source: string): TestSummary => {
@@ -863,22 +996,38 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       };
     };
 
+    const helperOf = (e: Extract<Entry, { call: string }>): HelperDef | undefined => {
+      const binding = e.scope.lookup(e.call);
+      return e.method === undefined ? binding?.helper : binding?.methods?.get(e.method);
+    };
+
+    /** Matchers and timeout effects of some code, with helper calls followed `follow` level(s). */
+    const expand = (
+      entries: readonly Entry[],
+      out: { uses: MatcherUse[]; timeout?: number },
+      follow: boolean,
+    ): void => {
+      for (const entry of [...entries].sort((a, b) => a.pos - b.pos)) {
+        if ('ref' in entry) out.uses.push(toUse(entry));
+        else if ('timeout' in entry) out.timeout = entry.timeout;
+        else if (follow) {
+          const def = helperOf(entry);
+          if (def) expand(def.entries, out, false);
+        }
+      }
+    };
+
     const used = new Set<string>();
     const counters = new Map<string, number>();
     const cases: TestCase[] = tests.map((t) => {
-      // Flatten helper calls (one level deep) into the call site, in order of appearance.
-      const flat: MatcherUse[] = [];
-      for (const entry of [...t.entries].sort((a, b) => a.pos - b.pos)) {
-        if ('ref' in entry) {
-          flat.push(toUse(entry));
-          continue;
-        }
-        const helper = entry.scope.lookup(entry.call)?.helper;
-        if (!helper) continue;
-        for (const inner of [...helper.entries].sort((a, b) => a.pos - b.pos)) {
-          if ('ref' in inner) flat.push(toUse(inner));
-        }
-      }
+      const out: { uses: MatcherUse[]; timeout?: number } = { uses: [] };
+      // `test('x', namedFn)`: the named function is the test body, so it is expanded exactly like
+      // an inline body, with one level of helper calls.
+      const callback = t.fnRef
+        ? t.fnRef.scope.lookup(str(t.fnRef.node, 'name') ?? '')?.helper
+        : undefined;
+      if (callback) expand(callback.entries, out, true);
+      expand(t.entries, out, true);
 
       // Ids are unique even when a title already looks like a suffixed one ('x', 'x', 'x #2').
       const base = [...t.path, t.name].join(' > ');
@@ -891,18 +1040,14 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       counters.set(base, n);
       used.add(id);
 
-      let bodyHash = t.bodyHash;
-      if (bodyHash === undefined) {
-        const helper = t.fnRef
-          ? t.fnRef.scope.lookup(str(t.fnRef.node, 'name') ?? '')?.helper
-          : undefined;
-        bodyHash = hashNode(helper ? child(helper.node, 'body') : t.fnRef?.node);
-      }
+      const bodyHash =
+        t.bodyHash ?? hashNode(callback ? child(callback.node, 'body') : t.fnRef?.node);
 
-      const tc: TestCase = { id, loc: t.loc, matchers: flat, bodyHash };
+      const tc: TestCase = { id, loc: t.loc, matchers: out.uses, bodyHash };
       const modifier = t.modifier ?? [...t.ancestors].reverse().find((f) => f.modifier)?.modifier;
       if (modifier) tc.modifier = modifier;
       const timeout =
+        out.timeout ??
         t.timeout ??
         [...t.ancestors].reverse().find((f) => f.timeout !== undefined)?.timeout ??
         fileTimeout;

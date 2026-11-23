@@ -348,3 +348,246 @@ describe('aliased framework imports', () => {
     expect(aliased.tests.map((t) => t.id)).toEqual(plain.tests.map((t) => t.id));
   });
 });
+
+describe('second review', () => {
+  describe('a named callback after an options object', () => {
+    test('is still a test', () => {
+      const s = sum(`function body() { expect(1).toBe(1); }\ntest('x', { timeout: 1000 }, body);`);
+      expect(s.tests).toHaveLength(1);
+      expect(s.tests[0]).toMatchObject({ id: 'x', timeoutMs: 1000 });
+      expect(shape(s)).toEqual({ x: ['toBe:4'] });
+    });
+
+    test('works with a modifier option and a numeric timeout', () => {
+      const s = sum(`function a() {}\nfunction b() {}
+        test('skipped', { skip: true }, a);\ntest('timed', b, 500);`);
+      expect(s.tests.map((t) => [t.id, t.modifier, t.timeoutMs])).toEqual([
+        ['skipped', 'skip', undefined],
+        ['timed', undefined, 500],
+      ]);
+    });
+  });
+
+  describe('optional chaining is part of the hash', () => {
+    const hash = (body: string) => sum(`test('x', () => { ${body} });`).tests[0]!.bodyHash;
+
+    test('obj?.method() and obj.method?.() differ', () => {
+      expect(hash('expect(obj?.method()).toBe(1);')).not.toBe(
+        hash('expect(obj.method?.()).toBe(1);'),
+      );
+      expect(hash('expect(obj?.a).toBe(1);')).not.toBe(hash('expect(obj.a).toBe(1);'));
+    });
+
+    test('type-level optional markers are still ignored', () => {
+      expect(hash('const f = (a?: number) => a; expect(f()).toBe(1);')).toBe(
+        hash('const f = (a: number) => a; expect(f()).toBe(1);'),
+      );
+    });
+  });
+
+  describe('local names shadow framework names', () => {
+    test('a local function with an aliased framework name is not the framework', () => {
+      const s = sum(`import { test, expect as check } from 'vitest';
+        test('x', () => { const check = () => ({ toBe() {} }); check(1).toBe(1); });`);
+      expect(shape(s)).toEqual({ x: [] });
+    });
+
+    test('a local expect is not the global one', () => {
+      const s = sum(
+        `function expect() { return { toBe() {} }; }\ntest('x', () => { expect(1).toBe(1); });`,
+      );
+      expect(shape(s)).toEqual({ x: [] });
+    });
+
+    test('a shadowed namespace import', () => {
+      const s = sum(`import * as t from 'vitest';
+        t.test('x', () => { const t = { expect: () => ({ toBe() {} }) }; t.expect(1).toBe(1); });`);
+      expect(shape(s)).toEqual({ x: [] });
+    });
+
+    test('a shadowed mock alias does not mark a subject as a mock', () => {
+      const s = sum(`import { test, expect, vi as mocker } from 'vitest';
+        test('real', () => { const mocker = { fn: () => 1 }; const f = mocker.fn(); expect(f).toBeDefined(); });
+        test('mock', () => { const f = mocker.fn(); expect(f).toBeDefined(); });`);
+      expect(shape(s)).toEqual({ real: ['toBeDefined:1'], mock: ['toBeDefined:1@mock'] });
+    });
+
+    test('an unshadowed alias still works inside nested functions', () => {
+      const s = sum(`import { test, expect as check } from 'vitest';
+        test('x', () => { [1].forEach((n) => { check(n).toBe(1); }); });`);
+      expect(shape(s)).toEqual({ x: ['toBe:4'] });
+    });
+
+    test('a parameter named like the alias shadows it', () => {
+      const s = sum(`import { test, expect as check } from 'vitest';
+        test('x', () => { [(check) => check(1).toBe(1)].forEach((f) => f(() => ({ toBe() {} }))); });`);
+      expect(shape(s)).toEqual({ x: [] });
+    });
+
+    test('custom assertion helpers on a local object are still found', () => {
+      const s = sum(`const helpers = makeHelpers();\ntest('x', () => { helpers.expectOk(1); });`, {
+        assertFunctionNames: ['helpers.expect*'],
+      });
+      expect(shape(s)).toEqual({ x: ['helpers.expectOk:2'] });
+    });
+
+    test('a required assert is still recognised', () => {
+      const s = sum(
+        `const assert = require('node:assert');\ntest('x', () => { assert.equal(1, 1); });`,
+      );
+      expect(shape(s)).toEqual({ x: ['assert.equal:3'] });
+    });
+
+    test('imports from other test libraries are still recognised by name', () => {
+      const s = sum(
+        `import { test, expect } from 'bun:test';\ntest('x', () => { expect(1).toBe(1); });`,
+      );
+      expect(shape(s)).toEqual({ x: ['toBe:4'] });
+    });
+  });
+
+  describe('timeouts belong to the code that runs them', () => {
+    test('an uncalled function does not change the test timeout or the file default', () => {
+      const s = sum(
+        `function unused() { test.setTimeout(30000); }\ntest('x', () => {});\ntest('y', () => {});`,
+      );
+      expect(s.tests.map((t) => t.timeoutMs)).toEqual([undefined, undefined]);
+    });
+
+    test('a named callback sets the timeout of its own test only', () => {
+      const s = sum(`function body() { test.setTimeout(2000); expect(1).toBe(1); }
+        test('x', body);\ntest('y', () => {});`);
+      expect(s.tests.map((t) => t.timeoutMs)).toEqual([2000, undefined]);
+    });
+
+    test('a helper that a test calls applies its timeout to that test', () => {
+      const s = sum(`function slow() { test.setTimeout(9000); }
+        test('calls it', () => { slow(); });\ntest('does not', () => {});`);
+      expect(s.tests.map((t) => t.timeoutMs)).toEqual([9000, undefined]);
+    });
+
+    test('the last timeout set in a body wins over the declaration', () => {
+      const s = sum(`test('x', { timeout: 100 }, () => { test.setTimeout(700); });`);
+      expect(s.tests[0]!.timeoutMs).toBe(700);
+    });
+  });
+
+  describe('passing a helper is not running it', () => {
+    test('a mock factory or an unknown function does not run its argument', () => {
+      const s = sum(
+        `test('x', () => { const check = () => expect(1).toBe(1); vi.fn(check); register(check); });`,
+      );
+      expect(shape(s)).toEqual({ x: [] });
+    });
+
+    test.each([
+      ['[1].forEach(check)'],
+      ['[1].map(check)'],
+      ['promise.then(check)'],
+      ['await waitFor(check)'],
+      ['await test.step("s", check)'],
+    ])('%s runs it', (call) => {
+      const s = sum(`test('x', async () => { const check = () => expect(1).toBe(1); ${call}; });`);
+      expect(shape(s)).toEqual({ x: ['toBe:4'] });
+    });
+  });
+
+  describe('functions stored in objects and classes run only when called', () => {
+    test('uncalled object methods and function properties do not count', () => {
+      const s = sum(`test('x', () => {
+        const unused = { check: () => expect(1).toBe(1), method() { expect(2).toBe(2); } };
+      });`);
+      expect(shape(s)).toEqual({ x: [] });
+    });
+
+    test('a class method does not count unless something calls it', () => {
+      const s = sum(
+        `class Page { check() { expect(1).toBe(1); } }\ntest('x', () => { new Page(); });`,
+      );
+      expect(shape(s)).toEqual({ x: [] });
+    });
+
+    test('obj.method() runs the method of a local object, and only that method', () => {
+      const s = sum(`const page = {
+          expectOk() { expect(1).toBe(1); },
+          expectOther: () => { expect(2).toEqual(2); },
+        };
+        test('calls one', () => { page.expectOk(); });
+        test('calls the other', () => { page.expectOther(); });
+        test('calls none', () => { page.goto(); });`);
+      expect(shape(s)).toEqual({
+        'calls one': ['toBe:4'],
+        'calls the other': ['toEqual:4'],
+        'calls none': [],
+      });
+    });
+
+    test('a function assigned to a member is isolated too', () => {
+      const s = sum(`test('x', () => { const o = {}; o.check = () => expect(1).toBe(1); });`);
+      expect(shape(s)).toEqual({ x: [] });
+    });
+  });
+
+  describe('assignments after the declaration', () => {
+    test('let fn; fn = vi.fn() is a mock like const fn = vi.fn()', () => {
+      const s = sum(`test('x', () => { let fn; fn = vi.fn(); expect(fn).toBeDefined(); });`);
+      expect(shape(s)).toEqual({ x: ['toBeDefined:1@mock'] });
+    });
+
+    test('a value assigned from a mock call is derived from it', () => {
+      const s = sum(
+        `const m = vi.fn();\ntest('x', () => { let out; out = m(); expect(out).toBe(1); });`,
+      );
+      expect(shape(s)).toEqual({ x: ['toBe:4@mock'] });
+    });
+
+    test('reassigning to a real value clears the mock', () => {
+      const s = sum(
+        `test('x', () => { let fn = vi.fn(); fn = realFn; expect(fn).toBeDefined(); });`,
+      );
+      expect(shape(s)).toEqual({ x: ['toBeDefined:1'] });
+    });
+
+    test('a helper assigned later is a helper', () => {
+      const s = sum(`test('x', () => { let check; check = () => expect(1).toBe(1); check(); });`);
+      expect(shape(s)).toEqual({ x: ['toBe:4'] });
+    });
+
+    test('an assigned function that is never called does not count', () => {
+      const s = sum(`test('x', () => { let check; check = () => expect(1).toBe(1); });`);
+      expect(shape(s)).toEqual({ x: [] });
+    });
+  });
+
+  describe('a named callback expands like an inline body', () => {
+    test('helpers it calls are followed one level', () => {
+      const s = sum(`function check() { expect(1).toBe(1); }
+        function body() { check(); expect(2).toEqual(2); }
+        test('x', body);`);
+      expect(shape(s)).toEqual({ x: ['toBe:4', 'toEqual:4'] });
+    });
+
+    test('matches the inline equivalent', () => {
+      const named = sum(
+        `function check() { expect(1).toBe(1); }\nfunction body() { check(); }\ntest('x', body);`,
+      );
+      const inline = sum(`function check() { expect(1).toBe(1); }\ntest('x', () => { check(); });`);
+      expect(shape(named)).toEqual(shape(inline));
+    });
+
+    test('still stops after one level', () => {
+      const s = sum(`function deep() { expect(1).toBe(1); }
+        function check() { deep(); }
+        function body() { check(); }
+        test('x', body);`);
+      expect(shape(s)).toEqual({ x: [] });
+    });
+
+    test('helpers declared after the test are found', () => {
+      const s = sum(
+        `test('x', body);\nfunction body() { check(); }\nfunction check() { expect(1).toBe(1); }`,
+      );
+      expect(shape(s)).toEqual({ x: ['toBe:4'] });
+    });
+  });
+});
