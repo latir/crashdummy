@@ -6,10 +6,13 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
+# Publishing uses npm trusted publishing (OIDC): no NPM_TOKEN secret.
+# Each package must list this repo and this workflow file (release.yml) as a
+# trusted publisher in its npm settings. Provenance is attached automatically.
 permissions:
   contents: write
   pull-requests: write
-  id-token: write # npm provenance
+  id-token: write
 
 jobs:
   release:
@@ -22,6 +25,8 @@ jobs:
           node-version: 22
           cache: pnpm
           registry-url: https://registry.npmjs.org
+      # Trusted publishing needs npm 11.5.1 or newer; Node 22 bundles an older npm.
+      - run: npm install -g npm@^11.5.1
       - run: pnpm install --frozen-lockfile
       - uses: changesets/action@v1
         with:
@@ -29,6 +34,3 @@ jobs:
           publish: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: 'true'
