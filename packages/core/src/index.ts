@@ -2,4 +2,6 @@
 export const name = '@crashdummy/core';
 
 export * from './rules/index.js';
+export * from './sources/index.js';
 export { ConfigError } from './errors.js';
+export type * from './types.js';
