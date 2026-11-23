@@ -3,5 +3,5 @@
   "version": "0.0.0",
   "description": "Crashes your code on purpose and checks whether your tests notice. Coming soon.",
   "license": "MIT",
-  "repository": "github:crashdummy/crashdummy"
+  "repository": "github:latir/crashdummy"
 }
