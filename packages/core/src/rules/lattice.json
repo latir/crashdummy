@@ -1,0 +1,196 @@
+{
+  "$comment": "Matcher strength as data. Edit this file to add matchers; the engine never changes. A chain is a total order (strongest first) used to tell whether a matcher moved down. `strength` is the coarse 1-4 scale (4 = exact value, 1 = existence-only) used across chains. Keys are `name`, or `name@arg` for argument-sensitive matchers, where arg is `literal`, `other` or `none`. See docs/technical-plan.md, 'Matcher strength lattice'.",
+  "version": 1,
+  "defaultStrength": 2,
+  "argOverrides": {
+    "anything": { "chain": "existence", "strength": 1 }
+  },
+  "negation": {
+    "maxStrength": 2,
+    "existenceOnly": ["toBeNull", "toBeUndefined", "toBeNaN"]
+  },
+  "aliases": {
+    "toBeCalled": "toHaveBeenCalled",
+    "toBeCalledTimes": "toHaveBeenCalledTimes",
+    "toBeCalledWith": "toHaveBeenCalledWith",
+    "lastCalledWith": "toHaveBeenLastCalledWith",
+    "nthCalledWith": "toHaveBeenNthCalledWith",
+    "toReturn": "toHaveReturned",
+    "toReturnTimes": "toHaveReturnedTimes",
+    "toReturnWith": "toHaveReturnedWith",
+    "toThrowError": "toThrow",
+    "assert": "assert.ok",
+    "assert.notEqual": { "name": "assert.equal", "negated": true },
+    "assert.notStrictEqual": { "name": "assert.strictEqual", "negated": true },
+    "assert.notDeepEqual": { "name": "assert.deepEqual", "negated": true },
+    "assert.notDeepStrictEqual": { "name": "assert.deepStrictEqual", "negated": true },
+    "assert.doesNotMatch": { "name": "assert.match", "negated": true }
+  },
+  "chains": [
+    {
+      "id": "existence",
+      "levels": [
+        {
+          "strength": 1,
+          "matchers": ["toBeFalsy", "assert.ifError"]
+        }
+      ]
+    },
+    {
+      "id": "equality",
+      "levels": [
+        { "strength": 4, "matchers": ["toStrictEqual"] },
+        { "strength": 4, "matchers": ["toEqual"] },
+        { "strength": 3, "matchers": ["toMatchObject"] },
+        { "strength": 3, "matchers": ["toHaveProperty"] },
+        { "strength": 1, "matchers": ["toBeDefined", "toBeTruthy"] }
+      ]
+    },
+    {
+      "id": "scalar",
+      "levels": [
+        { "strength": 4, "matchers": ["toBe@literal"] },
+        { "strength": 3, "matchers": ["toBe@other", "toBe"] },
+        { "strength": 3, "matchers": ["toBeCloseTo"] },
+        {
+          "strength": 2,
+          "matchers": [
+            "toBeGreaterThan",
+            "toBeGreaterThanOrEqual",
+            "toBeLessThan",
+            "toBeLessThanOrEqual"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "singleton",
+      "levels": [{ "strength": 3, "matchers": ["toBeNull", "toBeUndefined", "toBeNaN"] }]
+    },
+    {
+      "id": "throws",
+      "levels": [
+        { "strength": 3, "matchers": ["toThrow@literal", "toThrow@other"] },
+        { "strength": 2, "matchers": ["toThrow@none", "toThrow"] }
+      ]
+    },
+    {
+      "id": "throws-snapshot",
+      "levels": [
+        {
+          "strength": 3,
+          "matchers": ["toThrowErrorMatchingSnapshot", "toThrowErrorMatchingInlineSnapshot"]
+        }
+      ]
+    },
+    {
+      "id": "collections",
+      "levels": [
+        { "strength": 3, "matchers": ["toHaveLength", "toContain", "toContainEqual"] },
+        { "strength": 2, "matchers": ["toMatch", "toBeInstanceOf", "toBeTypeOf", "toSatisfy"] }
+      ]
+    },
+    {
+      "id": "snapshots",
+      "levels": [
+        {
+          "strength": 2,
+          "matchers": ["toMatchSnapshot", "toMatchInlineSnapshot", "toMatchFileSnapshot"]
+        }
+      ]
+    },
+    {
+      "id": "mock-calls",
+      "levels": [
+        {
+          "strength": 3,
+          "matchers": [
+            "toHaveBeenCalledWith",
+            "toHaveBeenLastCalledWith",
+            "toHaveBeenNthCalledWith",
+            "toHaveReturnedWith",
+            "toHaveLastReturnedWith",
+            "toHaveNthReturnedWith"
+          ]
+        },
+        { "strength": 2, "matchers": ["toHaveBeenCalledTimes", "toHaveReturnedTimes"] },
+        { "strength": 2, "matchers": ["toHaveBeenCalled", "toHaveReturned"] }
+      ]
+    },
+    {
+      "id": "ui-text",
+      "levels": [
+        {
+          "strength": 4,
+          "matchers": ["toHaveText@literal", "toHaveValue", "toHaveValues", "toHaveCount"]
+        },
+        { "strength": 3, "matchers": ["toHaveText@other", "toHaveText", "toContainText"] },
+        { "strength": 2, "matchers": ["toBeVisible", "toBeAttached", "toBeInViewport"] }
+      ]
+    },
+    {
+      "id": "ui-state",
+      "levels": [
+        {
+          "strength": 3,
+          "matchers": [
+            "toBeHidden",
+            "toBeEnabled",
+            "toBeDisabled",
+            "toBeChecked",
+            "toBeEditable",
+            "toBeFocused",
+            "toBeEmpty",
+            "toHaveAttribute",
+            "toHaveClass",
+            "toContainClass",
+            "toHaveCSS",
+            "toHaveId",
+            "toHaveURL",
+            "toHaveTitle",
+            "toBeOK"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ui-snapshot",
+      "levels": [{ "strength": 2, "matchers": ["toHaveScreenshot", "toMatchAriaSnapshot"] }]
+    },
+    {
+      "id": "assert-equality",
+      "levels": [
+        { "strength": 4, "matchers": ["assert.deepStrictEqual", "assert.strictEqual"] },
+        { "strength": 3, "matchers": ["assert.deepEqual", "assert.equal"] },
+        { "strength": 1, "matchers": ["assert.ok"] }
+      ]
+    },
+    {
+      "id": "assert-throws",
+      "levels": [
+        {
+          "strength": 3,
+          "matchers": [
+            "assert.throws@literal",
+            "assert.throws@other",
+            "assert.rejects@literal",
+            "assert.rejects@other"
+          ]
+        },
+        {
+          "strength": 2,
+          "matchers": [
+            "assert.throws@none",
+            "assert.rejects@none",
+            "assert.throws",
+            "assert.rejects"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "assert-match",
+      "levels": [{ "strength": 2, "matchers": ["assert.match"] }]
+    }
+  ]
+}
