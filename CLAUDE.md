@@ -31,5 +31,6 @@ Each rule is one file exporting `{ id, layer, meta, create(ctx) }`; rules are vi
 - One branch + one PR per issue, using the issue's Linear git branch name (e.g. `latircole/cd-14-...`). Conventional commits.
 - Before starting an issue, move it to In Progress. Link the PR to it. When the PR is merged, mark it Done.
 - Show a short plan before large changes.
+- Every user-visible change needs a changeset (`pnpm changeset`). `crashdummy` (the CLI) inlines `@crashdummy/core`, so a core change needs a `crashdummy` changeset when it changes CLI behaviour for users; otherwise name the package you changed. While `@crashdummy/core` is `private`, core-only changesets just produce changelog text. From the first PR that wires core into the CLI (CD-7), changesets should name `crashdummy`.
 - Fixture-based tests for every rule: `valid/` and `invalid/` files, with `// expect: <ruleId>` comments marking expected findings; before/after pairs for integrity rules.
 - Do not create PRs, publish to npm, or transfer GitHub orgs beyond what the issue asks. npm: `crashdummy` is reserved (user is maintainer); npm org `crashdummy` exists; GitHub org `crashdummyjs` is reserved for a later transfer. Publishing needs the user's approval.
