@@ -1,3 +1,5 @@
+import type { ParseDiagnostic } from './parse/oxc.js';
+
 /** The user's config is invalid. The message names the offending key. */
 export class ConfigError extends Error {
   override name = 'ConfigError';
@@ -12,8 +14,9 @@ export class ParseError extends Error {
 
   constructor(
     readonly path: string,
-    readonly errors: readonly string[],
+    readonly errors: readonly ParseDiagnostic[],
   ) {
-    super(`${path}: ${errors[0] ?? 'syntax error'}`);
+    const first = errors[0];
+    super(first ? `${path}:${first.line}:${first.col}: ${first.message}` : `${path}: syntax error`);
   }
 }

@@ -304,14 +304,14 @@ describe('syntax errors', () => {
 
   test('analyzeTestFile reports errors and an empty summary: never read that as "no tests"', () => {
     const a = analyzeTestFile('a.test.ts', broken, { resolve: false });
-    expect(a.errors).toHaveLength(1);
+    expect(a.errors).toEqual([{ message: 'Unexpected token', line: 2, col: 7 }]);
     expect(a.summary.tests).toEqual([]);
   });
 
   test('summarizeTestFile throws a ParseError naming the file', () => {
     expect(() => summarizeTestFile('a.test.ts', broken, { resolve: false })).toThrow(ParseError);
     expect(() => summarizeTestFile('a.test.ts', broken, { resolve: false })).toThrow(
-      /^a\.test\.ts: /,
+      'a.test.ts:2:7: Unexpected token',
     );
   });
 

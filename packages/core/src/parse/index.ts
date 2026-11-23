@@ -1,7 +1,7 @@
 import { ParseError } from '../errors.js';
 import type { TestSummary } from '../types.js';
 import { SummaryCache, cacheKey } from './cache.js';
-import { parseFile, type ParsedFile } from './oxc.js';
+import { parseFile, type ParseDiagnostic, type ParsedFile } from './oxc.js';
 import { resolveImports, type ResolveOptions } from './resolve.js';
 import { createSummaryCollector, hashText, type SummaryOptions } from './summary.js';
 import { walk, type Visitor } from './walk.js';
@@ -26,7 +26,7 @@ export interface Analysis {
    * Syntax errors. oxc does not recover, so when this is not empty the summary is empty too and
    * must NOT be read as "the file has no tests". Report the file as unparseable instead.
    */
-  errors: readonly string[];
+  errors: readonly ParseDiagnostic[];
   file: ParsedFile;
 }
 
@@ -94,4 +94,4 @@ export {
   unwrap,
   type AstNode,
 } from './ast.js';
-export type { ParsedFile } from './oxc.js';
+export type { ParsedFile, ParseDiagnostic } from './oxc.js';
