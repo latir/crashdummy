@@ -1,5 +1,7 @@
-/** Placeholder until the engine lands (CAL-37 onwards). */
+/** Placeholder until the engine lands. */
 export const name = '@crashdummy/core';
 
+export * from './rules/index.js';
 export * from './sources/index.js';
+export { ConfigError } from './errors.js';
 export type * from './types.js';
