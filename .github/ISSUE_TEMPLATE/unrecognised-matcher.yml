@@ -1,0 +1,39 @@
+name: Matcher not recognised
+description: crashdummy does not know how strong an assertion matcher is.
+title: 'matcher: '
+labels: ['matcher']
+body:
+  - type: input
+    id: matcher
+    attributes:
+      label: Matcher name
+      description: As written in the test, for example `toBeWithinRange`.
+    validations:
+      required: true
+  - type: input
+    id: library
+    attributes:
+      label: Library or framework
+      description: For example jest-dom, jest-extended, Chai, Cypress, or an in-house helper.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example usage
+      render: ts
+      placeholder: expect(total).toBeWithinRange(1, 10);
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: What does it check?
+      description: Does it check an exact value, part of a value, a range or type, or only that something exists?
+    validations:
+      required: true
+  - type: textarea
+    id: ranking
+    attributes:
+      label: How does it compare to built-in matchers?
+      description: Optional. For example "weaker than toEqual, stronger than toBeDefined".
