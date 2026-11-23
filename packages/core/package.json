@@ -1,6 +1,7 @@
 {
   "name": "@crashdummy/core",
   "version": "0.0.1",
+  "private": true,
   "description": "Engine for crashdummy: scores JS/TS test quality and detects suite-weakening changes.",
   "license": "MIT",
   "repository": {
@@ -21,10 +22,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
-  },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
   },
   "scripts": {
     "build": "tsdown",
