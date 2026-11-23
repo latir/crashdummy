@@ -25,7 +25,7 @@ pnpm lint && pnpm typecheck && pnpm build && pnpm test && pnpm check:deps
 - **The core stays agnostic.** `@crashdummy/core` knows nothing about git, CI or any agent harness. Sources and adapters plug in.
 - **Deterministic.** No LLM calls, no network, no clock or randomness in results.
 - **Commits** follow [Conventional Commits](https://www.conventionalcommits.org) (`feat(core): ...`, `fix: ...`, `docs: ...`).
-- **Changesets.** A change users can see needs one: run `pnpm changeset`. The CLI (`crashdummy`) bundles `@crashdummy/core`, so a change to core needs a `crashdummy` changeset when it changes what the CLI does for users. Otherwise name the package you changed.
+- **Changesets.** A change users can see needs one: run `pnpm changeset`. The CLI (`crashdummy`) bundles `@crashdummy/core`, so a change to core needs a `crashdummy` changeset when it changes what the CLI does for users. While `@crashdummy/core` is `private`, do not add a changeset that names only core: Changesets does not consume it, and a pending changeset file stops the Release workflow from publishing (it opens a Version PR instead).
 - **Never reward assertion count.** Penalize weak or tautological assertions only.
 
 ## Tests
