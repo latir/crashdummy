@@ -35,6 +35,10 @@ A crash test dummy is crashed on purpose to see whether the safety systems work.
 
 See the full design in [docs/technical-plan.md](docs/technical-plan.md).
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Adding support for a matcher is a small, data-only change, and you can add your own matchers in config without waiting for a release: see [docs/matchers.md](docs/matchers.md).
+
 ## License
 
 [MIT](LICENSE)
