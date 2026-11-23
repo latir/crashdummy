@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+pnpm-lock.yaml
+fixtures
+corpus
+docs/technical-plan.md
+.changeset/*.md
+CHANGELOG.md

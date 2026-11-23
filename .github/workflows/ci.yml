@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm build
+      - run: pnpm test
+      # Production dependencies must stay at 5 or fewer.
+      - run: pnpm check:deps
+      # The published CLI targets Node 20+: run the built bundle there.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Smoke test bundle on Node 20
+        run: node packages/cli/dist/cli.js
