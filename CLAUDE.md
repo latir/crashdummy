@@ -26,7 +26,7 @@ Each rule is one file exporting `{ id, layer, meta, create(ctx) }`; rules are vi
 
 ## Workflow
 
-- Work is tracked in Linear: project "crashdummy", workspace calluna-app, team "crashdummy" (key CD). M1 = CD-5 to CD-14 (CD-12 reserve name, CD-11 parser, CD-10 sources, CD-13 lattice, CD-9 integrity gates, CD-8 oracle rules, CD-7 scorer/reporters, CD-6 corpus, CD-5 bench, CD-14 scaffold); M2-M5 parents = CD-4, CD-3, CD-2, CD-1. Issues moved from the CAL team, so old CAL-xx ids are obsolete.
+- Work is tracked in Linear: project "Road to v1" (renamed from "crashdummy"), workspace calluna-app, team "crashdummy" (key CD). M1 = CD-5 to CD-14 (CD-12 reserve name, CD-11 parser, CD-10 sources, CD-13 lattice, CD-9 integrity gates, CD-8 oracle rules, CD-7 scorer/reporters, CD-6 corpus, CD-5 bench, CD-14 scaffold); M2-M5 parents = CD-4, CD-3, CD-2, CD-1. Issues moved from the CAL team, so old CAL-xx ids are obsolete.
 - Respect "blocked by" relations. Each issue's "Done when" checklist is the acceptance criteria.
 - One branch + one PR per issue, using the issue's Linear git branch name (e.g. `latircole/cd-14-...`). Conventional commits.
 - Before starting an issue, move it to In Progress. Link the PR to it. When the PR is merged, mark it Done.
