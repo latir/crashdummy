@@ -1,0 +1,35 @@
+{
+  "name": "crashdummy",
+  "version": "0.0.1",
+  "description": "Crashes your code on purpose and checks whether your tests notice. Coming soon.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/latir/crashdummy.git",
+    "directory": "packages/cli"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "crashdummy": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "oxc-parser": "^0.159.0"
+  },
+  "devDependencies": {
+    "@crashdummy/core": "workspace:*"
+  }
+}

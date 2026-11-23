@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Typecheck against core's source so `pnpm typecheck` works without a prior build.
+    "paths": { "@crashdummy/core": ["../core/src/index.ts"] }
+  },
+  "include": ["src", "test"]
+}
