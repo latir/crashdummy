@@ -77,7 +77,7 @@ export function summarizeTestFile(
   return analysis.summary;
 }
 
-export { SummaryCache, DEFAULT_CACHE_FILE, cacheKey } from './cache.js';
+export { SummaryCache, DEFAULT_CACHE_FILE, cacheKey, isTestSummary } from './cache.js';
 export { resolveImport, resolveImports, type ResolveOptions } from './resolve.js';
 export { hashNode, hashText, SUMMARY_VERSION, type SummaryOptions } from './summary.js';
 export { walk, type Handler, type Visitor, type WalkContext } from './walk.js';

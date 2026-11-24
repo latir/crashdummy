@@ -323,6 +323,37 @@ describe('checkIntegrity', () => {
   });
 });
 
+describe('hiding tests from the runner', () => {
+  test('wrapping every test in a function that is never called is a removal', () => {
+    const r = check([modified(t('a') + t('b'), `function all() { ${t('a')} ${t('b')} }\n`)]);
+    expect(ids(r)).toEqual(['integrity/test-removed', 'integrity/test-removed']);
+  });
+
+  test('calling that function again keeps the tests, so it is only a refactor', () => {
+    const r = check([
+      modified(t('a') + t('b'), `function all() { ${t('a')} ${t('b')} }\nall();\n`),
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+
+  test('tests moved into a describe through a named function keep their place', () => {
+    const r = check([
+      modified(t('a'), `function register() { ${t('a')} }\ndescribe('s', register);\n`),
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+
+  test('moving a weakened test into an uncalled function does not hide the weakening', () => {
+    const r = check([
+      modified(
+        t('a', 'expect(1).toEqual({});'),
+        `function all() { ${t('a', 'expect(1).toBeTruthy();')} }\nall();\n`,
+      ),
+    ]);
+    expect(ids(r)).toEqual(['integrity/matcher-weakened']);
+  });
+});
+
 describe('a test file that was deleted', () => {
   const deleted = (before: string, path = 'a.test.ts'): ChangedFile => ({
     path,

@@ -3,6 +3,51 @@ import { dirname, extname } from 'node:path';
 import type { TestSummary } from '../types.js';
 import { SUMMARY_VERSION, hashText, type SummaryOptions } from './summary.js';
 
+const FRAMEWORKS = new Set(['vitest', 'jest', 'playwright', 'node-test', 'unknown']);
+const MODIFIERS = new Set(['skip', 'only', 'todo', 'fixme', 'fails']);
+
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  typeof v === 'object' && v !== null && !Array.isArray(v);
+const isPos = (v: unknown): boolean =>
+  isRecord(v) && Number.isInteger(v['line']) && Number.isInteger(v['col']);
+
+function isMatcherUse(v: unknown): boolean {
+  return (
+    isRecord(v) &&
+    typeof v['name'] === 'string' &&
+    (v['strength'] === 1 || v['strength'] === 2 || v['strength'] === 3 || v['strength'] === 4) &&
+    typeof v['negated'] === 'boolean' &&
+    typeof v['subjectIsMock'] === 'boolean'
+  );
+}
+
+function isTestCase(v: unknown): boolean {
+  return (
+    isRecord(v) &&
+    typeof v['id'] === 'string' &&
+    typeof v['bodyHash'] === 'string' &&
+    isPos(v['loc']) &&
+    (v['modifier'] === undefined || MODIFIERS.has(v['modifier'] as string)) &&
+    (v['modifierLoc'] === undefined || isPos(v['modifierLoc'])) &&
+    (v['timeoutMs'] === undefined || typeof v['timeoutMs'] === 'number') &&
+    Array.isArray(v['matchers']) &&
+    v['matchers'].every(isMatcherUse)
+  );
+}
+
+/** Is this really a `TestSummary`? Anything read from disk must pass before it is trusted. */
+export function isTestSummary(v: unknown): v is TestSummary {
+  return (
+    isRecord(v) &&
+    typeof v['hash'] === 'string' &&
+    FRAMEWORKS.has(v['framework'] as string) &&
+    Array.isArray(v['imports']) &&
+    v['imports'].every((i) => typeof i === 'string') &&
+    Array.isArray(v['tests']) &&
+    v['tests'].every(isTestCase)
+  );
+}
+
 /** Where the plan keeps the persisted cache, relative to the repo root. */
 export const DEFAULT_CACHE_FILE = '.crashdummy/cache/summaries.json';
 
@@ -67,7 +112,10 @@ export class SummaryCache {
       if (data.v !== SUMMARY_VERSION || typeof data.entries !== 'object' || data.entries === null) {
         return cache;
       }
-      for (const [key, summary] of Object.entries(data.entries)) cache.set(key, summary);
+      // a damaged entry is dropped on its own: it only costs a re-parse
+      for (const [key, summary] of Object.entries(data.entries)) {
+        if (isTestSummary(summary)) cache.set(key, summary);
+      }
     } catch {
       // no cache yet, or a corrupt one: start empty
     }
