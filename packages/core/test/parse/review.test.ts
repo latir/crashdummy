@@ -871,3 +871,228 @@ describe('third review', () => {
     });
   });
 });
+
+describe('fourth review', () => {
+  describe('vi.doMock only counts when it runs', () => {
+    test('a doMock inside a function that never runs mocks nothing', () => {
+      const s = sum(`import { api } from './api';
+        function unused() { vi.doMock('./api'); }
+        test('x', () => { expect(api()).toBe(1); });`);
+      expect(shape(s).x).toEqual(['toBe:4']);
+    });
+
+    test('a doMock at the top, or inside a test, does', () => {
+      const top = sum(
+        `import { api } from './api';\nvi.doMock('./api');\ntest('x', () => { expect(api()).toBe(1); });`,
+      );
+      const inTest = sum(
+        `import { api } from './api';\ntest('x', () => { vi.doMock('./api'); expect(api()).toBe(1); });`,
+      );
+      expect(shape(top).x).toEqual(['toBe:4@mock']);
+      expect(shape(inTest).x).toEqual(['toBe:4@mock']);
+    });
+
+    test('vi.mock is hoisted by the framework, wherever it is written', () => {
+      const s = sum(
+        `import { api } from './api';\nfunction setup() { vi.mock('./api'); }\ntest('x', () => { expect(api()).toBe(1); });`,
+      );
+      expect(shape(s).x).toEqual(['toBe:4@mock']);
+    });
+  });
+
+  describe('tests registered through a callback API', () => {
+    test('[a, b].forEach(register) registers what register declares', () => {
+      // the elements of the array are not known, so it is registered once, named by its expression
+      const s = sum(`function register(name) { test(name, () => { expect(1).toBe(1); }); }
+        ['a', 'b'].forEach(register);`);
+      expect(shape(s)).toEqual({ name: ['toBe:4'] });
+    });
+
+    test('extracting an inline registration callback keeps its tests', () => {
+      const inline = sum(`[1].forEach(() => { test('works', () => { expect(1).toBe(1); }); });`);
+      const named = sum(
+        `function register() { test('works', () => { expect(1).toBe(1); }); }\n[1].forEach(register);`,
+      );
+      expect(shape(named)).toEqual(shape(inline));
+    });
+
+    test('inside a describe, under its name', () => {
+      const s = sum(`function register() { test('works', () => { expect(1).toBe(1); }); }
+        describe('s', () => { [1].forEach(register); });`);
+      expect(s.tests.map((t) => t.id)).toEqual(['s > works']);
+    });
+
+    test('an arrow function does not count as a call', () => {
+      const s = sum(`function register() { test('works', () => {}); }\n[1].forEach(() => {});`);
+      expect(s.tests).toEqual([]);
+    });
+  });
+
+  describe('hoisting and var', () => {
+    test('a function declared below the test is already in scope above it', () => {
+      const s = sum(
+        `test('x', () => { expect(1).toBe(1); });\nfunction expect() { return { toBe() {} }; }`,
+      );
+      expect(shape(s).x).toEqual([]);
+    });
+
+    test('a hoisted helper is found by a test written before it', () => {
+      const s = sum(`test('x', () => { check(); });\nfunction check() { expect(1).toBe(1); }`);
+      expect(shape(s).x).toEqual(['toBe:4']);
+    });
+
+    test('a hoisted function inside a block', () => {
+      const s = sum(
+        `describe('s', () => {\n  test('x', () => { expect(1).toBe(1); });\n  function expect() { return { toBe() {} }; }\n});`,
+      );
+      expect(shape(s)['s > x']).toEqual([]);
+    });
+
+    test('var is visible outside the block that declares it', () => {
+      const s = sum(`test('x', () => { { var check = () => expect(1).toBe(1); } check(); });`);
+      expect(shape(s).x).toEqual(['toBe:4']);
+    });
+
+    test('let and const stay in their block', () => {
+      const s = sum(`test('x', () => { { const check = () => expect(1).toBe(1); } check(); });`);
+      expect(shape(s).x).toEqual([]);
+    });
+
+    test('a var mock is a mock outside its block too', () => {
+      const s = sum(`test('x', () => { { var fn = vi.fn(); } expect(fn).toBeDefined(); });`);
+      expect(shape(s).x).toEqual(['toBeDefined:1@mock']);
+    });
+  });
+
+  describe('what a helper was when it was called', () => {
+    test('reassigning it afterwards does not erase the earlier call', () => {
+      const s = sum(
+        `test('x', () => { let check = () => expect(1).toBe(1); check(); check = () => {}; });`,
+      );
+      expect(shape(s).x).toEqual(['toBe:4']);
+    });
+
+    test('nor credit an assertion that was never in the function that ran', () => {
+      const s = sum(
+        `test('x', () => { let check = () => {}; check(); check = () => expect(1).toBe(1); });`,
+      );
+      expect(shape(s).x).toEqual([]);
+    });
+
+    test('a suite registered by a name that is reassigned later keeps its tests', () => {
+      const s = sum(
+        `let register = () => { test('works', () => {}); };\nregister();\nregister = () => {};`,
+      );
+      expect(s.tests.map((t) => t.id)).toEqual(['works']);
+    });
+
+    test('a named callback that is reassigned later keeps its body', () => {
+      const s = sum(`let body = () => { expect(1).toBe(1); };\ntest('x', body);\nbody = () => {};`);
+      expect(shape(s).x).toEqual(['toBe:4']);
+    });
+  });
+
+  describe('a test that is skipped changes nothing outside itself', () => {
+    test('assignments in it do not reach the tests that run', () => {
+      const s = sum(`let fn = vi.fn();
+        test.skip('a', () => { fn = realFn; });
+        test('b', () => { expect(fn).toBeDefined(); });`);
+      expect(shape(s).b).toEqual(['toBeDefined:1@mock']);
+    });
+
+    test('also when the describe around it is skipped', () => {
+      const s = sum(`let fn = vi.fn();
+        describe.skip('s', () => { test('a', () => { fn = realFn; }); });
+        test('b', () => { expect(fn).toBeDefined(); });`);
+      expect(shape(s).b).toEqual(['toBeDefined:1@mock']);
+    });
+
+    test('a test that runs does change it, and its own variables always can', () => {
+      const s = sum(`let fn = vi.fn();
+        test('a', () => { fn = realFn; });
+        test('b', () => { expect(fn).toBeDefined(); });
+        test.skip('c', () => { let own = vi.fn(); own = realFn; expect(own).toBeDefined(); });`);
+      expect(shape(s).b).toEqual(['toBeDefined:1']);
+      expect(shape(s).c).toEqual(['toBeDefined:1']);
+    });
+  });
+
+  describe('callbacks that are only stored', () => {
+    test.each([
+      ['vi.fn(() => expect(1).toBe(1))'],
+      ['jest.fn(() => expect(1).toBe(1))'],
+      ['vi.spyOn(obj, "m").mockImplementation(() => expect(1).toBe(1))'],
+      ['fn.mockImplementationOnce(() => { expect(1).toBe(1); })'],
+      ['vi.mock("./x", () => { expect(1).toBe(1); return {}; })'],
+    ])('%s does not count', (call) => {
+      expect(shape(sum(`test('x', () => { ${call}; });`)).x).toEqual([]);
+    });
+
+    test('callbacks that do run still count', () => {
+      const s = sum(`test('x', async () => {
+        [1].forEach(() => expect(1).toBe(1));
+        await retry(() => expect(2).toEqual(2));
+        (() => expect(3).toBe(3))();
+        await Promise.all([1].map(async () => expect(4).toBe(4)));
+        await test.step('s', async () => { expect(5).toBe(5); });
+      });`);
+      expect(shape(s).x).toEqual(['toBe:4', 'toEqual:4', 'toBe:4', 'toBe:4', 'toBe:4']);
+    });
+
+    test('a named function given to a mock is not run either', () => {
+      const s = sum(`test('x', () => { const check = () => expect(1).toBe(1); vi.fn(check); });`);
+      expect(shape(s).x).toEqual([]);
+    });
+  });
+
+  describe('timeouts set while tests are being registered', () => {
+    test('a helper called at the top sets the file timeout', () => {
+      const s = sum(
+        `function configure() { jest.setTimeout(15000); }\nconfigure();\ntest('x', () => {});`,
+      );
+      expect(s.tests[0]!.timeoutMs).toBe(15000);
+    });
+
+    test('a helper called inside a describe sets that suite timeout', () => {
+      const s = sum(`function configure() { test.setTimeout(9000); }
+        describe('s', () => { configure(); test('x', () => {}); });
+        test('outside', () => {});`);
+      expect(s.tests.map((t) => [t.id, t.timeoutMs])).toEqual([
+        ['s > x', 9000],
+        ['outside', undefined],
+      ]);
+    });
+
+    test('a helper that is never called sets nothing', () => {
+      const s = sum(`function configure() { jest.setTimeout(15000); }\ntest('x', () => {});`);
+      expect(s.tests[0]!.timeoutMs).toBeUndefined();
+    });
+  });
+
+  describe('the node:test context in a named callback', () => {
+    test('whatever the parameter is called, wherever the function is declared', () => {
+      const before = sum(
+        `import { test } from 'node:test';\nfunction body(ctx) { ctx.assert.strictEqual(1, 1); }\ntest('x', body);`,
+      );
+      const after = sum(
+        `import { test } from 'node:test';\ntest('x', body);\nfunction body(context) { context.assert.equal(1, 1); }`,
+      );
+      expect(shape(before).x).toEqual(['assert.strictEqual:4']);
+      expect(shape(after).x).toEqual(['assert.equal:3']);
+    });
+
+    test('a helper that takes the context works too', () => {
+      const s = sum(`import { test } from 'node:test';
+        function check(t) { t.assert.equal(1, 1); }
+        test('x', (ctx) => { check(ctx); });`);
+      expect(shape(s).x).toEqual(['assert.equal:3']);
+    });
+
+    test('in other files a parameter named assert-something is not the context', () => {
+      const s = sum(
+        `import { test } from 'vitest';\nfunction check(t) { t.assert.equal(1, 1); }\ntest('x', () => { check(1); });`,
+      );
+      expect(shape(s).x).toEqual([]);
+    });
+  });
+});
