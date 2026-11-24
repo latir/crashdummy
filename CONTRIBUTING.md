@@ -58,3 +58,7 @@ A rule is one file in `packages/core/src/rules/` exporting `{ id, layer, meta, c
 - One logical change per PR, with tests.
 - Say what you changed and why, and note anything you were unsure about.
 - CI must be green.
+
+## Integrity fixtures
+
+Integrity rules compare two versions of a file, so their fixtures are pairs in `fixtures/integrity/<rule>/{valid,invalid}/`: `<case>.before.test.ts` and `<case>.after.test.ts`. An `// expect: <ruleId>` comment marks a finding on the next line (or on its own line when it trails code). Markers in the `before` file are for findings located in the old file (`integrity/test-removed`). A `valid` pair must produce no findings at all. See [docs/integrity.md](docs/integrity.md).

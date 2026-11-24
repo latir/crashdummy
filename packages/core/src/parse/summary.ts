@@ -38,7 +38,7 @@ export interface SummaryOptions {
 }
 
 /** Bump when the summary shape or its derivation changes, so stale caches are ignored. */
-export const SUMMARY_VERSION = 2;
+export const SUMMARY_VERSION = 3;
 
 export function hashText(text: string): string {
   return createHash('sha1').update(text).digest('hex').slice(0, 16);
@@ -569,6 +569,8 @@ interface Frame {
   node: AstNode;
   name: string;
   modifier: TestModifier | undefined;
+  /** Where this describe's own modifier was written. */
+  loc: { line: number; col: number };
   timeout: number | undefined;
 }
 
@@ -731,7 +733,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         const name = nameOf(ctx.source, decl.nameNode);
         const mod = pickModifier(decl.modifiers);
         if (decl.kind === 'describe') {
-          frames.push({ node, name, modifier: mod, timeout: decl.timeout });
+          frames.push({
+            node,
+            name,
+            modifier: mod,
+            loc: ctx.loc(node.start),
+            timeout: decl.timeout,
+          });
         } else {
           const entries: Entry[] = [];
           tests.push({
@@ -1044,8 +1052,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         t.bodyHash ?? hashNode(callback ? child(callback.node, 'body') : t.fnRef?.node);
 
       const tc: TestCase = { id, loc: t.loc, matchers: out.uses, bodyHash };
-      const modifier = t.modifier ?? [...t.ancestors].reverse().find((f) => f.modifier)?.modifier;
-      if (modifier) tc.modifier = modifier;
+      const inheritedFrom = [...t.ancestors].reverse().find((f) => f.modifier);
+      const modifier = t.modifier ?? inheritedFrom?.modifier;
+      if (modifier) {
+        tc.modifier = modifier;
+        const at = t.modifier ? t.loc : inheritedFrom?.loc;
+        if (at) tc.modifierLoc = at;
+      }
       const timeout =
         out.timeout ??
         t.timeout ??

@@ -52,6 +52,11 @@ export interface TestCase {
   id: string;
   loc: { line: number; col: number };
   modifier?: 'skip' | 'only' | 'todo' | 'fixme' | 'fails';
+  /**
+   * Where the modifier was written: this test's own call, or the `describe` that it inherits the
+   * modifier from. Lets a `describe.skip` over 20 tests be reported once, at the `.skip`.
+   */
+  modifierLoc?: { line: number; col: number };
   timeoutMs?: number;
   matchers: MatcherUse[];
   bodyHash: string;
@@ -62,4 +67,28 @@ export interface MatcherUse {
   strength: 1 | 2 | 3 | 4;
   negated: boolean;
   subjectIsMock: boolean;
+}
+
+/** Output of every rule. */
+export interface Finding {
+  /** For example `integrity/test-removed`. */
+  ruleId: string;
+  layer: 'integrity' | 'oracle' | 'flaky' | 'structure' | 'info' | 'coverage' | 'mutation';
+  /** True fails the check regardless of score. */
+  gate: boolean;
+  evidence: 'strong' | 'moderate' | 'weak';
+  severity: 'info' | 'warn' | 'error';
+  /** Repo-relative path. */
+  file: string;
+  /**
+   * 1-based. For findings about code that was removed (`integrity/test-removed`) this is the
+   * position in the OLD version of the file, which is `previousPath` when the file was renamed.
+   */
+  loc?: { line: number; col: number };
+  /** One line, agent-readable. */
+  message: string;
+  /** How to fix it. */
+  hint?: string;
+  /** Points removed from the file score. Gates are outside the score, so 0. */
+  penalty: number;
 }
