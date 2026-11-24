@@ -199,6 +199,9 @@ export function checkIntegrity(
   //    must not take a test before its exact twin in another file is found.
   const pools = prepared.map((p) => p.pool);
   for (const pool of pools) pairById(pool);
+  // a file's own renames first, then moves between files, so the result does not depend on the
+  // order the files come in
+  for (const pool of pools) pairByBody(pool);
   for (const pool of pools) {
     pairByBody(
       pool,

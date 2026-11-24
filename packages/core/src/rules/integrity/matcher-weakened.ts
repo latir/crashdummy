@@ -2,12 +2,18 @@ import type { MatcherUse } from '../../types.js';
 import type { IntegrityRule } from './types.js';
 import { gateFinding } from './finding.js';
 
-const same = (a: MatcherUse, b: MatcherUse): boolean =>
-  a.name === b.name &&
-  a.negated === b.negated &&
-  a.strength === b.strength &&
-  a.chain === b.chain &&
-  a.rank === b.rank;
+/**
+ * The same assertion, however it is spelled: `toBeCalledWith` and `toHaveBeenCalledWith` sit in
+ * the same place of the lattice, with the same polarity and strength. Matchers the lattice does
+ * not know have no placement, so they can only be the same by name.
+ */
+const same = (a: MatcherUse, b: MatcherUse): boolean => {
+  if (a.negated !== b.negated || a.strength !== b.strength) return false;
+  if (a.chain === undefined || b.chain === undefined) {
+    return a.chain === b.chain && a.name === b.name;
+  }
+  return a.chain === b.chain && a.rank === b.rank;
+};
 
 /**
  * Is `after` a weaker assertion than `before`?

@@ -187,6 +187,24 @@ describe('weakenedAssertions', () => {
     ).toHaveLength(1);
   });
 
+  test('aliases are the same assertion: they cancel however they are spelled and ordered', () => {
+    const before = [use('toHaveBeenCalledWith'), use('toHaveBeenCalled')];
+    const after = [use('toBeCalled'), use('toBeCalledWith')];
+    expect(weakenedAssertions(before, after)).toEqual([]);
+    expect(weakenedAssertions(after, before)).toEqual([]);
+  });
+
+  test('an alias that really is weaker is still found', () => {
+    expect(weakenedAssertions([use('toHaveBeenCalledWith')], [use('toBeCalled')])).toHaveLength(1);
+  });
+
+  test('negated aliases keep their polarity when they cancel', () => {
+    expect(
+      weakenedAssertions([use('assert.notEqual')], [use('toEqual', { negated: true })]),
+    ).toEqual([]);
+    expect(weakenedAssertions([use('assert.equal')], [use('assert.notEqual')])).toHaveLength(1);
+  });
+
   test('assertions recorded without a placement (an old stored summary) are not compared', () => {
     const bare = (name: string, strength: 1 | 2 | 3 | 4): MatcherUse => ({
       name,
@@ -710,6 +728,165 @@ describe('where a focus was written', () => {
   test('a test.only that was already there is not new', () => {
     const only = `test.only('a', () => { expect(add(1, 2)).toBe(3); });\n`;
     expect(check([modified(only, only)]).findings).toEqual([]);
+  });
+});
+
+describe('matching does not depend on the order of the files', () => {
+  const body = 'expect(add(5, 5)).toBe(10);';
+  // a.test.ts deletes a test; b.test.ts renames one that has the very same body
+  const deletes = modified(
+    t('gone', body) + t('keep', 'expect(1).toBe(1);'),
+    t('keep', 'expect(1).toBe(1);'),
+    'a.test.ts',
+  );
+  const renames = modified(t('old name', body), t('new name', body), 'b.test.ts');
+
+  test.each([
+    ['deleting file first', [deletes, renames]],
+    ['renaming file first', [renames, deletes]],
+  ])('%s', (_label, files) => {
+    const r = check(files);
+    expect(r.findings.map((f) => [f.file, f.message])).toEqual([
+      ['a.test.ts', "test 'gone' was removed"],
+    ]);
+  });
+
+  test('a rename inside a file is never taken by another file', () => {
+    const r = check([renames, deletes]);
+    expect(r.findings.some((f) => f.file === 'b.test.ts')).toBe(false);
+  });
+});
+
+describe('every new place that switches a test off or focuses it is reported', () => {
+  test("describe.only and the test's own .only are two findings, so one override cannot hide both", () => {
+    const r = check([
+      modified(
+        `describe('s', () => { ${t('a')} });\n`,
+        `describe.only('s', () => { test.only('a', () => { expect(add(1, 2)).toBe(3); }); });\n`,
+      ),
+    ]);
+    expect(r.findings.map((f) => f.message).sort()).toEqual([
+      "test 's > a' is now only",
+      "test 's > a' is now only",
+    ]);
+    expect(new Set(r.findings.map((f) => `${f.loc!.line}:${f.loc!.col}`)).size).toBe(2);
+  });
+
+  test("an override on the suite leaves the test's own focus reported", () => {
+    const after = `// crashdummy-allow integrity/modifier-added: focusing while I debug\ndescribe.only('s', () => {\n  test.only('a', () => { expect(add(1, 2)).toBe(3); });\n});\n`;
+    const r = check([modified(`describe('s', () => { ${t('a')} });\n`, after)]);
+    expect(r.findings).toHaveLength(1);
+    expect(r.findings[0]!.loc).toEqual({ line: 6, col: 3 });
+    expect(r.allowed).toHaveLength(1);
+  });
+
+  test('the same goes for skips', () => {
+    const r = check([
+      modified(
+        `describe('s', () => { ${t('a')} });\n`,
+        `describe.skip('s', () => { test.skip('a', () => { expect(add(1, 2)).toBe(3); }); });\n`,
+      ),
+    ]);
+    expect(r.findings).toHaveLength(2);
+  });
+
+  test('a test that was already switched off gains nothing from another reason', () => {
+    const r = check([
+      modified(
+        `describe('s', () => { test.skip('a', () => { expect(1).toBe(1); }); });\n`,
+        `describe.skip('s', () => { test.skip('a', () => { expect(1).toBe(1); }); });\n`,
+      ),
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+});
+
+describe('a suite that is renamed is the same suite', () => {
+  const suite = (name: string, mod: string, tests: string) =>
+    `describe${mod}('${name}', () => { ${tests} });\n`;
+
+  test('describe.only kept through a rename is not a new focus', () => {
+    expect(
+      check([modified(suite('math', '.only', t('a')), suite('arithmetic', '.only', t('a')))])
+        .findings,
+    ).toEqual([]);
+  });
+
+  test('nor when a child is added during the rename', () => {
+    expect(
+      check([
+        modified(suite('math', '.only', t('a')), suite('arithmetic', '.only', t('a') + t('b'))),
+      ]).findings,
+    ).toEqual([]);
+  });
+
+  test('a describe.only one level further in is still new', () => {
+    const r = check([
+      modified(
+        suite('math', '.only', t('a')),
+        suite('math', '.only', `describe.only('inner', () => { ${t('a')} });\n`),
+      ),
+    ]);
+    expect(r.findings.map((f) => f.ruleId)).toEqual(['integrity/modifier-added']);
+  });
+
+  test('a focus on a different suite is new', () => {
+    const r = check([
+      modified(
+        suite('a', '', t('x')) + suite('b', '.only', t('y')),
+        suite('a', '.only', t('x')) + suite('b', '', t('y')),
+      ),
+    ]);
+    expect(r.findings.map((f) => f.message)).toEqual(["test 'a > x' is now only"]);
+  });
+});
+
+describe('tests that share a title', () => {
+  const two = (a: string, b: string) => `${t('x', a)}${t('x', b)}`;
+
+  test('swapping them is not a change', () => {
+    const r = check([
+      modified(
+        two('expect(1).toEqual(1);', 'expect(2).toBeTruthy();'),
+        two('expect(2).toBeTruthy();', 'expect(1).toEqual(1);'),
+      ),
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+
+  test('removing one reports the one that is gone, whichever it was', () => {
+    const r = check([
+      modified(
+        two('expect(1).toEqual(1);', 'expect(2).toBeTruthy();'),
+        t('x', 'expect(2).toBeTruthy();'),
+      ),
+    ]);
+    expect(r.findings).toHaveLength(1);
+    expect(r.findings[0]).toMatchObject({
+      ruleId: 'integrity/test-removed',
+      message: "test 'x' was removed",
+    });
+    expect(r.findings[0]!.loc).toEqual({ line: 4, col: 1 }); // the first one, `toEqual`
+  });
+
+  test('weakening one of them is still found', () => {
+    const r = check([
+      modified(
+        two('expect(1).toEqual(1);', 'expect(2).toBe(2);'),
+        two('expect(1).toBeTruthy();', 'expect(2).toBe(2);'),
+      ),
+    ]);
+    expect(r.findings.map((f) => f.ruleId)).toEqual(['integrity/matcher-weakened']);
+  });
+
+  test('adding a duplicate is not a removal', () => {
+    expect(check([modified(t('x'), t('x') + t('x', 'expect(3).toBe(3);'))]).findings).toEqual([]);
+  });
+
+  test('tests that merely end in a number are not treated as repeats', () => {
+    expect(
+      check([modified(t('case #2') + t('case #3'), t('case #3') + t('case #2'))]).findings,
+    ).toEqual([]);
   });
 });
 

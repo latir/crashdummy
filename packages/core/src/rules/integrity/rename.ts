@@ -64,12 +64,45 @@ function take(pool: Pool, b: TestCase, a: TestCase, via: Pair['via']): void {
   pool.added = pool.added.filter((t) => t !== a);
 }
 
-/** Step 1: the same id. */
+/** The id without the ` #2` that numbers a repeated title. */
+const baseId = (t: TestCase): string => {
+  if (t.title === undefined || t.id.endsWith(t.title)) return t.id;
+  return t.id.replace(/ #\d+$/, '');
+};
+
+/**
+ * Step 1: the same id. When a title is repeated in a suite its tests are numbered in source
+ * order, which says nothing about which is which: swapping two `test('x')` swaps their numbers.
+ * So among tests that share a title, identical bodies are matched first and the numbering is
+ * only used for what is left.
+ */
 export function pairById(pool: Pool): void {
-  const byId = new Map(pool.added.map((t) => [t.id, t] as const));
-  for (const b of pool.removed) {
-    const a = byId.get(b.id);
-    if (a && pool.added.includes(a)) take(pool, b, a, 'id');
+  const groups = new Map<string, { before: TestCase[]; after: TestCase[] }>();
+  const group = (t: TestCase): { before: TestCase[]; after: TestCase[] } => {
+    const key = baseId(t);
+    const g = groups.get(key) ?? { before: [], after: [] };
+    groups.set(key, g);
+    return g;
+  };
+  for (const t of pool.removed) group(t).before.push(t);
+  for (const t of pool.added) group(t).after.push(t);
+
+  for (const g of groups.values()) {
+    if (g.before.length === 1 && g.after.length === 1) {
+      // not repeated: the same test, whatever its number
+      if (g.before[0]!.id === g.after[0]!.id) take(pool, g.before[0]!, g.after[0]!, 'id');
+      continue;
+    }
+    // a repeated title: bodies first, then the numbering for whatever is left
+    for (const b of g.before) {
+      const a = g.after.find((t) => pool.added.includes(t) && t.bodyHash === b.bodyHash);
+      if (a) take(pool, b, a, 'body');
+    }
+    for (const b of g.before) {
+      if (!pool.removed.includes(b)) continue;
+      const a = g.after.find((t) => pool.added.includes(t) && t.id === b.id);
+      if (a) take(pool, b, a, 'id');
+    }
   }
 }
 

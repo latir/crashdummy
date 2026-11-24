@@ -21,8 +21,13 @@ const modifiersOf = (t: TestCase): readonly Use[] =>
 export const isDisabling = (t: TestCase): boolean =>
   modifiersOf(t).some((m) => isDisablingModifier(m.modifier));
 
-/** Where a modifier was written: on a particular `describe`, or on the test itself. */
-const originOf = (m: Use): string => m.suite ?? 'own';
+/**
+ * Where a modifier was written: on the test itself, or on the `describe` at some depth of its
+ * path. The depth stands in for the suite's identity, so renaming a `describe.only` is not a new
+ * focus, while a `describe.only` added one level further in still is.
+ */
+const originOf = (m: Use): string =>
+  m.suite === undefined ? 'own' : `suite:${m.suite.split(' > ').length}`;
 
 /**
  * A test that used to run is now skipped, marked fixme or turned into a todo, or a `.only`
@@ -50,22 +55,28 @@ export const modifierAdded: IntegrityRule = {
       groups.set(key, group);
     };
 
+    // suites (as named after the change) whose focus was already there before it
+    const unchangedSuites = new Set<string>();
     for (const { before, after } of ctx.pairs) {
       const was = modifiersOf(before);
       const now = modifiersOf(after);
-      // a test that was already switched off does not lose anything to one more reason
+      // a test that was already switched off does not lose anything to one more reason. When it
+      // was not, every place that now switches it off is new, so each is reported (a suite
+      // override must not hide the test's own).
       if (!was.some((m) => isDisablingModifier(m.modifier))) {
-        const disabled = now.find((m) => isDisablingModifier(m.modifier));
-        if (disabled) add(after, disabled);
+        for (const m of now) if (isDisablingModifier(m.modifier)) add(after, m);
       }
-      // a focus is new unless the same one was already there: the same `describe.only`, or the
-      // test's own `.only`. A new `.only` under an unchanged `describe.only` is still new.
-      const focused = now.find(
-        (m) =>
-          m.modifier === 'only' &&
-          !was.some((w) => w.modifier === 'only' && originOf(w) === originOf(m)),
-      );
-      if (focused) add(after, focused);
+      // a focus is new unless the same one was already there: a `describe.only` at the same
+      // depth, or the test's own `.only`. A new `.only` under an unchanged `describe.only` is
+      // still new.
+      for (const m of now) {
+        if (m.modifier !== 'only') continue;
+        if (was.some((w) => w.modifier === 'only' && originOf(w) === originOf(m))) {
+          if (m.suite !== undefined) unchangedSuites.add(m.suite);
+        } else {
+          add(after, m);
+        }
+      }
     }
     // a new test does not weaken anything unless it is a .only that disables all the others, and
     // a `describe.only` that was already there does not become new because a child was added
@@ -76,11 +87,13 @@ export const modifierAdded: IntegrityRule = {
       }
     }
     for (const t of ctx.added) {
-      const focused = modifiersOf(t).find(
-        (m) =>
-          m.modifier === 'only' && !(m.suite !== undefined && suitesFocusedBefore.has(m.suite)),
-      );
-      if (focused) add(t, focused);
+      for (const m of modifiersOf(t)) {
+        if (m.modifier !== 'only') continue;
+        const known =
+          m.suite !== undefined &&
+          (suitesFocusedBefore.has(m.suite) || unchangedSuites.has(m.suite));
+        if (!known) add(t, m);
+      }
     }
 
     return [...groups.values()].map((g) => {
