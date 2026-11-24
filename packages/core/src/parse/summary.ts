@@ -792,7 +792,15 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     for (const name of names) scope.names.set(name, { mock: false, param: true });
   };
 
-  /** Whether a name is a mock, as of right now. */
+  /**
+   * Whether a name is a mock, as of right now.
+   *
+   * Known limit: an assertion inside a helper is read where the helper is written, not where it
+   * is called. `let fn = vi.fn(); function check() { expect(fn)... }` followed by a test that
+   * does `fn = realFn; check()` still reports a mock. Only `subjectIsMock` is affected, never
+   * which assertions exist, because doing it exactly needs the state of every outer variable at
+   * every call site.
+   */
   const mockStateOf = (binding: Binding | undefined): MockState => {
     if (!binding) return NOT_MOCK;
     if (binding.mock) return { mock: true, imports: [] };
