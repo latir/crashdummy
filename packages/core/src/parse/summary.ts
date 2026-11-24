@@ -38,7 +38,7 @@ export interface SummaryOptions {
 }
 
 /** Bump when the summary shape or its derivation changes, so stale caches are ignored. */
-export const SUMMARY_VERSION = 5;
+export const SUMMARY_VERSION = 6;
 
 export function hashText(text: string): string {
   return createHash('sha1').update(text).digest('hex').slice(0, 16);
@@ -1398,14 +1398,17 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       const bodyHash =
         t.bodyHash ?? hashNode(callback ? child(callback.node, 'body') : t.fnRef?.node);
 
-      const tc: TestCase = { id, loc: t.loc, matchers: out.uses, bodyHash };
+      const tc: TestCase = { id, title: t.name, loc: t.loc, matchers: out.uses, bodyHash };
       const inheritedFrom = [...t.ancestors].reverse().find((f) => f.modifier);
       const modifier = t.modifier ?? inheritedFrom?.modifier;
       if (modifier) tc.modifier = modifier;
       const modifiers: NonNullable<TestCase['modifiers']> = [];
-      for (const frame of t.ancestors) {
-        if (frame.modifier) modifiers.push({ modifier: frame.modifier, loc: frame.loc });
-      }
+      t.ancestors.forEach((frame, i) => {
+        if (!frame.modifier) return;
+        // the suite's own name path, so the same `describe.only` can be recognised across versions
+        const suite = t.path.slice(0, i + 1).join(' > ');
+        modifiers.push({ modifier: frame.modifier, loc: frame.loc, suite });
+      });
       if (t.modifier) modifiers.push({ modifier: t.modifier, loc: t.loc });
       if (modifiers.length > 0) tc.modifiers = modifiers;
       const timeout =

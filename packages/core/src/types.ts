@@ -50,6 +50,8 @@ export interface TestSummary {
 
 export interface TestCase {
   id: string;
+  /** The test's own name, without the `describe` names around it. */
+  title?: string;
   loc: { line: number; col: number };
   /** The modifier that applies to this test: its own, else the nearest one on a `describe`. */
   modifier?: 'skip' | 'only' | 'todo' | 'fixme' | 'fails';
@@ -61,6 +63,8 @@ export interface TestCase {
   modifiers?: {
     modifier: 'skip' | 'only' | 'todo' | 'fixme' | 'fails';
     loc: { line: number; col: number };
+    /** For a modifier on a `describe`: that suite's name path. Missing for the test's own. */
+    suite?: string;
   }[];
   timeoutMs?: number;
   matchers: MatcherUse[];

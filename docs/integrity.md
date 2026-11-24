@@ -2,12 +2,12 @@
 
 Integrity gates fail a change that weakens a test suite, whatever the score is. They compare a test file before and after the change. The evidence is strong for AI agents: in [ImpossibleBench (ICLR 2026)](https://proceedings.iclr.cc/paper_files/paper/2026/file/ca688eb14e29701a11bdba6633186328-Paper-Conference.pdf), models often reached green by editing the tests. People make these changes too, so every gate can be allowed with a reason.
 
-| Gate                           | Fails when                                                                                                                                                            |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `integrity/test-removed`       | A test is gone, was not renamed or moved, and the code it tested still exists. A removed `todo` does not count: it had no body.                                       |
-| `integrity/modifier-added`     | A test that ran is now `skip`, `fixme` or `todo`, or a `.only` appeared (it silently turns off every other test). A `describe.skip` is reported once, at the `.skip`. |
-| `integrity/matcher-weakened`   | An assertion moved down the [matcher lattice](matchers.md), for example `toEqual` to `toBeTruthy`, or `toThrow('msg')` to `toThrow()`.                                |
-| `integrity/assertions-dropped` | A test that still exists has fewer assertions than before.                                                                                                            |
+| Gate                           | Fails when                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `integrity/test-removed`       | A test is gone, was not renamed or moved, and the code it tested still exists. A removed `todo` does not count: it had no body.                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `integrity/modifier-added`     | A test that ran is now `skip`, `fixme` or `todo`, or a `.only` appeared (it silently turns off every other test). Every modifier on a test's path counts, not just the one that wins: a `describe.only` over tests that are already skipped is still a `.only`. A modifier written once on a `describe` is reported once, where it is written. A focus counts as new unless that same `describe.only` (or the test's own `.only`) was already there: `test.only` under an unchanged `describe.only` is new, a new test under an unchanged `describe.only` is not. |     |
+| `integrity/matcher-weakened`   | An assertion moved down the [matcher lattice](matchers.md), for example `toEqual` to `toBeTruthy`, or `toThrow('msg')` to `toThrow()`. Two negated assertions are not compared (negation turns the order around); positive to negated is weaker.                                                                                                                                                                                                                                                                                                                  |     |
+| `integrity/assertions-dropped` | A test that still exists has fewer assertions than before.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Renames come first
 
@@ -15,13 +15,13 @@ Before any gate runs, tests are matched across the change, so a rename is not a 
 
 1. the same test id,
 2. the same body (a rename, or a move into another `describe` or another changed file),
-3. a similar name, best match first (a rename plus an edit). The pair is still judged by the other gates, so editing a test into a weaker one is not a way around them.
+3. a similar name, best match first (a rename plus an edit). Only the test's own title is compared, not the `describe` names around it, so two unrelated tests under one long suite name are not mistaken for one test. The pair is still judged by the other gates, so editing a test into a weaker one is not a way around them.
 
-Matching is one-to-one. A test that moved to another changed file is matched on an identical body and is still judged there: moved and skipped is a skip.
+Matching is one-to-one. Steps 1 and 2 run across every changed file before step 3 runs in any, so a test that moved to another file is matched on its identical body before a similar name can take its place. It is still judged where it landed: moved and skipped is a skip.
 
 ## "Its source still exists"
 
-Removing a test is fine when the code it tested was removed too. `integrity/test-removed` looks at the local modules the old test file imported (relative paths; packages such as `vitest` or `lodash/isEqual.js` are not local, whatever their ending). It fires when at least one of them still exists, or when the file imported none that can be checked. Deleting a module and its test file together is not a finding.
+Removing a test is fine when the code it tested was removed too. `integrity/test-removed` looks at the local modules the old test file imported (relative paths; packages such as `vitest` or `lodash/isEqual.js` are not local, whatever their ending). Only imports without an extension or with a JS/TS one are checked: an asset such as `./data.json` is not the code under test. It fires when at least one of them still exists, or when the file imported none that can be checked. Deleting a module and its test file together is not a finding.
 
 ## Allowing a change
 
@@ -32,6 +32,7 @@ test.skip('adds', () => {
 });
 ```
 
+- The directive must start its comment line (after whitespace or the `*` of a block comment). A comment that only mentions the syntax, like `// Example: crashdummy-allow ...`, is documentation and allows nothing.
 - The reason is required, and it needs real words. A directive without one allows nothing and is a gate on its own (`integrity/allow-without-reason`).
 - **Above code:** a comment on its own line covers the next line that has code, so other comments can sit in between. If code follows the comment on the same line (`/* note */ test.skip(...)`), that line is the target.
 - **Trailing:** a comment after code on the same line covers that line only, never the next one.

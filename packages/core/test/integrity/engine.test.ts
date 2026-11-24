@@ -241,6 +241,29 @@ describe('override comments', () => {
     });
   });
 
+  test.each([
+    '// Example: crashdummy-allow integrity/a: why',
+    '// see the docs for crashdummy-allow integrity/a: why',
+    '/* we use crashdummy-allow integrity/a: why */',
+    '/**\n * Use crashdummy-allow integrity/a: why\n */',
+    '// TODO: document crashdummy-allow',
+  ])('a comment that only mentions the syntax is not a directive: %s', (comment) => {
+    expect(parse(`${comment}\nconst a = 1;`)).toEqual([]);
+  });
+
+  test.each([
+    '// crashdummy-allow integrity/a: why',
+    '//crashdummy-allow integrity/a: why',
+    '//    crashdummy-allow integrity/a: why',
+    '/* crashdummy-allow integrity/a: why */',
+    '/**\n * crashdummy-allow integrity/a: why\n */',
+    '/*\n   crashdummy-allow integrity/a: why\n*/',
+  ])('a directive may be indented or follow the star of a block comment: %s', (comment) => {
+    expect(parse(`${comment}\nconst a = 1;`)).toMatchObject([
+      { rules: ['integrity/a'], reason: 'why' },
+    ]);
+  });
+
   test('ordinary comments and strings are not directives', () => {
     expect(parse(`// nothing here\nconst s = "crashdummy-allow integrity/a: no";`)).toEqual([]);
   });
@@ -482,6 +505,211 @@ describe('assertions that are the same under another spelling', () => {
       ),
     ]);
     expect(ids(r)).toEqual(['integrity/matcher-weakened']);
+  });
+});
+
+describe('a comment that mentions an override', () => {
+  test('does not allow anything', () => {
+    const r = check([
+      modified(
+        t('a'),
+        `// Example: crashdummy-allow integrity/modifier-added: waiting for a fix\ntest.skip('a', () => { expect(add(1, 2)).toBe(3); });\n`,
+      ),
+    ]);
+    expect(ids(r)).toEqual(['integrity/modifier-added']);
+    expect(r.allowed).toEqual([]);
+  });
+});
+
+describe('matching across files', () => {
+  test('an exact body in another file wins over a similar name in the same file', () => {
+    const moved = 'expect(add(5, 5)).toBe(10);';
+    const r = check([
+      modified(t('original', moved), '', 'one.test.ts'),
+      modified(
+        t('logs on success', 'expect(add(1, 1)).toBe(2);'),
+        t('logs on success!', moved),
+        'two.test.ts',
+      ),
+    ]);
+    // `original` moved to two.test.ts; it is `logs on success` that is gone
+    expect(r.findings.map((f) => [f.file, f.message])).toEqual([
+      ['two.test.ts', "test 'logs on success' was removed"],
+    ]);
+  });
+
+  test('the moved test is compared with the test it really was', () => {
+    const moved = 'expect(add(5, 5)).toBe(10);';
+    const r = check([
+      modified(t('original', moved), '', 'one.test.ts'),
+      modified(
+        t('logs on success', 'expect(add(1, 1)).toBe(2);'),
+        `test.skip('logs on success!', () => { ${moved} });\n`,
+        'two.test.ts',
+      ),
+    ]);
+    expect(r.findings.map((f) => f.ruleId).sort()).toEqual([
+      'integrity/modifier-added',
+      'integrity/test-removed',
+    ]);
+  });
+});
+
+describe('names are compared by title, not by suite', () => {
+  const inSuite = (name: string, body: string) =>
+    `describe('shopping cart checkout flow', () => { ${t(name, body)} });\n`;
+
+  test('unrelated tests under one long suite name are not a rename', () => {
+    const r = check([
+      modified(
+        inSuite('rejects bad input', 'expect(add(1, 2)).toBe(3);'),
+        inSuite('logs on success', 'expect(add(2, 2)).toBe(4);'),
+      ),
+    ]);
+    expect(r.findings.map((f) => f.message)).toEqual([
+      "test 'shopping cart checkout flow > rejects bad input' was removed",
+    ]);
+  });
+
+  test('a renamed test in the same suite is still found by its title', () => {
+    const r = check([
+      modified(
+        inSuite('adds two numbers', 'expect(add(1, 2)).toBe(3);'),
+        inSuite('adds two numbers correctly', 'expect(add(2, 2)).toBe(4);'),
+      ),
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+
+  test('a test that moved to another suite keeps its title', () => {
+    const r = check([
+      modified(
+        `describe('old suite', () => { ${t('adds two numbers', 'expect(add(1, 2)).toBe(3);')} });\n`,
+        `describe('a very different suite name', () => { ${t('adds two numbers correctly', 'expect(add(2, 2)).toBe(4);')} });\n`,
+      ),
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+});
+
+describe('imports that are not code', () => {
+  const withAsset: ChangedFile = {
+    path: 'a.test.ts',
+    kind: 'modified',
+    before: `import { test, expect } from 'vitest';\nimport data from './data.json';\n${t('a')}${t('b')}`,
+    after: `import { test, expect } from 'vitest';\n${t('a')}`,
+  };
+
+  test('an asset is not the code under test: a removal next to one is still reported', () => {
+    const r = check([withAsset], { exists: (p: string) => p.endsWith('data.json') });
+    expect(ids(r)).toEqual(['integrity/test-removed']);
+  });
+
+  test('a JS or TS import next to an asset still decides', () => {
+    const both: ChangedFile = {
+      ...withAsset,
+      before: (withAsset.before as string).replace(
+        'import data',
+        "import { add } from './math.js';\nimport data",
+      ),
+    };
+    expect(check([both], { exists: () => false }).findings).toEqual([]);
+    expect(ids(check([both], { exists: (p: string) => p.includes('math') }))).toEqual([
+      'integrity/test-removed',
+    ]);
+  });
+
+  test.each(['./styles.css', './logo.svg', './fixture.yaml', './query.graphql'])('%s', (asset) => {
+    const f: ChangedFile = {
+      ...withAsset,
+      before: (withAsset.before as string).replace('./data.json', asset),
+    };
+    expect(ids(check([f], { exists: () => false }))).toEqual(['integrity/test-removed']);
+  });
+});
+
+describe('negated assertions', () => {
+  test('two negated assertions are not ranked against each other', () => {
+    const r = check([
+      modified(
+        t('a', 'expect(add(1, 2)).not.toEqual({ a: 1, b: 2 });'),
+        t('a', 'expect(add(1, 2)).not.toMatchObject({ a: 1 });'),
+      ),
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+
+  test('going from positive to negated is still weaker', () => {
+    const r = check([
+      modified(
+        t('a', 'expect(add(1, 2)).toEqual({ a: 1 });'),
+        t('a', 'expect(add(1, 2)).not.toEqual({ b: 1 });'),
+      ),
+    ]);
+    expect(ids(r)).toEqual(['integrity/matcher-weakened']);
+  });
+});
+
+describe('a suite skip and the other gates', () => {
+  const suite = (mod: string, test: string, body: string) =>
+    `describe${mod}('s', () => { ${test}('a', () => { ${body} }); });\n`;
+
+  test('a test with its own fails under a skipped describe is reported once, by the skip', () => {
+    const r = check([
+      modified(
+        suite('', 'test.fails', 'expect(1).toBe(2); expect(2).toBe(3);'),
+        suite('.skip', 'test.fails', 'expect(1).toBe(2);'),
+      ),
+    ]);
+    expect(ids(r)).toEqual(['integrity/modifier-added']);
+  });
+
+  test('a reasoned override on the skip is then enough', () => {
+    const allowed = `// crashdummy-allow integrity/modifier-added: waiting on the API fix\n${suite('.skip', 'test.fails', 'expect(1).toBe(2);')}`;
+    const r = check([
+      modified(suite('', 'test.fails', 'expect(1).toBe(2); expect(2).toBe(3);'), allowed),
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+});
+
+describe('where a focus was written', () => {
+  const suite = (mod: string, tests: string) => `describe${mod}('s', () => { ${tests} });\n`;
+
+  test('test.only added under an unchanged describe.only is a new focus', () => {
+    const r = check([
+      modified(
+        suite('.only', t('a') + t('b')),
+        suite('.only', `test.only('a', () => { expect(add(1, 2)).toBe(3); });\n` + t('b')),
+      ),
+    ]);
+    expect(r.findings.map((f) => f.message)).toEqual(["test 's > a' is now only"]);
+  });
+
+  test('a new test under an unchanged describe.only is not', () => {
+    expect(
+      check([modified(suite('.only', t('a')), suite('.only', t('a') + t('b')))]).findings,
+    ).toEqual([]);
+  });
+
+  test('an unchanged describe.only over unchanged tests is not', () => {
+    expect(
+      check([modified(suite('.only', t('a') + t('b')), suite('.only', t('a') + t('b')))]).findings,
+    ).toEqual([]);
+  });
+
+  test('a describe.only that is new is, however many tests it holds', () => {
+    const r = check([
+      modified(suite('', t('a') + t('b')), suite('.only', t('a') + t('b') + t('c'))),
+    ]);
+    expect(r.findings.map((f) => f.message)).toEqual([
+      "3 tests are now only: 's > a', 's > b', 's > c'",
+    ]);
+  });
+
+  test('a test.only that was already there is not new', () => {
+    const only = `test.only('a', () => { expect(add(1, 2)).toBe(3); });\n`;
+    expect(check([modified(only, only)]).findings).toEqual([]);
   });
 });
 

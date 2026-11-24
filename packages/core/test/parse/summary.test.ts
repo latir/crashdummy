@@ -336,8 +336,8 @@ describe('every modifier on a test is recorded, not just the winner', () => {
     );
     expect(s.tests[0]!.modifier).toBe('fails');
     expect(s.tests[0]!.modifiers).toEqual([
-      { modifier: 'only', loc: { line: 1, col: 1 } },
-      { modifier: 'skip', loc: { line: 2, col: 3 } },
+      { modifier: 'only', loc: { line: 1, col: 1 }, suite: 'outer' },
+      { modifier: 'skip', loc: { line: 2, col: 3 }, suite: 'outer > inner' },
       { modifier: 'fails', loc: { line: 3, col: 5 } },
     ]);
   });

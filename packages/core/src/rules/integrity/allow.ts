@@ -21,7 +21,12 @@ export interface AllowDirective {
   scope: 'file' | 'line';
 }
 
-const MARKER = /crashdummy-allow\b/;
+/**
+ * A directive starts a comment line (after whitespace, or the `*` of a block comment). A comment
+ * that merely mentions it, such as `// Example: crashdummy-allow ...`, is documentation and
+ * must not switch a gate off.
+ */
+const MARKER = /^\s*\*?\s*crashdummy-allow\b/;
 const DIRECTIVE = /crashdummy-allow\s+([^:]*?)\s*(?::\s*(.*?))?\s*(?:\*\/)?\s*$/;
 
 /** Needs real words, not "-" or "..." or nothing. */
@@ -62,9 +67,9 @@ export function parseAllowDirectives(file: ParsedFile): AllowDirective[] {
   const out: AllowDirective[] = [];
 
   for (const comment of file.comments) {
-    if (!MARKER.test(comment.value)) continue;
     // a directive is one line; in a block comment it may be any line of it
-    const text = comment.value.split('\n').find((l) => MARKER.test(l)) ?? comment.value;
+    const text = comment.value.split('\n').find((l) => MARKER.test(l));
+    if (text === undefined) continue;
     const m = DIRECTIVE.exec(text.trim().replace(/^\*+\s*/, ''));
     const rules = (m?.[1] ?? '')
       .split(',')

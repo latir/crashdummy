@@ -10,13 +10,19 @@ const DISABLING = new Set<Modifier>(['skip', 'fixme', 'todo']);
 
 const isDisablingModifier = (m: Modifier): boolean => DISABLING.has(m);
 
-/** Whether the modifier that wins for this test switches it off. */
-export const isDisabling = (t: TestCase): boolean =>
-  t.modifier !== undefined && isDisablingModifier(t.modifier);
-
 /** Every modifier that applies to a test, from its `describe`s and from itself. */
 const modifiersOf = (t: TestCase): readonly Use[] =>
   t.modifiers ?? (t.modifier ? [{ modifier: t.modifier, loc: t.loc }] : []);
+
+/**
+ * Whether any modifier on the test's path switches it off, not just the one that wins: a test
+ * with its own `fails` under a `describe.skip` is skipped.
+ */
+export const isDisabling = (t: TestCase): boolean =>
+  modifiersOf(t).some((m) => isDisablingModifier(m.modifier));
+
+/** Where a modifier was written: on a particular `describe`, or on the test itself. */
+const originOf = (m: Use): string => m.suite ?? 'own';
 
 /**
  * A test that used to run is now skipped, marked fixme or turned into a todo, or a `.only`
@@ -52,14 +58,28 @@ export const modifierAdded: IntegrityRule = {
         const disabled = now.find((m) => isDisablingModifier(m.modifier));
         if (disabled) add(after, disabled);
       }
-      if (!was.some((m) => m.modifier === 'only')) {
-        const focused = now.find((m) => m.modifier === 'only');
-        if (focused) add(after, focused);
+      // a focus is new unless the same one was already there: the same `describe.only`, or the
+      // test's own `.only`. A new `.only` under an unchanged `describe.only` is still new.
+      const focused = now.find(
+        (m) =>
+          m.modifier === 'only' &&
+          !was.some((w) => w.modifier === 'only' && originOf(w) === originOf(m)),
+      );
+      if (focused) add(after, focused);
+    }
+    // a new test does not weaken anything unless it is a .only that disables all the others, and
+    // a `describe.only` that was already there does not become new because a child was added
+    const suitesFocusedBefore = new Set<string>();
+    for (const t of ctx.before.tests) {
+      for (const m of modifiersOf(t)) {
+        if (m.modifier === 'only' && m.suite !== undefined) suitesFocusedBefore.add(m.suite);
       }
     }
-    // a new test does not weaken anything unless it is a .only that disables all the others
     for (const t of ctx.added) {
-      const focused = modifiersOf(t).find((m) => m.modifier === 'only');
+      const focused = modifiersOf(t).find(
+        (m) =>
+          m.modifier === 'only' && !(m.suite !== undefined && suitesFocusedBefore.has(m.suite)),
+      );
       if (focused) add(t, focused);
     }
 

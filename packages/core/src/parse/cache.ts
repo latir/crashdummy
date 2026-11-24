@@ -28,12 +28,17 @@ function isTestCase(v: unknown): boolean {
     isRecord(v) &&
     typeof v['id'] === 'string' &&
     typeof v['bodyHash'] === 'string' &&
+    (v['title'] === undefined || typeof v['title'] === 'string') &&
     isPos(v['loc']) &&
     (v['modifier'] === undefined || MODIFIERS.has(v['modifier'] as string)) &&
     (v['modifiers'] === undefined ||
       (Array.isArray(v['modifiers']) &&
         v['modifiers'].every(
-          (m) => isRecord(m) && MODIFIERS.has(m['modifier'] as string) && isPos(m['loc']),
+          (m) =>
+            isRecord(m) &&
+            MODIFIERS.has(m['modifier'] as string) &&
+            isPos(m['loc']) &&
+            (m['suite'] === undefined || typeof m['suite'] === 'string'),
         ))) &&
     (v['timeoutMs'] === undefined || typeof v['timeoutMs'] === 'number') &&
     Array.isArray(v['matchers']) &&

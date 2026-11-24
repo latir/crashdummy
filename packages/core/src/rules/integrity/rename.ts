@@ -30,60 +30,116 @@ export function nameSimilarity(a: string, b: string): number {
   return 1 - prev[y.length]! / Math.max(x.length, y.length);
 }
 
+/** The test's own name. Older summaries have no `title`: it is the end of the id then. */
+export const titleOf = (t: TestCase): string => {
+  if (t.title !== undefined) return t.title;
+  const i = t.id.lastIndexOf(' > ');
+  return i === -1 ? t.id : t.id.slice(i + 3);
+};
+
+/** The `describe` names around a test, as a string. */
+const suiteOf = (t: TestCase): string =>
+  t.id.slice(0, Math.max(0, t.id.length - titleOf(t).length));
+
 /**
- * Decide which tests are the same test before and after, so a rename is not a removal.
- *
- * 1. Same id.
- * 2. Same body hash: the test was renamed or moved, and its body did not change.
- * 3. Similar name, best match first: the test was renamed and edited. The pair is still judged by
- *    the other gates, so editing a test into a weaker one is not a way around them.
- *
- * Matching is one-to-one. Whatever is left over is removed or added.
+ * The tests of one file, before and after, and what has been matched so far. Matching happens in
+ * steps so that the cheap, certain ones (same id, same body) can run across every file before the
+ * fuzzy one (similar name) runs in any.
+ */
+export interface Pool {
+  pairs: Pair[];
+  /** Not matched yet, in `before` only. */
+  removed: TestCase[];
+  /** Not matched yet, in `after` only. */
+  added: TestCase[];
+}
+
+export function createPool(before: readonly TestCase[], after: readonly TestCase[]): Pool {
+  return { pairs: [], removed: [...before], added: [...after] };
+}
+
+function take(pool: Pool, b: TestCase, a: TestCase, via: Pair['via']): void {
+  pool.pairs.push({ before: b, after: a, via });
+  pool.removed = pool.removed.filter((t) => t !== b);
+  pool.added = pool.added.filter((t) => t !== a);
+}
+
+/** Step 1: the same id. */
+export function pairById(pool: Pool): void {
+  const byId = new Map(pool.added.map((t) => [t.id, t] as const));
+  for (const b of pool.removed) {
+    const a = byId.get(b.id);
+    if (a && pool.added.includes(a)) take(pool, b, a, 'id');
+  }
+}
+
+/**
+ * Step 2: the same body, so the test was renamed or moved. A test is looked for in its own file
+ * first, then in `others`; a match in another file is a pair of the file it moved to.
+ */
+export function pairByBody(pool: Pool, others: readonly Pool[] = []): void {
+  for (const b of pool.removed) {
+    for (const target of [pool, ...others]) {
+      const a = target.added.find((t) => t.bodyHash === b.bodyHash);
+      if (!a) continue;
+      pool.removed = pool.removed.filter((t) => t !== b);
+      target.added = target.added.filter((t) => t !== a);
+      target.pairs.push({ before: b, after: a, via: 'body' });
+      break;
+    }
+  }
+}
+
+/**
+ * Step 3: a similar name, best match first. Only the test's own title is compared, not the
+ * `describe` names around it: a long suite name shared by two unrelated tests must not make them
+ * look like one test. Among equal names the pair in the same suite wins, then the one that
+ * stayed closest to where it was.
+ */
+export function pairByName(pool: Pool, nameThreshold = DEFAULT_NAME_THRESHOLD): void {
+  const candidates: { b: TestCase; a: TestCase; score: number; sameSuite: boolean; gap: number }[] =
+    [];
+  for (const b of pool.removed) {
+    for (const a of pool.added) {
+      const score = nameSimilarity(titleOf(b), titleOf(a));
+      if (score >= nameThreshold) {
+        candidates.push({
+          b,
+          a,
+          score,
+          sameSuite: suiteOf(b) === suiteOf(a),
+          gap: Math.abs(b.loc.line - a.loc.line),
+        });
+      }
+    }
+  }
+  candidates.sort(
+    (x, y) => y.score - x.score || Number(y.sameSuite) - Number(x.sameSuite) || x.gap - y.gap,
+  );
+  for (const { b, a } of candidates) {
+    if (pool.removed.includes(b) && pool.added.includes(a)) take(pool, b, a, 'name');
+  }
+}
+
+export const toMatching = (pool: Pool): Matching => ({
+  pairs: pool.pairs,
+  removed: pool.removed,
+  added: pool.added,
+});
+
+/**
+ * Decide which tests of one file are the same test before and after, so a rename is not a
+ * removal: the same id, then the same body, then a similar name. Matching is one-to-one. Whatever
+ * is left over is removed or added.
  */
 export function matchTests(
   before: readonly TestCase[],
   after: readonly TestCase[],
   nameThreshold = DEFAULT_NAME_THRESHOLD,
 ): Matching {
-  const pairs: Pair[] = [];
-  const unmatchedBefore = new Set(before);
-  const unmatchedAfter = new Set(after);
-  const take = (b: TestCase, a: TestCase, via: Pair['via']): void => {
-    pairs.push({ before: b, after: a, via });
-    unmatchedBefore.delete(b);
-    unmatchedAfter.delete(a);
-  };
-
-  const byId = new Map(after.map((t) => [t.id, t] as const));
-  for (const b of before) {
-    const a = byId.get(b.id);
-    if (a && unmatchedAfter.has(a)) take(b, a, 'id');
-  }
-
-  for (const b of before) {
-    if (!unmatchedBefore.has(b)) continue;
-    const a = after.find((t) => unmatchedAfter.has(t) && t.bodyHash === b.bodyHash);
-    if (a) take(b, a, 'body');
-  }
-
-  const candidates: { b: TestCase; a: TestCase; score: number; gap: number }[] = [];
-  for (const b of unmatchedBefore) {
-    for (const a of unmatchedAfter) {
-      const score = nameSimilarity(b.id, a.id);
-      if (score >= nameThreshold) {
-        candidates.push({ b, a, score, gap: Math.abs(b.loc.line - a.loc.line) });
-      }
-    }
-  }
-  // best name first; among equals, the one that stayed closest to where it was
-  candidates.sort((x, y) => y.score - x.score || x.gap - y.gap);
-  for (const { b, a } of candidates) {
-    if (unmatchedBefore.has(b) && unmatchedAfter.has(a)) take(b, a, 'name');
-  }
-
-  return {
-    pairs,
-    removed: before.filter((t) => unmatchedBefore.has(t)),
-    added: after.filter((t) => unmatchedAfter.has(t)),
-  };
+  const pool = createPool(before, after);
+  pairById(pool);
+  pairByBody(pool);
+  pairByName(pool, nameThreshold);
+  return toMatching(pool);
 }

@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { resolve as resolvePath } from 'node:path';
+import { extname, resolve as resolvePath } from 'node:path';
 import { ParseError } from '../../errors.js';
 import {
   analyzeTestFile,
@@ -15,9 +15,28 @@ import { gateFinding } from './finding.js';
 import { assertionsDropped } from './assertions-dropped.js';
 import { matcherWeakened } from './matcher-weakened.js';
 import { modifierAdded } from './modifier-added.js';
-import { DEFAULT_NAME_THRESHOLD, matchTests, type Matching } from './rename.js';
+import {
+  DEFAULT_NAME_THRESHOLD,
+  createPool,
+  pairByBody,
+  pairById,
+  pairByName,
+  toMatching,
+  type Matching,
+  type Pool,
+} from './rename.js';
 import { testRemoved } from './test-removed.js';
 import type { IntegrityContext, IntegrityRule } from './types.js';
+
+/**
+ * A relative import we can check for existence: no extension, or a JS/TS one. Assets such as
+ * `./data.json` or `./styles.css` are not the code under test, and the resolver only looks for
+ * code, so they would always look "gone".
+ */
+const isCodeSpecifier = (spec: string): boolean => {
+  const ext = extname(spec);
+  return ext === '' || /^\.[cm]?[jt]sx?$/.test(ext);
+};
 
 export const integrityRules: readonly IntegrityRule[] = [
   testRemoved,
@@ -74,7 +93,8 @@ interface Prepared {
   before: TestSummary;
   after: TestSummary;
   parsedAfter: ParsedFile | undefined;
-  matching: Matching;
+  pool: Pool;
+  matching?: Matching;
   /**
    * Whether `before.imports` are specifiers as written (from source text) or repo paths already
    * resolved (from a stored summary). Only the first need to be told apart from packages.
@@ -170,29 +190,23 @@ export function checkIntegrity(
       after,
       parsedAfter,
       importsRaw,
-      matching: matchTests(
-        before.tests,
-        after.tests,
-        options.nameThreshold ?? DEFAULT_NAME_THRESHOLD,
-      ),
+      pool: createPool(before.tests, after.tests),
     });
   }
 
-  // 2. A test that moved to another changed file is not a removal: match on identical bodies.
-  for (const p of prepared) {
-    for (const removed of p.matching.removed) {
-      for (const q of prepared) {
-        if (q === p) continue;
-        const target = q.matching.added.find((a) => a.bodyHash === removed.bodyHash);
-        if (!target) continue;
-        p.matching.removed = p.matching.removed.filter((t) => t !== removed);
-        q.matching.added = q.matching.added.filter((t) => t !== target);
-        // it still has to be judged: moved and skipped is a skip
-        q.matching.pairs.push({ before: removed, after: target, via: 'body' });
-        break;
-      }
-    }
+  // 2. Decide which tests are the same test, so a rename or a move is not a removal. Exact matches
+  //    run across every file before any fuzzy one runs in any: a name that merely looks similar
+  //    must not take a test before its exact twin in another file is found.
+  const pools = prepared.map((p) => p.pool);
+  for (const pool of pools) pairById(pool);
+  for (const pool of pools) {
+    pairByBody(
+      pool,
+      pools.filter((other) => other !== pool),
+    );
   }
+  for (const pool of pools) pairByName(pool, options.nameThreshold ?? DEFAULT_NAME_THRESHOLD);
+  for (const p of prepared) p.matching = toMatching(p.pool);
 
   const knownRules = new Set(rules.map((r) => r.id));
 
@@ -202,7 +216,7 @@ export function checkIntegrity(
       // `lodash/isEqual.js` are packages, whatever their ending. Stored summaries hold repo
       // paths already, so all of them count.
       const local = p.importsRaw
-        ? p.before.imports.filter((s) => s.startsWith('.'))
+        ? p.before.imports.filter((s) => s.startsWith('.') && isCodeSpecifier(s))
         : p.before.imports;
       // nothing we can check: assume the code is still there
       if (local.length === 0) return true;
@@ -217,9 +231,9 @@ export function checkIntegrity(
       file: p.file,
       before: p.before,
       after: p.after,
-      pairs: p.matching.pairs,
-      removed: p.matching.removed,
-      added: p.matching.added,
+      pairs: p.pool.pairs,
+      removed: p.pool.removed,
+      added: p.pool.added,
       lattice,
       sourceStillExists,
     };
@@ -293,6 +307,12 @@ export function checkIntegrity(
 
 export { assertionsDropped, matcherWeakened, modifierAdded, testRemoved };
 export { covers, parseAllowDirectives, type AllowDirective } from './allow.js';
-export { matchTests, nameSimilarity, DEFAULT_NAME_THRESHOLD, type Matching } from './rename.js';
+export {
+  matchTests,
+  nameSimilarity,
+  titleOf,
+  DEFAULT_NAME_THRESHOLD,
+  type Matching,
+} from './rename.js';
 export { weakenedAssertions } from './matcher-weakened.js';
 export type { IntegrityContext, IntegrityRule, Pair, RuleMeta } from './types.js';

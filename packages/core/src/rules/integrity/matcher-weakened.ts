@@ -17,7 +17,8 @@ const same = (a: MatcherUse, b: MatcherUse): boolean =>
  * would lose the argument (`toHaveText('x')` is not `toHaveText(/x/)`) and would apply an alias's
  * negation a second time (`assert.notStrictEqual` is stored as already negated).
  *
- * - Positive to negated (`toEqual` to `not.toEqual`) is weaker.
+ * - Positive to negated (`toEqual` to `not.toEqual`) is weaker. Two negated assertions are not
+ *   compared.
  * - A different matcher in the same lattice chain: weaker if it sits lower (`toStrictEqual` to
  *   `toEqual`, `toHaveText('x')` to `toContainText('x')`).
  * - Anything else, including the same matcher with a different argument, is judged on strength.
@@ -28,6 +29,9 @@ const same = (a: MatcherUse, b: MatcherUse): boolean =>
  */
 function weaker(before: MatcherUse, after: MatcherUse): boolean {
   if (before.chain === undefined || after.chain === undefined) return false;
+  // `not.toEqual(x)` and `not.toMatchObject(y)`: the chain orders positive assertions, and negation
+  // turns that order around, so two negated assertions cannot be ranked
+  if (before.negated && after.negated) return false;
   if (before.negated !== after.negated) return !before.negated && after.negated;
   if (
     before.name !== after.name &&
