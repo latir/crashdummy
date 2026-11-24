@@ -529,6 +529,8 @@ interface Binding extends BindingInfo {
   framework?: { kind: 'named'; imported: string } | { kind: 'namespace' };
   /** `const result = mockFn()`: whether `mockFn` was a mock when `result` was assigned. */
   derived?: MockState;
+  /** Declared by hoisting but not reached yet: what it will be is not known. */
+  pending?: boolean;
   /** A named function, followed one level deep when a test calls it. */
   helper?: HelperDef;
   /** `const page = { expectOk() {} }`: methods that run when called as `page.expectOk()`. */
@@ -649,7 +651,7 @@ interface Frame {
 type Entry =
   | { pos: number; ref: MatcherRef; signals: SubjectSignals; mock: MockState }
   /** A reference that may run a local helper: `check()`, `page.expectOk()`, `items.forEach(check)`. */
-  | { pos: number; call: string; method?: string; scope: Scope; def?: HelperDef }
+  | { pos: number; call: string; method?: string; scope: Scope; def?: HelperDef | null }
   /** A timeout set from inside a test or a helper, applied to the test that runs it. */
   | { pos: number; timeout: number };
 
@@ -664,7 +666,7 @@ interface RawTest {
   ancestors: Frame[];
   bodyHash: string | undefined;
   /** For `test('x', namedFn)`: what the name stood for, or resolved when finished. */
-  fnRef: { node: AstNode; scope: Scope; def?: HelperDef } | undefined;
+  fnRef: { node: AstNode; scope: Scope; def?: HelperDef | null } | undefined;
   entries: Entry[];
   /** Source order, used to number duplicates and to place tests a helper registers. */
   order: number;
@@ -674,8 +676,11 @@ interface RawTest {
 interface Invocation {
   name: string;
   scope: Scope;
-  /** What the name stood for at the call, if it was already known. */
-  def?: HelperDef;
+  /**
+   * What the name stood for at the call: a function, `null` for something known not to be one,
+   * or absent for a name not declared yet (looked up when finished).
+   */
+  def?: HelperDef | null;
   /** Describe frames open at the call. */
   frames: Frame[];
   pos: number;
@@ -730,6 +735,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
   const invocations: Invocation[] = [];
   /** Anonymous functions that only run if something calls them: mock implementations, factories. */
   const deferredFns = new Set<AstNode>();
+  /** Suite/file timeouts set while registering tests, applied in source order when finished. */
+  const timeoutEvents: { pos: number; frame: Frame | undefined; ms: number }[] = [];
+  /** Helpers an outer name stood for before the running test body rewrote them. */
+  const testRestore = new Map<
+    Binding,
+    { helper: HelperDef | undefined; methods: Map<string, HelperDef> | undefined }
+  >();
   let sawVi = false;
   let sawJest = false;
   let fileTimeout: number | undefined;
@@ -759,15 +771,19 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     targets[targets.length - 1]?.entries.push(entry);
   };
   /** A reference to a name that may be a helper, remembering what it was at this point. */
-  const callEntry = (pos: number, name: string, method?: string): Entry => {
+  const defAt = (name: string, method?: string): HelperDef | null | undefined => {
     const binding = scope.lookup(name);
-    const def = method === undefined ? binding?.helper : binding?.methods?.get(method);
+    if (!binding || binding.pending) return undefined; // not declared yet
+    return (method === undefined ? binding.helper : binding.methods?.get(method)) ?? null;
+  };
+  const callEntry = (pos: number, name: string, method?: string): Entry => {
+    const def = defAt(name, method);
     return {
       pos,
       call: name,
       ...(method === undefined ? {} : { method }),
       scope,
-      ...(def ? { def } : {}),
+      ...(def !== undefined ? { def } : {}),
     };
   };
   const popTarget = (node: AstNode): void => {
@@ -895,17 +911,16 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     // Inside a test or a helper it is an effect of running that code, applied where it runs.
     if (targets.length > 0) push({ pos: call.start, timeout: ms });
     // Suite configuration applies to the whole suite wherever it appears, and the last call wins.
-    else if (frames.length > 0) frames[frames.length - 1]!.timeout = ms;
-    else fileTimeout = ms;
+    else timeoutEvents.push({ pos: call.start, frame: frames[frames.length - 1], ms });
   };
 
   const fnRefOf = (node: AstNode): NonNullable<RawTest['fnRef']> => {
-    const def = scope.lookup(str(node, 'name') ?? '')?.helper;
-    return { node, scope, ...(def ? { def } : {}) };
+    const def = defAt(str(node, 'name') ?? '');
+    return { node, scope, ...(def !== undefined ? { def } : {}) };
   };
   const invocationOf = (name: string, pos: number): Invocation => {
-    const def = scope.lookup(name)?.helper;
-    return { name, scope, frames: [...frames], pos, ...(def ? { def } : {}) };
+    const def = defAt(name);
+    return { name, scope, frames: [...frames], pos, ...(def !== undefined ? { def } : {}) };
   };
 
   const onCall = (node: AstNode, ctx: WalkContext): void => {
@@ -1050,17 +1065,33 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     bindParams(node);
   };
 
-  /** Function declarations are hoisted: their names exist from the top of their scope. */
-  const hoistFunctions = (body: AstNode[]): void => {
+  /**
+   * Declarations are hoisted: their names exist from the top of their scope, so an earlier use
+   * refers to them (and not to an outer name or the framework), though what they hold is not
+   * known until the declaration is reached.
+   */
+  const hoistDeclarations = (body: AstNode[]): void => {
+    const declare = (owner: Scope, name: string): void => {
+      if (!owner.names.has(name)) owner.names.set(name, { mock: false, pending: true });
+    };
     for (const statement of body) {
       const declaration =
         statement.type === 'ExportNamedDeclaration' || statement.type === 'ExportDefaultDeclaration'
           ? child(statement, 'declaration')
           : statement;
-      if (declaration?.type !== 'FunctionDeclaration') continue;
-      const id = child(declaration, 'id');
-      const name = id ? str(id, 'name') : undefined;
-      if (name && !scope.names.has(name)) scope.names.set(name, { mock: false });
+      if (!declaration) continue;
+      if (declaration.type === 'FunctionDeclaration' || declaration.type === 'ClassDeclaration') {
+        const id = child(declaration, 'id');
+        const name = id ? str(id, 'name') : undefined;
+        if (name) declare(scope, name);
+      } else if (declaration.type === 'VariableDeclaration') {
+        const owner = str(declaration, 'kind') === 'var' ? scope.functionScope() : scope;
+        for (const d of children(declaration, 'declarations')) {
+          const names: string[] = [];
+          patternNames(child(d, 'id'), names);
+          for (const name of names) declare(owner, name);
+        }
+      }
     }
   };
 
@@ -1094,6 +1125,10 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     if (enclosing?.def && enclosing.def.outer.within(owner)) return;
     // a skipped test never runs, so it changes nothing outside itself
     if (currentTestOuter?.within(owner) && currentTestIsOff()) return;
+    // a later test is declared before this one runs: it sees the function as written
+    if (currentTest && currentTestOuter?.within(owner) && !testRestore.has(binding)) {
+      testRestore.set(binding, { helper: binding.helper, methods: binding.methods });
+    }
     binding.mock = next.mock;
     if (next.derived) binding.derived = next.derived;
     else delete binding.derived;
@@ -1207,6 +1242,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       if (node === currentTestNode) {
         currentTest = undefined;
         currentTestNode = undefined;
+        for (const [binding, original] of testRestore) {
+          if (original.helper) binding.helper = original.helper;
+          else delete binding.helper;
+          if (original.methods) binding.methods = original.methods;
+          else delete binding.methods;
+        }
+        testRestore.clear();
         popTarget(node);
       }
       const top = frames[frames.length - 1];
@@ -1217,7 +1259,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       for (const stmt of children(node, 'body')) {
         if (stmt.type === 'ImportDeclaration') registerImport(stmt);
       }
-      hoistFunctions(children(node, 'body'));
+      hoistDeclarations(children(node, 'body'));
     },
     FunctionDeclaration(node) {
       const id = child(node, 'id');
@@ -1226,6 +1268,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       if (name) {
         const binding = scope.names.get(name) ?? { mock: false };
         binding.mock = false;
+        delete binding.pending;
         binding.helper = deferFunction(node);
         scope.names.set(name, binding);
       }
@@ -1246,9 +1289,33 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       popTarget(node);
     },
 
+    ClassDeclaration(node) {
+      const id = child(node, 'id');
+      const name = id ? str(id, 'name') : undefined;
+      if (name) scope.names.set(name, { mock: false });
+    },
+    // namespace N { ... } is a function-like scope of its own
+    TSModuleBlock(node) {
+      pushScope(true);
+      hoistDeclarations(children(node, 'body'));
+    },
+    'TSModuleBlock:exit': popScope,
+    // [() => ..., () => ...] and class fields store functions that run only when called
+    ArrayExpression(node) {
+      for (const element of children(node, 'elements')) {
+        const e = unwrap(element);
+        if (isFunction(e)) deferredFns.add(e);
+      }
+    },
+    PropertyDefinition(node) {
+      const value = child(node, 'value');
+      const fn = value ? unwrap(value) : undefined;
+      if (fn && isFunction(fn)) deferredFns.add(fn);
+    },
+
     BlockStatement(node) {
       pushScope();
-      hoistFunctions(children(node, 'body'));
+      hoistDeclarations(children(node, 'body'));
     },
     'BlockStatement:exit': popScope,
     ForStatement: () => pushScope(),
@@ -1393,7 +1460,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     };
 
     const helperOf = (e: Extract<Entry, { call: string }>): HelperDef | undefined => {
-      if (e.def) return e.def; // what the name stood for at the call
+      if (e.def !== undefined) return e.def ?? undefined; // what the name stood for at the call
       const binding = e.scope.lookup(e.call); // a function declared later: its final definition
       return e.method === undefined ? binding?.helper : binding?.methods?.get(e.method);
     };
@@ -1417,14 +1484,18 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     // Tests that a function registers exist once per call, under the suite that calls it.
     const registered: RawTest[] = [];
     for (const call of [...invocations].sort((a, b) => a.pos - b.pos)) {
-      const def = call.def ?? call.scope.lookup(call.name)?.helper;
+      const def =
+        call.def !== undefined ? (call.def ?? undefined) : call.scope.lookup(call.name)?.helper;
       // a function that sets a timeout while tests are being registered configures the file or
-      // the suite that called it
-      for (const entry of [...(def?.entries ?? [])].sort((a, b) => a.pos - b.pos)) {
-        if (!('timeout' in entry)) continue;
-        const frame = call.frames[call.frames.length - 1];
-        if (frame) frame.timeout = entry.timeout;
-        else fileTimeout = entry.timeout;
+      // the suite that called it, at the call
+      for (const entry of def?.entries ?? []) {
+        if ('timeout' in entry) {
+          timeoutEvents.push({
+            pos: call.pos + entry.pos / 1e9,
+            frame: call.frames[call.frames.length - 1],
+            ms: entry.timeout,
+          });
+        }
       }
       for (const template of def?.templates ?? []) {
         registered.push({
@@ -1435,6 +1506,11 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         });
       }
     }
+    // Suite and file timeouts apply in source order, whichever way they were set.
+    for (const event of timeoutEvents.sort((a, b) => a.pos - b.pos)) {
+      if (event.frame) event.frame.timeout = event.ms;
+      else fileTimeout = event.ms;
+    }
     const all = [...tests, ...registered].sort((a, b) => a.order - b.order);
 
     const used = new Set<string>();
@@ -1444,7 +1520,9 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       // `test('x', namedFn)`: the named function is the test body, so it is expanded exactly like
       // an inline body, with one level of helper calls.
       const callback = t.fnRef
-        ? (t.fnRef.def ?? t.fnRef.scope.lookup(str(t.fnRef.node, 'name') ?? '')?.helper)
+        ? t.fnRef.def !== undefined
+          ? (t.fnRef.def ?? undefined)
+          : t.fnRef.scope.lookup(str(t.fnRef.node, 'name') ?? '')?.helper
         : undefined;
       if (callback) expand(callback.entries, out, true);
       expand(t.entries, out, true);

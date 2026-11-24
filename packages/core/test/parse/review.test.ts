@@ -1139,3 +1139,55 @@ describe('review round 5', () => {
     expect(shape(s).x).toEqual(['toBe:4']);
   });
 });
+
+describe('review round 5, scope and ordering', () => {
+  test('a name is local from the top of its block, so an earlier use is not the global', () => {
+    const s = sum(`test('x', () => { expect(1).toBe(1); const expect = () => ({ toBe() {} }); });`);
+    expect(shape(s)).toEqual({ x: [] });
+  });
+
+  test('a function declared later is still found', () => {
+    const s = sum(`test('x', () => { check(); });\nfunction check() { expect(1).toBe(1); }`);
+    expect(shape(s)).toEqual({ x: ['toBe:4'] });
+  });
+
+  test('a name known not to be a function is not resolved to a later one', () => {
+    const s = sum(
+      `const check = 1;\ntest('x', () => { check(); });\nvar late = () => expect(1).toBe(1);`,
+    );
+    expect(shape(s)).toEqual({ x: [] });
+  });
+
+  test('a function in a namespace is not visible outside it', () => {
+    const s = sum(
+      `namespace N { function helper() { expect(1).toBe(1); } }\ntest('x', () => { helper(); });`,
+    );
+    expect(shape(s)).toEqual({ x: [] });
+  });
+
+  test('functions stored in arrays or class fields do not run', () => {
+    const s = sum(`test('x', () => {
+      const fs = [() => expect(1).toBe(1)];
+      class A { check = () => expect(2).toBe(2); }
+    });`);
+    expect(shape(s)).toEqual({ x: [] });
+  });
+
+  test('a later test is declared with the function as written, not as an earlier body rewrites it', () => {
+    const s = sum(
+      `let run = () => expect(1).toBe(1);\ntest('a', () => { run = () => {}; });\ntest('b', run);`,
+    );
+    expect(shape(s).b).toEqual(['toBe:4']);
+  });
+
+  test('timeouts set directly and through a function apply in source order', () => {
+    const s = sum(
+      `function setup() { jest.setTimeout(5000); }\nsetup();\njest.setTimeout(1000);\ntest('x', () => { expect(1).toBe(1); });`,
+    );
+    expect(s.tests[0]!.timeoutMs).toBe(1000);
+    const t = sum(
+      `function setup() { jest.setTimeout(5000); }\njest.setTimeout(1000);\nsetup();\ntest('x', () => { expect(1).toBe(1); });`,
+    );
+    expect(t.tests[0]!.timeoutMs).toBe(5000);
+  });
+});
