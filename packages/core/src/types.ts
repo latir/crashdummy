@@ -50,8 +50,22 @@ export interface TestSummary {
 
 export interface TestCase {
   id: string;
+  /** The test's own name, without the `describe` names around it. */
+  title?: string;
   loc: { line: number; col: number };
+  /** The modifier that applies to this test: its own, else the nearest one on a `describe`. */
   modifier?: 'skip' | 'only' | 'todo' | 'fixme' | 'fails';
+  /**
+   * Every modifier that applies, outermost first: those on the surrounding `describe`s and the
+   * test's own. `modifier` keeps only the one that wins, so a `describe.only` over a test that is
+   * already skipped would otherwise leave no trace. `loc` is where each was written.
+   */
+  modifiers?: {
+    modifier: 'skip' | 'only' | 'todo' | 'fixme' | 'fails';
+    loc: { line: number; col: number };
+    /** For a modifier on a `describe`: that suite's name path. Missing for the test's own. */
+    suite?: string;
+  }[];
   timeoutMs?: number;
   matchers: MatcherUse[];
   bodyHash: string;
@@ -62,4 +76,35 @@ export interface MatcherUse {
   strength: 1 | 2 | 3 | 4;
   negated: boolean;
   subjectIsMock: boolean;
+  /**
+   * Where the matcher sits in the lattice once its argument is known (`toHaveText('x')` and
+   * `toHaveText(/x/)` differ), so changes can be compared without resolving it again. Missing for
+   * matchers the lattice does not know.
+   */
+  chain?: string;
+  rank?: number;
+}
+
+/** Output of every rule. */
+export interface Finding {
+  /** For example `integrity/test-removed`. */
+  ruleId: string;
+  layer: 'integrity' | 'oracle' | 'flaky' | 'structure' | 'info' | 'coverage' | 'mutation';
+  /** True fails the check regardless of score. */
+  gate: boolean;
+  evidence: 'strong' | 'moderate' | 'weak';
+  severity: 'info' | 'warn' | 'error';
+  /** Repo-relative path. */
+  file: string;
+  /**
+   * 1-based. For findings about code that was removed (`integrity/test-removed`) this is the
+   * position in the OLD version of the file, which is `previousPath` when the file was renamed.
+   */
+  loc?: { line: number; col: number };
+  /** One line, agent-readable. */
+  message: string;
+  /** How to fix it. */
+  hint?: string;
+  /** Points removed from the file score. Gates are outside the score, so 0. */
+  penalty: number;
 }

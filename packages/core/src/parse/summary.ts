@@ -38,7 +38,7 @@ export interface SummaryOptions {
 }
 
 /** Bump when the summary shape or its derivation changes, so stale caches are ignored. */
-export const SUMMARY_VERSION = 3;
+export const SUMMARY_VERSION = 6;
 
 export function hashText(text: string): string {
   return createHash('sha1').update(text).digest('hex').slice(0, 16);
@@ -645,6 +645,8 @@ interface Frame {
   node: AstNode;
   name: string;
   modifier: TestModifier | undefined;
+  /** Where this describe's own modifier was written. */
+  loc: { line: number; col: number };
   timeout: number | undefined;
 }
 
@@ -967,7 +969,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         const helper =
           targets[targets.length - 1]?.kind === 'helper' ? innermostHelper() : undefined;
         if (decl.kind === 'describe') {
-          frames.push({ node, name, modifier: mod, timeout: decl.timeout });
+          frames.push({
+            node,
+            name,
+            modifier: mod,
+            loc: ctx.loc(node.start),
+            timeout: decl.timeout,
+          });
           // describe('s', register): the tests register() declares belong under 's'
           if (decl.fnRef && !helper) {
             invocations.push(invocationOf(str(decl.fnRef, 'name') ?? '', node.start));
@@ -1451,12 +1459,17 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
 
     const toUse = (e: Extract<Entry, { ref: MatcherRef }>): MatcherUse => {
       const resolved = lattice.resolveMatcher(e.ref);
-      return {
+      const use: MatcherUse = {
         name: e.ref.name,
         strength: resolved.strength,
         negated: resolved.negated,
         subjectIsMock: e.signals.viaMock || isMock(e.mock),
       };
+      if (resolved.known && resolved.chain !== undefined && resolved.rank !== undefined) {
+        use.chain = resolved.chain;
+        use.rank = resolved.rank;
+      }
+      return use;
     };
 
     const helperOf = (e: Extract<Entry, { call: string }>): HelperDef | undefined => {
@@ -1541,9 +1554,19 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       const bodyHash =
         t.bodyHash ?? hashNode(callback ? child(callback.node, 'body') : t.fnRef?.node);
 
-      const tc: TestCase = { id, loc: t.loc, matchers: out.uses, bodyHash };
-      const modifier = t.modifier ?? [...t.ancestors].reverse().find((f) => f.modifier)?.modifier;
+      const tc: TestCase = { id, title: t.name, loc: t.loc, matchers: out.uses, bodyHash };
+      const inheritedFrom = [...t.ancestors].reverse().find((f) => f.modifier);
+      const modifier = t.modifier ?? inheritedFrom?.modifier;
       if (modifier) tc.modifier = modifier;
+      const modifiers: NonNullable<TestCase['modifiers']> = [];
+      t.ancestors.forEach((frame, i) => {
+        if (!frame.modifier) return;
+        // the suite's own name path, so the same `describe.only` can be recognised across versions
+        const suite = t.path.slice(0, i + 1).join(' > ');
+        modifiers.push({ modifier: frame.modifier, loc: frame.loc, suite });
+      });
+      if (t.modifier) modifiers.push({ modifier: t.modifier, loc: t.loc });
+      if (modifiers.length > 0) tc.modifiers = modifiers;
       const timeout =
         out.timeout ??
         t.timeout ??

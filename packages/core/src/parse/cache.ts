@@ -17,7 +17,9 @@ function isMatcherUse(v: unknown): boolean {
     typeof v['name'] === 'string' &&
     (v['strength'] === 1 || v['strength'] === 2 || v['strength'] === 3 || v['strength'] === 4) &&
     typeof v['negated'] === 'boolean' &&
-    typeof v['subjectIsMock'] === 'boolean'
+    typeof v['subjectIsMock'] === 'boolean' &&
+    (v['chain'] === undefined || typeof v['chain'] === 'string') &&
+    (v['rank'] === undefined || Number.isInteger(v['rank']))
   );
 }
 
@@ -26,9 +28,18 @@ function isTestCase(v: unknown): boolean {
     isRecord(v) &&
     typeof v['id'] === 'string' &&
     typeof v['bodyHash'] === 'string' &&
+    (v['title'] === undefined || typeof v['title'] === 'string') &&
     isPos(v['loc']) &&
     (v['modifier'] === undefined || MODIFIERS.has(v['modifier'] as string)) &&
-    (v['modifierLoc'] === undefined || isPos(v['modifierLoc'])) &&
+    (v['modifiers'] === undefined ||
+      (Array.isArray(v['modifiers']) &&
+        v['modifiers'].every(
+          (m) =>
+            isRecord(m) &&
+            MODIFIERS.has(m['modifier'] as string) &&
+            isPos(m['loc']) &&
+            (m['suite'] === undefined || typeof m['suite'] === 'string'),
+        ))) &&
     (v['timeoutMs'] === undefined || typeof v['timeoutMs'] === 'number') &&
     Array.isArray(v['matchers']) &&
     v['matchers'].every(isMatcherUse)

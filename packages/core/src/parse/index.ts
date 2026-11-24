@@ -94,4 +94,4 @@ export {
   unwrap,
   type AstNode,
 } from './ast.js';
-export type { ParsedFile, ParseDiagnostic } from './oxc.js';
+export type { ParsedComment, ParsedFile, ParseDiagnostic } from './oxc.js';
