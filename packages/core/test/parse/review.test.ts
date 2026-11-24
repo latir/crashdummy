@@ -1096,3 +1096,46 @@ describe('fourth review', () => {
     });
   });
 });
+
+describe('review round 5', () => {
+  test('quoted timeout keys are read', () => {
+    const s = sum(
+      `jest.setTimeout(1); jest.setConfig; vi.setConfig({ 'testTimeout': 9000 });\ntest('x', () => { expect(1).toBe(1); });`,
+    );
+    expect(s.tests[0]!.timeoutMs).toBe(9000);
+    const p = sum(
+      `import { test } from '@playwright/test';\ntest.describe.configure({ 'timeout': 7000 });\ntest('x', () => { expect(1).toBe(1); });`,
+    );
+    expect(p.tests[0]!.timeoutMs).toBe(7000);
+  });
+
+  test('an unconditional test.skip() inside a body marks the test skipped', () => {
+    const s = sum(
+      `import { test } from '@playwright/test';\ntest('x', async () => { test.skip(); expect(1).toBe(1); });\ntest('y', async () => { test.fixme(true); });`,
+    );
+    expect(s.tests.map((t) => t.modifier)).toEqual(['skip', 'fixme']);
+  });
+
+  test('a conditional test.skip(cond) or one inside an if is not certain', () => {
+    const s = sum(
+      `import { test } from '@playwright/test';\ntest('x', async ({ browserName }) => { test.skip(browserName === 'webkit'); expect(1).toBe(1); });\ntest('y', async () => { if (process.env.CI) { test.skip(); } expect(1).toBe(1); });`,
+    );
+    expect(s.tests.map((t) => t.modifier)).toEqual([undefined, undefined]);
+  });
+
+  test('require of a framework module binds the framework, not a local shadow', () => {
+    const s = sum(
+      `const { test } = require('node:test');\nconst assert = require('node:assert');\ntest.skip('x', () => { assert.equal(1, 1); });`,
+    );
+    expect(s.framework).toBe('node-test');
+    expect(s.tests.map((t) => [t.id, t.modifier])).toEqual([['x', 'skip']]);
+  });
+
+  test('imports are hoisted: use before the import line still sees the binding', () => {
+    const s = sum(
+      `test('x', () => { expect(1).toBe(1); });\nimport { test, expect } from 'vitest';`,
+    );
+    expect(s.tests.length).toBe(1);
+    expect(shape(s).x).toEqual(['toBe:4']);
+  });
+});

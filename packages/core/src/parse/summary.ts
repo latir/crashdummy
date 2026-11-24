@@ -836,6 +836,38 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     return out;
   };
 
+  const keyName = (key: AstNode): string | undefined => str(key, 'name') ?? staticString(key);
+
+  /**
+   * `test.skip()` / `test.fixme()` (or with `true`) directly in a test body skips that test
+   * at run time. Anything conditional or nested in other control flow is not certain.
+   */
+  const runtimeSkip = (call: AstNode, joined: string, ctx: WalkContext): void => {
+    if (!currentTest || (joined !== 'test.skip' && joined !== 'test.fixme')) return;
+    const args = children(call, 'arguments');
+    const first = args[0] ? unwrap(args[0]) : undefined;
+    if (
+      args.length > 0 &&
+      !(args.length === 1 && first?.type === 'Literal' && first.value === true)
+    ) {
+      return;
+    }
+    const at = ctx.ancestors.length - 1;
+    if (ctx.ancestors[at]?.type !== 'ExpressionStatement') return;
+    // only plain blocks and functions between the test declaration and the call
+    for (let i = at - 1; i >= 0; i--) {
+      const a = ctx.ancestors[i]!;
+      if (a === currentTestNode) break;
+      if (a.type !== 'BlockStatement' && !isFunction(a) && a.type !== 'CallExpression') return;
+      if (a.type === 'CallExpression' && a !== currentTestNode) return;
+    }
+    currentTest.modifier = pickModifier(
+      [currentTest.modifier, joined.slice(5) as TestModifier].filter(
+        (m): m is TestModifier => m !== undefined,
+      ),
+    );
+  };
+
   const timeoutCall = (call: AstNode, path: string[]): void => {
     const args = children(call, 'arguments');
     const joined = path.join('.');
@@ -846,7 +878,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         for (const prop of children(a, 'properties')) {
           const key = child(prop, 'key');
           const value = child(prop, 'value');
-          if (key && value && str(key, 'name') === 'testTimeout') ms = staticNumber(value);
+          if (key && value && keyName(key) === 'testTimeout') ms = staticNumber(value);
         }
       } else if (a) {
         ms = staticNumber(a);
@@ -856,7 +888,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       for (const prop of a ? children(a, 'properties') : []) {
         const key = child(prop, 'key');
         const value = child(prop, 'value');
-        if (key && value && str(key, 'name') === 'timeout') ms = staticNumber(value);
+        if (key && value && keyName(key) === 'timeout') ms = staticNumber(value);
       }
     }
     if (ms === undefined) return;
@@ -893,6 +925,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       if (calleePath[0] === 'vi') sawVi = true;
       if (calleePath[0] === 'jest') sawJest = true;
       timeoutCall(node, calleePath);
+      runtimeSkip(node, joined, ctx);
     }
 
     // vi.fn(() => ...), .mockImplementation(() => ...), vi.mock('x', () => ...): stored, not run
@@ -1070,6 +1103,29 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     else delete binding.methods;
   };
 
+  /** `require('vitest')` and friends, as the value of a declaration. */
+  const fwModuleName = (initRaw: AstNode | undefined): string | undefined => {
+    const init = initRaw ? unwrap(initRaw) : undefined;
+    if (init?.type !== 'CallExpression') return undefined;
+    const callee = child(init, 'callee');
+    if (
+      !callee ||
+      unwrap(callee).type !== 'Identifier' ||
+      str(unwrap(callee), 'name') !== 'require'
+    ) {
+      return undefined;
+    }
+    const spec = children(init, 'arguments')[0];
+    const name = spec ? staticString(spec) : undefined;
+    return name !== undefined && FRAMEWORK_MODULES[name] ? name : undefined;
+  };
+  const frameworkFromRequire = (
+    initRaw: AstNode | undefined,
+  ): TestSummary['framework'] | undefined => {
+    const name = fwModuleName(initRaw);
+    return name === undefined ? undefined : FRAMEWORK_MODULES[name];
+  };
+
   /** `require('node:assert')` and friends, as the value of a declaration. */
   const assertFromRequire = (initRaw: AstNode | undefined): { strict: boolean } | undefined => {
     if (!initRaw) return undefined;
@@ -1095,44 +1151,44 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     return ASSERT_MODULES.has(moduleName) ? { strict } : undefined;
   };
 
-  const visitor: Visitor = {
-    ImportDeclaration(node) {
-      const src = child(node, 'source');
-      const spec = src ? staticString(src) : undefined;
-      if (spec === undefined || str(node, 'importKind') === 'type') return;
-      addImport(spec);
-      const framework = FRAMEWORK_MODULES[spec];
-      if (framework) frameworkImports.push(framework);
-      const isAssert = ASSERT_MODULES.has(spec);
-      const isStrictAssert = ASSERT_STRICT_MODULES.has(spec);
-      for (const s of children(node, 'specifiers')) {
-        const local = child(s, 'local');
-        const name = local ? str(local, 'name') : undefined;
-        if (!name) continue;
-        const binding: Binding = { mock: false, importFrom: spec };
-        root.names.set(name, binding);
-        const imported = child(s, 'imported');
-        const importedName = imported
-          ? (str(imported, 'name') ?? staticString(imported))
-          : undefined;
+  /** Imports are hoisted: they bind before any code in the file runs. */
+  const registerImport = (node: AstNode): void => {
+    const src = child(node, 'source');
+    const spec = src ? staticString(src) : undefined;
+    if (spec === undefined || str(node, 'importKind') === 'type') return;
+    addImport(spec);
+    const framework = FRAMEWORK_MODULES[spec];
+    if (framework) frameworkImports.push(framework);
+    const isAssert = ASSERT_MODULES.has(spec);
+    const isStrictAssert = ASSERT_STRICT_MODULES.has(spec);
+    for (const s of children(node, 'specifiers')) {
+      const local = child(s, 'local');
+      const name = local ? str(local, 'name') : undefined;
+      if (!name) continue;
+      const binding: Binding = { mock: false, importFrom: spec };
+      root.names.set(name, binding);
+      const imported = child(s, 'imported');
+      const importedName = imported ? (str(imported, 'name') ?? staticString(imported)) : undefined;
 
-        if (framework) {
-          if (s.type === 'ImportNamespaceSpecifier') binding.framework = { kind: 'namespace' };
-          else if (s.type === 'ImportDefaultSpecifier') {
-            binding.framework = { kind: 'named', imported: 'test' };
-          } else if (importedName) binding.framework = { kind: 'named', imported: importedName };
-        }
-        if (isAssert || isStrictAssert) {
-          if (s.type === 'ImportSpecifier' && importedName === 'strict') {
-            binding.assert = { kind: 'namespace', strict: true };
-          } else if (s.type === 'ImportSpecifier' && importedName) {
-            binding.assert = { kind: 'named', imported: importedName, strict: isStrictAssert };
-          } else {
-            binding.assert = { kind: 'namespace', strict: isStrictAssert };
-          }
+      if (framework) {
+        if (s.type === 'ImportNamespaceSpecifier') binding.framework = { kind: 'namespace' };
+        else if (s.type === 'ImportDefaultSpecifier') {
+          binding.framework = { kind: 'named', imported: 'test' };
+        } else if (importedName) binding.framework = { kind: 'named', imported: importedName };
+      }
+      if (isAssert || isStrictAssert) {
+        if (s.type === 'ImportSpecifier' && importedName === 'strict') {
+          binding.assert = { kind: 'namespace', strict: true };
+        } else if (s.type === 'ImportSpecifier' && importedName) {
+          binding.assert = { kind: 'named', imported: importedName, strict: isStrictAssert };
+        } else {
+          binding.assert = { kind: 'namespace', strict: isStrictAssert };
         }
       }
-    },
+    }
+  };
+
+  const visitor: Visitor = {
     ExportNamedDeclaration(node) {
       const src = child(node, 'source');
       if (src) addImport(staticString(src));
@@ -1158,6 +1214,9 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     },
 
     Program(node) {
+      for (const stmt of children(node, 'body')) {
+        if (stmt.type === 'ImportDeclaration') registerImport(stmt);
+      }
       hoistFunctions(children(node, 'body'));
     },
     FunctionDeclaration(node) {
@@ -1224,6 +1283,25 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       }
       const from = bindingFrom(initRaw);
       for (const name of names) owner.names.set(name, { ...from });
+
+      // const { test } = require('node:test'): a framework binding, not a local shadow
+      const fwModule = frameworkFromRequire(initRaw);
+      if (fwModule) {
+        frameworkImports.push(fwModule);
+        if (id?.type === 'Identifier' && names[0]) {
+          owner.names.get(names[0])!.framework = { kind: 'named', imported: 'test' };
+        } else if (id?.type === 'ObjectPattern') {
+          for (const prop of children(id, 'properties')) {
+            const key = child(prop, 'key');
+            const value = child(prop, 'value');
+            const imported = key ? keyName(key) : undefined;
+            const local = value?.type === 'Identifier' ? str(value, 'name') : undefined;
+            const binding = local ? owner.names.get(local) : undefined;
+            if (imported && binding) binding.framework = { kind: 'named', imported };
+          }
+        }
+        for (const n of names) owner.names.get(n)!.importFrom = fwModuleName(initRaw)!;
+      }
 
       // const assert = require('node:assert'), const { strictEqual } = require('node:assert')
       const required = assertFromRequire(initRaw);
