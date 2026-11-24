@@ -1,31 +1,42 @@
 import type { MatcherUse } from '../../types.js';
-import type { Lattice } from '../lattice.js';
 import type { IntegrityRule } from './types.js';
 import { gateFinding } from './finding.js';
 
 const same = (a: MatcherUse, b: MatcherUse): boolean =>
-  a.name === b.name && a.negated === b.negated && a.strength === b.strength;
+  a.name === b.name &&
+  a.negated === b.negated &&
+  a.strength === b.strength &&
+  a.chain === b.chain &&
+  a.rank === b.rank;
 
 /**
  * Is `after` a weaker assertion than `before`?
  *
- * - Both in the same lattice chain: it is weaker if it sits lower in the chain
- *   (`toStrictEqual` to `toEqual`, `toEqual` to `toMatchObject`).
+ * This uses what the summary recorded for each assertion: its polarity, its strength, and where
+ * it sits in the lattice once its argument is known. Nothing is looked up again by name, which
+ * would lose the argument (`toHaveText('x')` is not `toHaveText(/x/)`) and would apply an alias's
+ * negation a second time (`assert.notStrictEqual` is stored as already negated).
+ *
  * - Positive to negated (`toEqual` to `not.toEqual`) is weaker.
- * - Anything else is judged on the strengths recorded for the two assertions themselves, which
- *   include the argument (`toThrow('msg')` is stronger than `toThrow()`; `toEqual(5)` and
- *   `toBe(5)` are equal). Only a real drop counts: to existence-only, or by two levels. Moving
- *   from a literal to a variable (`toBe(5)` to `toBe(expected)`) is usually a refactor.
+ * - A different matcher in the same lattice chain: weaker if it sits lower (`toStrictEqual` to
+ *   `toEqual`, `toHaveText('x')` to `toContainText('x')`).
+ * - Anything else, including the same matcher with a different argument, is judged on strength.
+ *   Only a real drop counts: to existence-only, or by two levels. Moving from a literal to a
+ *   variable (`toBe(5)` to `toBe(expected)`) is usually a refactor, while `toThrow('msg')` to
+ *   `toThrow()` or `toEqual({..})` to `toEqual(expect.anything())` is not.
  * - A matcher the lattice does not know is never reported.
  */
-function weaker(before: MatcherUse, after: MatcherUse, lattice: Lattice): boolean {
-  const b = lattice.resolveMatcher({ name: before.name, negated: before.negated });
-  const a = lattice.resolveMatcher({ name: after.name, negated: after.negated });
-  if (!b.known || !a.known) return false;
-
-  if (b.negated !== a.negated) return !b.negated && a.negated;
-  if (b.chain === a.chain && b.rank !== undefined && a.rank !== undefined && b.rank !== a.rank) {
-    return a.rank > b.rank;
+function weaker(before: MatcherUse, after: MatcherUse): boolean {
+  if (before.chain === undefined || after.chain === undefined) return false;
+  if (before.negated !== after.negated) return !before.negated && after.negated;
+  if (
+    before.name !== after.name &&
+    before.chain === after.chain &&
+    before.rank !== undefined &&
+    after.rank !== undefined &&
+    before.rank !== after.rank
+  ) {
+    return after.rank > before.rank;
   }
   const drop = before.strength - after.strength;
   return drop > 0 && (after.strength <= 2 || drop >= 2);
@@ -38,7 +49,6 @@ function weaker(before: MatcherUse, after: MatcherUse, lattice: Lattice): boolea
 export function weakenedAssertions(
   before: readonly MatcherUse[],
   after: readonly MatcherUse[],
-  lattice: Lattice,
 ): { from: MatcherUse; to: MatcherUse }[] {
   const rest = [...after];
   const leftover: MatcherUse[] = [];
@@ -49,7 +59,7 @@ export function weakenedAssertions(
   }
   const out: { from: MatcherUse; to: MatcherUse }[] = [];
   for (let i = 0; i < Math.min(leftover.length, rest.length); i++) {
-    if (weaker(leftover[i]!, rest[i]!, lattice)) out.push({ from: leftover[i]!, to: rest[i]! });
+    if (weaker(leftover[i]!, rest[i]!)) out.push({ from: leftover[i]!, to: rest[i]! });
   }
   return out;
 }
@@ -68,7 +78,7 @@ export const matcherWeakened: IntegrityRule = {
   check(ctx) {
     const findings = [];
     for (const { before, after } of ctx.pairs) {
-      const changes = weakenedAssertions(before.matchers, after.matchers, ctx.lattice);
+      const changes = weakenedAssertions(before.matchers, after.matchers);
       if (changes.length === 0) continue;
       const shown = changes
         .slice(0, 3)

@@ -327,3 +327,65 @@ test('summaries are JSON-serializable and stable', () => {
   expect(JSON.parse(JSON.stringify(s))).toEqual(s);
   expect(summarizeFixture('nested-describes.test.ts')).toEqual(s);
 });
+
+describe('every modifier on a test is recorded, not just the winner', () => {
+  test("describe modifiers come first, then the test's own", () => {
+    const s = summarize(
+      'a.test.ts',
+      `describe.only('outer', () => {\n  describe.skip('inner', () => {\n    test.fails('t', () => {});\n  });\n});`,
+    );
+    expect(s.tests[0]!.modifier).toBe('fails');
+    expect(s.tests[0]!.modifiers).toEqual([
+      { modifier: 'only', loc: { line: 1, col: 1 } },
+      { modifier: 'skip', loc: { line: 2, col: 3 } },
+      { modifier: 'fails', loc: { line: 3, col: 5 } },
+    ]);
+  });
+
+  test('a test without any modifier has none', () => {
+    expect(
+      summarize('a.test.ts', `describe('s', () => { test('t', () => {}); });`).tests[0]!.modifiers,
+    ).toBeUndefined();
+  });
+});
+
+describe('matchers record where they sit in the lattice', () => {
+  const m = (source: string) =>
+    summarize('a.test.ts', `test('x', () => { ${source} });`).tests[0]!.matchers[0]!;
+
+  test('the argument decides the rank', () => {
+    expect(m(`expect(a).toHaveText('x');`)).toMatchObject({
+      chain: 'ui-text',
+      rank: 0,
+      strength: 4,
+    });
+    expect(m(`expect(a).toHaveText(/x/);`)).toMatchObject({
+      chain: 'ui-text',
+      rank: 1,
+      strength: 3,
+    });
+    expect(m(`expect(a).toEqual(expect.anything());`)).toMatchObject({
+      chain: 'existence',
+      rank: 0,
+      strength: 1,
+    });
+  });
+
+  test('an unknown matcher has no placement', () => {
+    const use = m(`expect(a).toBeCustom();`);
+    expect(use.chain).toBeUndefined();
+    expect(use.rank).toBeUndefined();
+  });
+
+  test('negation is stored once: an alias is not negated again', () => {
+    expect(
+      summarize(
+        'a.test.ts',
+        `import assert from 'node:assert';\ntest('x', () => { assert.notStrictEqual(1, 2); });`,
+      ).tests[0]!.matchers[0],
+    ).toMatchObject({
+      name: 'assert.notStrictEqual',
+      negated: true,
+    });
+  });
+});

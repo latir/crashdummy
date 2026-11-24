@@ -38,7 +38,7 @@ export interface SummaryOptions {
 }
 
 /** Bump when the summary shape or its derivation changes, so stale caches are ignored. */
-export const SUMMARY_VERSION = 4;
+export const SUMMARY_VERSION = 5;
 
 export function hashText(text: string): string {
   return createHash('sha1').update(text).digest('hex').slice(0, 16);
@@ -1191,12 +1191,17 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
 
     const toUse = (e: Extract<Entry, { ref: MatcherRef }>): MatcherUse => {
       const resolved = lattice.resolveMatcher(e.ref);
-      return {
+      const use: MatcherUse = {
         name: e.ref.name,
         strength: resolved.strength,
         negated: resolved.negated,
         subjectIsMock: e.signals.viaMock || isMock(e.mock),
       };
+      if (resolved.known && resolved.chain !== undefined && resolved.rank !== undefined) {
+        use.chain = resolved.chain;
+        use.rank = resolved.rank;
+      }
+      return use;
     };
 
     const helperOf = (e: Extract<Entry, { call: string }>): HelperDef | undefined => {
@@ -1264,11 +1269,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       const tc: TestCase = { id, loc: t.loc, matchers: out.uses, bodyHash };
       const inheritedFrom = [...t.ancestors].reverse().find((f) => f.modifier);
       const modifier = t.modifier ?? inheritedFrom?.modifier;
-      if (modifier) {
-        tc.modifier = modifier;
-        const at = t.modifier ? t.loc : inheritedFrom?.loc;
-        if (at) tc.modifierLoc = at;
+      if (modifier) tc.modifier = modifier;
+      const modifiers: NonNullable<TestCase['modifiers']> = [];
+      for (const frame of t.ancestors) {
+        if (frame.modifier) modifiers.push({ modifier: frame.modifier, loc: frame.loc });
       }
+      if (t.modifier) modifiers.push({ modifier: t.modifier, loc: t.loc });
+      if (modifiers.length > 0) tc.modifiers = modifiers;
       const timeout =
         out.timeout ??
         t.timeout ??

@@ -75,6 +75,11 @@ interface Prepared {
   after: TestSummary;
   parsedAfter: ParsedFile | undefined;
   matching: Matching;
+  /**
+   * Whether `before.imports` are specifiers as written (from source text) or repo paths already
+   * resolved (from a stored summary). Only the first need to be told apart from packages.
+   */
+  importsRaw: boolean;
 }
 
 /**
@@ -109,6 +114,7 @@ export function checkIntegrity(
     const beforePath = change.previousPath ?? change.path;
 
     let before: TestSummary | undefined = change.kind === 'added' ? EMPTY : undefined;
+    let importsRaw = true;
     if (before === undefined && change.before !== undefined) {
       if (typeof change.before === 'string') {
         try {
@@ -129,6 +135,7 @@ export function checkIntegrity(
         }
       } else {
         before = change.before;
+        importsRaw = false;
       }
     }
     // nothing to compare against: the source did not give us the old version
@@ -162,6 +169,7 @@ export function checkIntegrity(
       before,
       after,
       parsedAfter,
+      importsRaw,
       matching: matchTests(
         before.tests,
         after.tests,
@@ -179,6 +187,8 @@ export function checkIntegrity(
         if (!target) continue;
         p.matching.removed = p.matching.removed.filter((t) => t !== removed);
         q.matching.added = q.matching.added.filter((t) => t !== target);
+        // it still has to be judged: moved and skipped is a skip
+        q.matching.pairs.push({ before: removed, after: target, via: 'body' });
         break;
       }
     }
@@ -188,11 +198,16 @@ export function checkIntegrity(
 
   for (const p of prepared) {
     const sourceStillExists = (): boolean => {
-      const local = p.before.imports.filter((s) => s.startsWith('.') || /\.[cm]?[jt]sx?$/.test(s));
+      // Raw specifiers: only relative ones name a file of this repo; `vitest` and
+      // `lodash/isEqual.js` are packages, whatever their ending. Stored summaries hold repo
+      // paths already, so all of them count.
+      const local = p.importsRaw
+        ? p.before.imports.filter((s) => s.startsWith('.'))
+        : p.before.imports;
       // nothing we can check: assume the code is still there
       if (local.length === 0) return true;
       return local.some((spec) =>
-        spec.startsWith('.')
+        p.importsRaw
           ? resolveImport(spec, p.beforePath, { cwd, exists }) !== undefined
           : exists(resolvePath(cwd, spec)),
       );

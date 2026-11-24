@@ -8,8 +8,12 @@ export interface AllowDirective {
   reason: string | undefined;
   /** 1-based line where the comment starts. */
   line: number;
-  /** The next line with code after the comment, which a `line` directive also covers. */
-  targetLine: number;
+  /**
+   * The line a `line` directive also covers: the first line with code after the comment, or the
+   * comment's own last line when code follows it there. Undefined for a trailing comment, which
+   * covers only its own line.
+   */
+  targetLine: number | undefined;
   /**
    * `file` when the comment comes before the first statement (a header comment), `line` when it
    * sits next to the code it is about.
@@ -29,31 +33,34 @@ function usableReason(text: string | undefined): string | undefined {
   return reason && /[\p{L}\p{N}]/u.test(reason) ? reason : undefined;
 }
 
-/** The first line after `from` that is not just a comment, so other comments may sit in between. */
-function nextCodeLine(file: ParsedFile, lines: readonly string[], from: number): number {
-  const commentOnly = (line: number): boolean =>
-    file.comments.some((c) => {
-      if (line < c.line || line > c.endLine) return false;
-      if (line > c.line) return true;
-      return (lines[line - 1] ?? '').slice(0, c.start - lineStart(file, c.line)).trim() === '';
-    });
-  let line = from;
-  while (line <= lines.length && ((lines[line - 1] ?? '').trim() === '' || commentOnly(line)))
-    line++;
-  return line;
-}
-
-function lineStart(file: ParsedFile, line: number): number {
-  let offset = 0;
-  for (let l = 1; l < line; l++) offset = file.source.indexOf('\n', offset) + 1;
-  return offset;
+/**
+ * The lines of a file with every comment blanked out, so "is there code on this line" is a plain
+ * question, whatever mix of comments and code the line holds.
+ */
+function codeLines(file: ParsedFile): { lines: string[]; starts: number[] } {
+  const starts = [0];
+  for (let i = 0; i < file.source.length; i++) if (file.source[i] === '\n') starts.push(i + 1);
+  const lines = starts.map((start, i) => {
+    const end = i + 1 < starts.length ? starts[i + 1]! - 1 : file.source.length;
+    let text = file.source.slice(start, end);
+    for (const c of file.comments) {
+      if (c.end <= start || c.start >= end) continue;
+      const from = Math.max(c.start, start) - start;
+      const to = Math.min(c.end, end) - start;
+      text = text.slice(0, from) + ' '.repeat(to - from) + text.slice(to);
+    }
+    return text;
+  });
+  return { lines, starts };
 }
 
 export function parseAllowDirectives(file: ParsedFile): AllowDirective[] {
-  const lines = file.source.split('\n');
   const firstStatement = children(file.program, 'body')[0] as AstNode | undefined;
   const codeStart = firstStatement ? firstStatement.start : Infinity;
+  const { lines, starts } = codeLines(file);
+  const hasCode = (line: number): boolean => (lines[line - 1] ?? '').trim() !== '';
   const out: AllowDirective[] = [];
+
   for (const comment of file.comments) {
     if (!MARKER.test(comment.value)) continue;
     // a directive is one line; in a block comment it may be any line of it
@@ -63,11 +70,29 @@ export function parseAllowDirectives(file: ParsedFile): AllowDirective[] {
       .split(',')
       .map((r) => r.trim())
       .filter(Boolean);
+
+    const before = (lines[comment.line - 1] ?? '').slice(
+      0,
+      comment.start - starts[comment.line - 1]!,
+    );
+    const after = (lines[comment.endLine - 1] ?? '').slice(
+      comment.end - starts[comment.endLine - 1]!,
+    );
+    let targetLine: number | undefined;
+    if (before.trim() !== '') {
+      targetLine = undefined; // trailing: the code it is about is on its own line
+    } else if (after.trim() !== '') {
+      targetLine = comment.endLine; // code follows the comment on the same line
+    } else {
+      targetLine = comment.endLine + 1;
+      while (targetLine <= lines.length && !hasCode(targetLine)) targetLine++;
+    }
+
     out.push({
       rules,
       reason: usableReason(m?.[2]),
       line: comment.line,
-      targetLine: nextCodeLine(file, lines, comment.endLine + 1),
+      targetLine,
       scope: comment.end <= codeStart ? 'file' : 'line',
     });
   }
@@ -77,8 +102,10 @@ export function parseAllowDirectives(file: ParsedFile): AllowDirective[] {
 /**
  * Does this directive cover a finding of `rule` at `line`? A directive without a reason covers
  * nothing. A `file` directive covers the whole file; a `line` directive covers the line it is on
- * and the next line with code, so other comments may sit between. Findings located in the OLD file (`side: 'before'`, removed tests) can
- * only be covered by a `file` directive, because line numbers of the two versions do not line up.
+ * and, when it stands on its own, the next line with code (other comments may sit between). A
+ * trailing comment covers only its own line. Findings located in the OLD file
+ * (`side: 'before'`, removed tests) can only be covered by a `file` directive, because line
+ * numbers of the two versions do not line up.
  */
 export function covers(
   directive: AllowDirective,

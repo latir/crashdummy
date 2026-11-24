@@ -96,41 +96,82 @@ describe('rename detection', () => {
 
 describe('weakenedAssertions', () => {
   const lattice = createLattice();
-  const use = (name: string, strength: MatcherUse['strength'], negated = false): MatcherUse => ({
-    name,
-    strength,
-    negated,
-    subjectIsMock: false,
-  });
+  /** A matcher as the summary records it: strength and placement come from the lattice. */
+  const use = (
+    name: string,
+    extra: { negated?: boolean; arg?: 'literal' | 'other' | 'none' | 'anything' } = {},
+    custom = lattice,
+  ): MatcherUse => {
+    const r = custom.resolveMatcher({ name, ...extra });
+    const m: MatcherUse = { name, strength: r.strength, negated: r.negated, subjectIsMock: false };
+    if (r.known && r.chain !== undefined && r.rank !== undefined) {
+      m.chain = r.chain;
+      m.rank = r.rank;
+    }
+    return m;
+  };
 
   test('identical assertions cancel out in any order', () => {
-    const a = [use('toBe', 4), use('toEqual', 4)];
-    expect(weakenedAssertions(a, [a[1]!, a[0]!], lattice)).toEqual([]);
+    const a = [use('toBe', { arg: 'literal' }), use('toEqual')];
+    expect(weakenedAssertions(a, [a[1]!, a[0]!])).toEqual([]);
   });
 
   test('a dropped assertion is not a weakened one', () => {
-    expect(
-      weakenedAssertions([use('toBe', 4), use('toBeTruthy', 1)], [use('toBe', 4)], lattice),
-    ).toEqual([]);
+    expect(weakenedAssertions([use('toBe'), use('toBeTruthy')], [use('toBe')])).toEqual([]);
   });
 
   test('a weaker replacement is found even next to unchanged assertions', () => {
-    const r = weakenedAssertions(
-      [use('toBe', 4), use('toEqual', 4)],
-      [use('toBe', 4), use('toBeTruthy', 1)],
-      lattice,
-    );
+    const r = weakenedAssertions([use('toBe'), use('toEqual')], [use('toBe'), use('toBeTruthy')]);
     expect(r.map((c) => [c.from.name, c.to.name])).toEqual([['toEqual', 'toBeTruthy']]);
   });
 
   test('same matcher: only a real strength drop counts', () => {
-    expect(weakenedAssertions([use('toBe', 4)], [use('toBe', 3)], lattice)).toEqual([]);
-    expect(weakenedAssertions([use('toThrow', 3)], [use('toThrow', 2)], lattice)).toHaveLength(1);
-    expect(weakenedAssertions([use('toEqual', 4)], [use('toEqual', 1)], lattice)).toHaveLength(1);
+    expect(
+      weakenedAssertions([use('toBe', { arg: 'literal' })], [use('toBe', { arg: 'other' })]),
+    ).toEqual([]);
+    expect(
+      weakenedAssertions([use('toThrow', { arg: 'other' })], [use('toThrow', { arg: 'none' })]),
+    ).toHaveLength(1);
+    expect(
+      weakenedAssertions([use('toEqual', { arg: 'other' })], [use('toEqual', { arg: 'anything' })]),
+    ).toHaveLength(1);
+  });
+
+  test('the argument decides where a matcher sits: toHaveText(x) to toContainText(x)', () => {
+    const before = use('toHaveText', { arg: 'literal' });
+    const after = use('toContainText', { arg: 'literal' });
+    expect(weakenedAssertions([before], [after])).toHaveLength(1);
+    expect(weakenedAssertions([after], [before])).toEqual([]);
+  });
+
+  test('becoming stronger is never weakened, even from an existence check', () => {
+    expect(
+      weakenedAssertions(
+        [use('toEqual', { arg: 'anything' })],
+        [use('toMatchObject', { arg: 'other' })],
+      ),
+    ).toEqual([]);
+  });
+
+  test('an alias that is already negated is not negated twice', () => {
+    // assert.notStrictEqual is stored as negated; expect(x).not.toBe(y) is the same assertion
+    const before = use('assert.notStrictEqual');
+    const after = use('toBe', { negated: true, arg: 'literal' });
+    expect(before.negated).toBe(true);
+    expect(weakenedAssertions([before], [after])).toEqual([]);
+    expect(weakenedAssertions([after], [before])).toEqual([]);
+  });
+
+  test('positive to negated is weaker, the other way is not', () => {
+    expect(weakenedAssertions([use('toEqual')], [use('toEqual', { negated: true })])).toHaveLength(
+      1,
+    );
+    expect(weakenedAssertions([use('toEqual', { negated: true })], [use('toEqual')])).toEqual([]);
   });
 
   test('unknown matchers are never reported', () => {
-    expect(weakenedAssertions([use('toBeCustom', 2)], [use('toBeTruthy', 1)], lattice)).toEqual([]);
+    expect(weakenedAssertions([use('toBeCustom')], [use('toBeTruthy')])).toEqual([]);
+    expect(weakenedAssertions([use('toEqual')], [use('toBeCustom')])).toEqual([]);
   });
 
   test('user matcher overrides are honored', () => {
@@ -139,11 +180,21 @@ describe('weakenedAssertions', () => {
       toBeNear: { strength: 2 },
     });
     expect(
-      weakenedAssertions([use('toBeWithin', 3)], [use('toHaveProperty', 3)], custom),
+      weakenedAssertions([use('toBeWithin', {}, custom)], [use('toHaveProperty', {}, custom)]),
     ).toHaveLength(1);
-    expect(weakenedAssertions([use('toBeNear', 2)], [use('toBeTruthy', 1)], custom)).toHaveLength(
-      1,
-    );
+    expect(
+      weakenedAssertions([use('toBeNear', {}, custom)], [use('toBeTruthy', {}, custom)]),
+    ).toHaveLength(1);
+  });
+
+  test('assertions recorded without a placement (an old stored summary) are not compared', () => {
+    const bare = (name: string, strength: 1 | 2 | 3 | 4): MatcherUse => ({
+      name,
+      strength,
+      negated: false,
+      subjectIsMock: false,
+    });
+    expect(weakenedAssertions([bare('toEqual', 4)], [bare('toBeTruthy', 1)])).toEqual([]);
   });
 });
 
@@ -203,6 +254,44 @@ describe('override comments', () => {
     expect(covers(d!, 'integrity/a', 2, 'after')).toBe(true);
     expect(covers(d!, 'integrity/a', 6, 'after')).toBe(false);
     expect(covers(d!, 'integrity/b', 5, 'after')).toBe(false);
+  });
+
+  test('code after a block comment on the same line is the target', () => {
+    const [d] = parse(
+      `const a = 1;\n// crashdummy-allow integrity/a: why\n/* note */ test('x');\ntest('y');`,
+    );
+    expect(d).toMatchObject({ line: 2, targetLine: 3 });
+    expect(covers(d!, 'integrity/a', 3, 'after')).toBe(true);
+    expect(covers(d!, 'integrity/a', 4, 'after')).toBe(false);
+  });
+
+  test('a comment that shares its line with code on both sides targets that line', () => {
+    const [d] = parse(
+      `const a = 1;\n/* crashdummy-allow integrity/a: why */ test('x');\ntest('y');`,
+    );
+    expect(d).toMatchObject({ line: 2, targetLine: 2 });
+    expect(covers(d!, 'integrity/a', 3, 'after')).toBe(false);
+  });
+
+  test('a trailing comment covers its own line only', () => {
+    const [d] = parse(`const a = 1;\ntest('x'); // crashdummy-allow integrity/a: why\ntest('y');`);
+    expect(d).toMatchObject({ line: 2, targetLine: undefined, scope: 'line' });
+    expect(covers(d!, 'integrity/a', 2, 'after')).toBe(true);
+    expect(covers(d!, 'integrity/a', 3, 'after')).toBe(false);
+  });
+
+  test('a block comment that follows code is trailing too', () => {
+    const [d] = parse(
+      `const a = 1;\ntest('x'); /* crashdummy-allow integrity/a: why */\ntest('y');`,
+    );
+    expect(covers(d!, 'integrity/a', 3, 'after')).toBe(false);
+  });
+
+  test('comment text inside a string or another comment does not count as code', () => {
+    const [d] = parse(
+      `const a = 1;\n// crashdummy-allow integrity/a: why\n// ordinary note\n/* another */\n\ntest('x');`,
+    );
+    expect(d).toMatchObject({ targetLine: 6 });
   });
 
   test('findings in the old file need a file-level directive', () => {
@@ -323,6 +412,79 @@ describe('checkIntegrity', () => {
   });
 });
 
+describe('suite modifiers', () => {
+  const suite = (mod: string, test: string) =>
+    `describe${mod}('s', () => { ${test}('a', () => { expect(1).toBe(1); }); ${test}('b', () => { expect(2).toBe(2); }); });\n`;
+
+  test('describe.only over tests that are already skipped is still a .only', () => {
+    const r = check([modified(suite('', 'test.skip'), suite('.only', 'test.skip'))]);
+    expect(r.findings).toHaveLength(1);
+    expect(r.findings[0]).toMatchObject({
+      ruleId: 'integrity/modifier-added',
+      message: "2 tests are now only: 's > a', 's > b'",
+    });
+  });
+
+  test('describe.skip over tests that carry their own .fails is a skip', () => {
+    const r = check([modified(suite('', 'test.fails'), suite('.skip', 'test.fails'))]);
+    expect(r.findings.map((f) => f.message)).toEqual(["2 tests are now skip: 's > a', 's > b'"]);
+  });
+
+  test('describe.skip over tests that were already skipped adds nothing', () => {
+    expect(check([modified(suite('', 'test.skip'), suite('.skip', 'test.skip'))]).findings).toEqual(
+      [],
+    );
+  });
+
+  test('each modifier is reported where it is written: two .skip and one .only are three findings', () => {
+    const r = check([modified(suite('', 'test'), suite('.only', 'test.skip'))]);
+    expect(r.findings.map((f) => f.message).sort()).toEqual([
+      "2 tests are now only: 's > a', 's > b'",
+      "test 's > a' is now skip",
+      "test 's > b' is now skip",
+    ]);
+  });
+
+  test('a new test inside a describe.only is a .only', () => {
+    const r = check([modified(suite('', 'test'), suite('.only', 'test') + t('fresh'))]);
+    expect(r.findings.map((f) => f.ruleId)).toEqual(['integrity/modifier-added']);
+  });
+});
+
+describe('assertions that are the same under another spelling', () => {
+  test('assert.notStrictEqual to expect().not.toBe() is not weaker', () => {
+    const r = check([
+      {
+        path: 'a.test.ts',
+        kind: 'modified',
+        before: `import assert from 'node:assert/strict';\nimport { test } from 'node:test';\ntest('x', () => { assert.notStrictEqual(1, 2); });\n`,
+        after: `import { test, expect } from 'vitest';\ntest('x', () => { expect(1).not.toBe(2); });\n`,
+      },
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+
+  test('toEqual(expect.anything()) to toMatchObject({..}) is stronger, not weaker', () => {
+    const r = check([
+      modified(
+        t('a', 'expect(add(1, 2)).toEqual(expect.anything());'),
+        t('a', 'expect(add(1, 2)).toMatchObject({ total: 3 });'),
+      ),
+    ]);
+    expect(r.findings).toEqual([]);
+  });
+
+  test('toHaveText(x) to toContainText(x) is weaker', () => {
+    const r = check([
+      modified(
+        t('a', "expect(page).toHaveText('Cart');"),
+        t('a', "expect(page).toContainText('Cart');"),
+      ),
+    ]);
+    expect(ids(r)).toEqual(['integrity/matcher-weakened']);
+  });
+});
+
 describe('hiding tests from the runner', () => {
   test('wrapping every test in a function that is never called is a removal', () => {
     const r = check([modified(t('a') + t('b'), `function all() { ${t('a')} ${t('b')} }\n`)]);
@@ -389,6 +551,32 @@ describe('a test file that was deleted', () => {
     expect(ids(check([noImports], { exists: () => false }))).toEqual(['integrity/test-removed']);
   });
 
+  test('a package whose name ends in .js is not a local file that disappeared', () => {
+    const packagesOnly: ChangedFile = {
+      path: 'a.test.ts',
+      kind: 'modified',
+      before: `import { test, expect } from 'vitest';\nimport isEqual from 'lodash/isEqual.js';\n${t('a')}${t('b')}`,
+      after: `import { test, expect } from 'vitest';\n${t('a')}`,
+    };
+    expect(ids(check([packagesOnly], { exists: () => false }))).toEqual(['integrity/test-removed']);
+  });
+
+  test('a stored summary holds repo paths, and those are checked directly', () => {
+    const before = analyzeTestFile('a.test.ts', HEAD + t('a') + t('b'), {
+      resolve: { cwd: '/virtual', exists: () => true },
+    }).summary;
+    expect(before.imports).toEqual(['math.ts']);
+    const seen: string[] = [];
+    const gone = check([{ path: 'a.test.ts', kind: 'modified', before, after: HEAD + t('a') }], {
+      exists: (p: string) => (seen.push(p), false),
+    });
+    expect(gone.findings).toEqual([]); // the module is gone, so removing its tests is fine
+    expect(seen).toContain('/virtual/math.ts');
+    expect(
+      ids(check([{ path: 'a.test.ts', kind: 'modified', before, after: HEAD + t('a') }])),
+    ).toEqual(['integrity/test-removed']);
+  });
+
   test('removing tests from a file that stays is judged the same way', () => {
     const r = check([modified(t('a') + t('b'), t('a'))], { exists: () => false });
     expect(r.findings).toEqual([]);
@@ -420,6 +608,23 @@ describe('a test moved to another file', () => {
       modified(t('x'), t('x') + t('moves elsewhere', 'expect(1).toBeTruthy();'), 'two.test.ts'),
     ]);
     expect(ids(r)).toEqual(['integrity/test-removed']);
+  });
+
+  test('it is still judged: moved and skipped is a skip, moved and weakened is weakened', () => {
+    const body = 'expect(add(5, 5)).toBe(10);';
+    const skipped = check([
+      modified(t('a') + t('moves', body), t('a'), 'one.test.ts'),
+      modified(t('x'), t('x') + `test.skip('moved', () => { ${body} });\n`, 'two.test.ts'),
+    ]);
+    expect(skipped.findings.map((f) => [f.file, f.ruleId])).toEqual([
+      ['two.test.ts', 'integrity/modifier-added'],
+    ]);
+
+    const focused = check([
+      modified(t('a') + t('moves', body), t('a'), 'one.test.ts'),
+      modified(t('x'), t('x') + `test.only('moved', () => { ${body} });\n`, 'two.test.ts'),
+    ]);
+    expect(focused.findings.map((f) => f.ruleId)).toEqual(['integrity/modifier-added']);
   });
 
   test('one added test cannot cover two removed ones', () => {

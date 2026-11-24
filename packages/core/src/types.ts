@@ -51,12 +51,17 @@ export interface TestSummary {
 export interface TestCase {
   id: string;
   loc: { line: number; col: number };
+  /** The modifier that applies to this test: its own, else the nearest one on a `describe`. */
   modifier?: 'skip' | 'only' | 'todo' | 'fixme' | 'fails';
   /**
-   * Where the modifier was written: this test's own call, or the `describe` that it inherits the
-   * modifier from. Lets a `describe.skip` over 20 tests be reported once, at the `.skip`.
+   * Every modifier that applies, outermost first: those on the surrounding `describe`s and the
+   * test's own. `modifier` keeps only the one that wins, so a `describe.only` over a test that is
+   * already skipped would otherwise leave no trace. `loc` is where each was written.
    */
-  modifierLoc?: { line: number; col: number };
+  modifiers?: {
+    modifier: 'skip' | 'only' | 'todo' | 'fixme' | 'fails';
+    loc: { line: number; col: number };
+  }[];
   timeoutMs?: number;
   matchers: MatcherUse[];
   bodyHash: string;
@@ -67,6 +72,13 @@ export interface MatcherUse {
   strength: 1 | 2 | 3 | 4;
   negated: boolean;
   subjectIsMock: boolean;
+  /**
+   * Where the matcher sits in the lattice once its argument is known (`toHaveText('x')` and
+   * `toHaveText(/x/)` differ), so changes can be compared without resolving it again. Missing for
+   * matchers the lattice does not know.
+   */
+  chain?: string;
+  rank?: number;
 }
 
 /** Output of every rule. */

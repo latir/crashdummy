@@ -17,11 +17,11 @@ Before any gate runs, tests are matched across the change, so a rename is not a 
 2. the same body (a rename, or a move into another `describe` or another changed file),
 3. a similar name, best match first (a rename plus an edit). The pair is still judged by the other gates, so editing a test into a weaker one is not a way around them.
 
-Matching is one-to-one.
+Matching is one-to-one. A test that moved to another changed file is matched on an identical body and is still judged there: moved and skipped is a skip.
 
 ## "Its source still exists"
 
-Removing a test is fine when the code it tested was removed too. `integrity/test-removed` looks at the local modules the old test file imported. It fires when at least one of them still exists, or when the file imported none that can be checked. Deleting a module and its test file together is not a finding.
+Removing a test is fine when the code it tested was removed too. `integrity/test-removed` looks at the local modules the old test file imported (relative paths; packages such as `vitest` or `lodash/isEqual.js` are not local, whatever their ending). It fires when at least one of them still exists, or when the file imported none that can be checked. Deleting a module and its test file together is not a finding.
 
 ## Allowing a change
 
@@ -33,7 +33,8 @@ test.skip('adds', () => {
 ```
 
 - The reason is required, and it needs real words. A directive without one allows nothing and is a gate on its own (`integrity/allow-without-reason`).
-- **Next to code:** a comment covers its own line and the next line with code, so other comments can sit in between. A trailing comment covers its own line.
+- **Above code:** a comment on its own line covers the next line that has code, so other comments can sit in between. If code follows the comment on the same line (`/* note */ test.skip(...)`), that line is the target.
+- **Trailing:** a comment after code on the same line covers that line only, never the next one.
 - **At the top of the file** (before the first statement), a comment covers the whole file. That is the only way to allow `integrity/test-removed`, because the removed test is not in the new file.
 - Several rules: `// crashdummy-allow integrity/matcher-weakened, integrity/assertions-dropped: covered by the contract test`.
 - A rule that does not exist is reported as a warning, so a typo does not silently allow nothing.
