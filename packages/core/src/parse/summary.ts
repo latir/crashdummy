@@ -38,7 +38,7 @@ export interface SummaryOptions {
 }
 
 /** Bump when the summary shape or its derivation changes, so stale caches are ignored. */
-export const SUMMARY_VERSION = 2;
+export const SUMMARY_VERSION = 3;
 
 export function hashText(text: string): string {
   return createHash('sha1').update(text).digest('hex').slice(0, 16);
@@ -249,17 +249,24 @@ const STRICT_METHODS: Record<string, string> = {
 const ASSERT_MODULES = new Set(['assert', 'node:assert']);
 const ASSERT_STRICT_MODULES = new Set(['assert/strict', 'node:assert/strict']);
 
-class AssertionFinder {
-  /** Locals bound to the default or namespace import of `node:assert`. */
-  readonly assertLocals = new Set<string>(['assert']);
-  /** The subset of those locals that are the strict namespace. */
-  readonly strictLocals = new Set<string>();
-  /** `import { strictEqual } from 'node:assert'`: local name to imported name and strictness. */
-  readonly assertNamed = new Map<string, { imported: string; strict: boolean }>();
+/** What a local name stands for when it comes from `node:assert`, by import or by `require`. */
+type AssertBinding =
+  { kind: 'namespace'; strict: boolean } | { kind: 'named'; imported: string; strict: boolean };
 
+/** The part of a scope binding that the assertion finder needs. */
+interface BindingInfo {
+  assert?: AssertBinding;
+  /** The first parameter of a `node:test` callback: `ctx.assert.equal(...)`. */
+  testContext?: boolean;
+  importFrom?: string;
+}
+
+class AssertionFinder {
   constructor(
     private readonly custom: readonly RegExp[],
     private readonly norm: Norm,
+    /** Resolves a name in the scope where it is used. */
+    private readonly lookup: (name: string) => BindingInfo | undefined,
   ) {}
 
   find(call: AstNode): Assertion | undefined {
@@ -273,8 +280,8 @@ class AssertionFinder {
       if (chain) return chain;
     }
 
-    // The path as written: `const assert = require('assert')` and `helpers.expectOk(...)` are
-    // local names, so they must not go through the framework-name normalizer.
+    // The path as written: `helpers.expectOk(...)` is a local name, so it must not go through
+    // the framework-name normalizer.
     const path = memberPath(c);
     if (!path) return undefined;
     const asserted = this.assertCall(path, args);
@@ -317,23 +324,42 @@ class AssertionFinder {
     };
   }
 
+  /**
+   * `assert.equal(...)`, `strictEqual(...)`, `ctx.assert.equal(...)`. What the first name stands
+   * for comes from its binding in the scope of the call, so a local `assert` or `check` that
+   * happens to share a name with an import is not node:assert.
+   */
   private assertCall(path: string[], args: AstNode[]): Assertion | undefined {
-    let p = path;
-    // node:test's t.assert.* is its own object, not the file's `assert` import
-    const viaTestContext = p[0] === 't' && p[1] === 'assert';
-    if (viaTestContext) p = p.slice(1);
-    let method: string | undefined; // 'ok' for a bare assert(...) call
-    let strict = false;
+    const head = path[0] ?? '';
+    const binding = this.lookup(head);
+    let rest: string[];
+    let strict: boolean;
+    let method: string | undefined;
 
-    const named = p.length === 1 ? this.assertNamed.get(p[0]!) : undefined;
-    if (named) {
-      method = named.imported;
-      strict = named.strict;
-    } else if (this.assertLocals.has(p[0] ?? '') && (p[0] !== 't' || path[0] === 't')) {
-      const rest = p.slice(1);
-      strict = (!viaTestContext && this.strictLocals.has(p[0]!)) || rest.includes('strict');
+    if (path[1] === 'assert' && binding?.testContext) {
+      // the callback parameter of a node:test test; its assert object is the loose one
+      rest = path.slice(2);
+      strict = rest.includes('strict');
+    } else if (path.length === 1 && binding?.assert?.kind === 'named') {
+      method = binding.assert.imported;
+      strict = binding.assert.strict;
+      rest = [];
+    } else {
+      const ns: AssertBinding | undefined =
+        binding?.assert?.kind === 'namespace'
+          ? binding.assert
+          : // `assert` from another library, or an unresolved global, behaves like the loose one
+            head === 'assert' && (binding === undefined || binding.importFrom !== undefined)
+            ? { kind: 'namespace', strict: false }
+            : undefined;
+      if (!ns) return undefined;
+      rest = path.slice(1);
+      strict = ns.strict || rest.includes('strict');
+    }
+
+    if (method === undefined) {
       const names = rest.filter((s) => s !== 'strict');
-      if (names.length === 0) method = rest.length === 0 ? 'ok' : undefined;
+      if (names.length === 0 && !(path[1] === 'assert' && binding?.testContext)) method = 'ok';
       else if (names.length === 1) method = names[0];
     }
     if (!method) return undefined;
@@ -468,24 +494,38 @@ const FRAMEWORK_MODULES: Record<string, TestSummary['framework']> = {
 //
 // Names are resolved through real scopes, not by spelling, so a mock or helper called `result` or
 // `check` in one test never leaks into another, and a local `expect` is not the framework's.
-// Resolution happens when the walk is finished, so a helper declared after the test that uses it
-// is still found.
+// Helpers are resolved when the walk is finished, so one declared after the test that uses it is
+// still found. Mock state is the opposite: it is read at the moment of each use, because a later
+// `fn = realFn` must not change what an earlier `expect(fn)` was about.
+
+/** Whether a value is a mock, as of one moment. Module mocks are checked once the walk is done. */
+interface MockState {
+  mock: boolean;
+  /** Modules this value was imported from along the way; mocked if `vi.mock` names one of them. */
+  imports: string[];
+}
+
+const NOT_MOCK: MockState = { mock: false, imports: [] };
 
 /** Code that runs only when called: a named function, or a method of a local object. */
 interface HelperDef {
   node: AstNode;
   entries: Entry[];
+  /** Tests declared inside it, relative to it. They exist only where it is called. */
+  templates: RawTest[];
+  /** How many describe frames were open where it was defined. */
+  frameBase: number;
+  /** The scope it was defined in. */
+  outer: Scope;
 }
 
-interface Binding {
+interface Binding extends BindingInfo {
   /** Created by `vi.fn()`, `jest.fn()`, `spyOn(...)` or `vi.mocked(...)`. */
   mock: boolean;
-  /** For imports: the module they come from. Mocked when that module is `vi.mock`ed. */
-  importFrom?: string;
   /** Set for imports from a framework module: what the local name stands for. */
   framework?: { kind: 'named'; imported: string } | { kind: 'namespace' };
-  /** `const result = mockFn()`: a value derived from another binding. */
-  derivedFrom?: { scope: Scope; name: string };
+  /** `const result = mockFn()`: whether `mockFn` was a mock when `result` was assigned. */
+  derived?: MockState;
   /** A named function, followed one level deep when a test calls it. */
   helper?: HelperDef;
   /** `const page = { expectOk() {} }`: methods that run when called as `page.expectOk()`. */
@@ -499,6 +539,16 @@ class Scope {
 
   lookup(name: string): Binding | undefined {
     return this.names.get(name) ?? this.parent?.lookup(name);
+  }
+
+  /** The scope that declares `name`. */
+  owner(name: string): Scope | undefined {
+    return this.names.has(name) ? this : this.parent?.owner(name);
+  }
+
+  /** Is this scope `other` or inside it? */
+  within(other: Scope): boolean {
+    return this === other || (this.parent?.within(other) ?? false);
   }
 }
 
@@ -573,7 +623,7 @@ interface Frame {
 }
 
 type Entry =
-  | { pos: number; ref: MatcherRef; signals: SubjectSignals; scope: Scope }
+  | { pos: number; ref: MatcherRef; signals: SubjectSignals; mock: MockState }
   /** A reference that may run a local helper: `check()`, `page.expectOk()`, `items.forEach(check)`. */
   | { pos: number; call: string; method?: string; scope: Scope }
   /** A timeout set from inside a test or a helper, applied to the test that runs it. */
@@ -581,6 +631,7 @@ type Entry =
 
 interface RawTest {
   name: string;
+  /** Describe names around it. For a test declared inside a helper: relative to the helper. */
   path: string[];
   loc: { line: number; col: number };
   modifier: TestModifier | undefined;
@@ -591,6 +642,24 @@ interface RawTest {
   /** For `test('x', namedFn)`: resolved when finished. */
   fnRef: { node: AstNode; scope: Scope } | undefined;
   entries: Entry[];
+  /** Source order, used to number duplicates and to place tests a helper registers. */
+  order: number;
+}
+
+/** A call to a function that may register tests, made where tests are declared. */
+interface Invocation {
+  name: string;
+  scope: Scope;
+  /** Describe frames open at the call. */
+  frames: Frame[];
+  pos: number;
+}
+
+interface Target {
+  node: AstNode;
+  entries: Entry[];
+  kind: 'test' | 'helper';
+  def?: HelperDef;
 }
 
 export interface SummaryCollector {
@@ -621,19 +690,26 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     // other imports (bun:test, chai, ...) stay recognised by name; locals shadow the framework
     return binding.importFrom !== undefined ? path : [`${LOCAL}${head}`, ...path.slice(1)];
   };
-  const finder = new AssertionFinder((options.assertFunctionNames ?? []).map(globToRegExp), norm);
+  const finder = new AssertionFinder(
+    (options.assertFunctionNames ?? []).map(globToRegExp),
+    norm,
+    (name) => scope.lookup(name),
+  );
 
   const imports: string[] = [];
   const frameworkImports: TestSummary['framework'][] = [];
   const mockedModules = new Set<string>();
   const tests: RawTest[] = [];
+  const invocations: Invocation[] = [];
+  /** `node:test` callbacks: their first parameter is the test context (`ctx.assert`). */
+  const testContextFns = new Set<AstNode>();
   let sawVi = false;
   let sawJest = false;
   let fileTimeout: number | undefined;
 
   const frames: Frame[] = [];
   /** Where assertions go: the innermost test or deferred function being walked. */
-  const targets: { node: AstNode; entries: Entry[] }[] = [];
+  const targets: Target[] = [];
   let currentTest: RawTest | undefined;
   let currentTestNode: AstNode | undefined;
 
@@ -656,24 +732,58 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
   const popScope = (): void => {
     scope = scope.parent ?? root;
   };
+  /** The innermost function being walked that only runs when called. */
+  const innermostHelper = (): Target | undefined => {
+    for (let i = targets.length - 1; i >= 0; i--)
+      if (targets[i]!.kind === 'helper') return targets[i];
+    return undefined;
+  };
   const bindParams = (fn: AstNode): void => {
     const names: string[] = [];
-    for (const param of children(fn, 'params')) patternNames(param, names);
+    const params = children(fn, 'params');
+    for (const param of params) patternNames(param, names);
     for (const name of names) scope.names.set(name, { mock: false });
+    const first = params[0];
+    if (testContextFns.has(fn) && first?.type === 'Identifier') {
+      const binding = scope.names.get(str(first, 'name') ?? '');
+      if (binding) binding.testContext = true;
+    }
   };
 
-  /** What a value initialised from `init` is: a mock, derived from a name, or neither. */
-  const classify = (initRaw: AstNode | undefined): Pick<Binding, 'mock' | 'derivedFrom'> => {
-    if (!initRaw) return { mock: false };
-    const init = unwrap(initRaw);
-    const signals = subjectSignals(init, norm);
-    const call = init.type === 'AwaitExpression' ? child(init, 'argument') : init;
+  /** Whether a name is a mock, as of right now. */
+  const mockStateOf = (binding: Binding | undefined): MockState => {
+    if (!binding) return NOT_MOCK;
+    if (binding.mock) return { mock: true, imports: [] };
+    const imported = binding.importFrom !== undefined ? [binding.importFrom] : [];
+    const derived = binding.derived;
+    return derived
+      ? { mock: derived.mock, imports: [...imported, ...derived.imports] }
+      : { mock: false, imports: imported };
+  };
+
+  /** What a value is, taken from its initializer or the right-hand side of an assignment. */
+  const bindingFrom = (
+    valueRaw: AstNode | undefined,
+  ): Pick<Binding, 'mock' | 'derived' | 'helper' | 'methods'> => {
+    if (!valueRaw) return { mock: false };
+    const value = unwrap(valueRaw);
+    const signals = subjectSignals(value, norm);
+    const call = value.type === 'AwaitExpression' ? child(value, 'argument') : value;
     const inner = call ? unwrap(call) : undefined;
     const factory = inner?.type === 'CallExpression' ? pathOf(child(inner, 'callee')) : undefined;
     if ((factory && MOCK_FACTORIES.has(factory.join('.'))) || signals.viaMock)
       return { mock: true };
-    if (signals.root) return { mock: false, derivedFrom: { scope, name: signals.root } };
-    return { mock: false };
+    const out: ReturnType<typeof bindingFrom> = { mock: false };
+    if (signals.root) {
+      const source = scope.lookup(signals.root);
+      out.derived = mockStateOf(source);
+      // `check = noop` is the same function: it keeps what `noop` runs
+      if (value.type === 'Identifier' && source) {
+        if (source.helper) out.helper = source.helper;
+        if (source.methods) out.methods = source.methods;
+      }
+    }
+    return out;
   };
 
   const timeoutCall = (call: AstNode, path: string[]): void => {
@@ -730,24 +840,41 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       if (decl) {
         const name = nameOf(ctx.source, decl.nameNode);
         const mod = pickModifier(decl.modifiers);
+        const helper =
+          targets[targets.length - 1]?.kind === 'helper' ? innermostHelper() : undefined;
         if (decl.kind === 'describe') {
           frames.push({ node, name, modifier: mod, timeout: decl.timeout });
+          // describe('s', register): the tests register() declares belong under 's'
+          if (decl.fnRef && !helper) {
+            invocations.push({
+              name: str(decl.fnRef, 'name') ?? '',
+              scope,
+              frames: [...frames],
+              pos: node.start,
+            });
+          }
         } else {
           const entries: Entry[] = [];
-          tests.push({
+          const base = helper?.def?.frameBase ?? 0;
+          const raw: RawTest = {
             name,
-            path: frames.map((f) => f.name),
+            path: frames.slice(base).map((f) => f.name),
             loc: ctx.loc(node.start),
             modifier: mod,
             timeout: decl.timeout,
-            ancestors: [...frames],
+            ancestors: frames.slice(base),
             bodyHash: decl.fn ? hashNode(child(decl.fn, 'body')) : undefined,
             fnRef: decl.fnRef ? { node: decl.fnRef, scope } : undefined,
             entries,
-          });
-          currentTest = tests[tests.length - 1];
+            order: node.start,
+          };
+          // a function that registers tests only does so where it is called
+          if (helper?.def) helper.def.templates.push(raw);
+          else tests.push(raw);
+          currentTest = raw;
           currentTestNode = node;
-          targets.push({ node, entries });
+          targets.push({ node, entries, kind: 'test' });
+          if (decl.fn && frameworkImports.includes('node-test')) testContextFns.add(decl.fn);
         }
         return;
       }
@@ -756,18 +883,26 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     // assertions
     const found = finder.find(node);
     if (found) {
+      const signals = subjectSignals(found.subject, norm);
       push({
         pos: node.start,
         ref: found.ref,
-        signals: subjectSignals(found.subject, norm),
-        scope,
+        signals,
+        mock: signals.root ? mockStateOf(scope.lookup(signals.root)) : NOT_MOCK,
       });
       return;
     }
 
-    // references that may run a local helper
-    if (targets.length === 0 || !callee) return;
+    if (!callee) return;
     const c = unwrap(callee);
+
+    // a call where tests are declared may register tests: shared suites, `register()`
+    if (targets.length === 0 && c.type === 'Identifier') {
+      invocations.push({ name: str(c, 'name') ?? '', scope, frames: [...frames], pos: node.start });
+    }
+
+    // references that may run a local helper
+    if (targets.length === 0) return;
     let calleeName: string | undefined;
     if (c.type === 'Identifier') {
       calleeName = str(c, 'name');
@@ -778,8 +913,9 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       calleeName = property ? str(property, 'name') : undefined;
       const objectName =
         object && unwrap(object).type === 'Identifier' ? str(unwrap(object), 'name') : undefined;
-      if (objectName && calleeName)
+      if (objectName && calleeName) {
         push({ pos: node.start, call: objectName, method: calleeName, scope }); // page.expectOk()
+      }
     }
     // a helper passed to an API that calls it: items.forEach(check), waitFor(check)
     if (calleeName && CALLBACK_APIS.has(calleeName)) {
@@ -797,9 +933,64 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
 
   /** A function value that is stored, not run: its body must not count for the enclosing test. */
   const deferFunction = (node: AstNode): HelperDef => {
-    const def: HelperDef = { node, entries: [] };
-    targets.push({ node, entries: def.entries });
+    const def: HelperDef = {
+      node,
+      entries: [],
+      templates: [],
+      frameBase: frames.length,
+      outer: scope,
+    };
+    targets.push({ node, entries: def.entries, kind: 'helper', def });
     return def;
+  };
+
+  /**
+   * Replace what a local name stands for. An assignment inside a function that has not run yet
+   * must not change a binding from outside it: that effect belongs to the call, which we do not
+   * follow.
+   */
+  const reassign = (
+    name: string,
+    next: Pick<Binding, 'mock' | 'derived' | 'helper' | 'methods'>,
+    /** The deferred function the assignment is written in, if any. */
+    enclosing: Target | undefined,
+  ): void => {
+    const owner = scope.owner(name);
+    const binding = owner?.names.get(name);
+    if (!owner || !binding || binding.importFrom !== undefined) return;
+    if (enclosing?.def && enclosing.def.outer.within(owner)) return;
+    binding.mock = next.mock;
+    if (next.derived) binding.derived = next.derived;
+    else delete binding.derived;
+    if (next.helper) binding.helper = next.helper;
+    else delete binding.helper;
+    if (next.methods) binding.methods = next.methods;
+    else delete binding.methods;
+  };
+
+  /** `require('node:assert')` and friends, as the value of a declaration. */
+  const assertFromRequire = (initRaw: AstNode | undefined): { strict: boolean } | undefined => {
+    if (!initRaw) return undefined;
+    let init = unwrap(initRaw);
+    let strict = false;
+    // require('node:assert').strict
+    if (init.type === 'MemberExpression' && init['computed'] !== true) {
+      const property = child(init, 'property');
+      const object = child(init, 'object');
+      if (property && str(property, 'name') === 'strict' && object) {
+        strict = true;
+        init = unwrap(object);
+      }
+    }
+    if (init.type !== 'CallExpression') return undefined;
+    const callee = child(init, 'callee');
+    const spec = children(init, 'arguments')[0];
+    const moduleName = spec ? staticString(spec) : undefined;
+    if (!callee || memberPath(callee)?.join('.') !== 'require' || moduleName === undefined) {
+      return undefined;
+    }
+    if (ASSERT_STRICT_MODULES.has(moduleName)) return { strict: true };
+    return ASSERT_MODULES.has(moduleName) ? { strict } : undefined;
   };
 
   const visitor: Visitor = {
@@ -831,13 +1022,11 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         }
         if (isAssert || isStrictAssert) {
           if (s.type === 'ImportSpecifier' && importedName === 'strict') {
-            finder.assertLocals.add(name);
-            finder.strictLocals.add(name);
+            binding.assert = { kind: 'namespace', strict: true };
           } else if (s.type === 'ImportSpecifier' && importedName) {
-            finder.assertNamed.set(name, { imported: importedName, strict: isStrictAssert });
+            binding.assert = { kind: 'named', imported: importedName, strict: isStrictAssert };
           } else {
-            finder.assertLocals.add(name);
-            if (isStrictAssert) finder.strictLocals.add(name);
+            binding.assert = { kind: 'namespace', strict: isStrictAssert };
           }
         }
       }
@@ -910,8 +1099,27 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         targets[targets.length - 1]!.node = node; // popped on the declarator's exit
         return;
       }
-      const classified = classify(initRaw);
-      for (const name of names) scope.names.set(name, { ...classified });
+      const from = bindingFrom(initRaw);
+      for (const name of names) scope.names.set(name, { ...from });
+
+      // const assert = require('node:assert'), const { strictEqual } = require('node:assert')
+      const required = assertFromRequire(initRaw);
+      if (required && id?.type === 'Identifier' && names[0]) {
+        scope.names.get(names[0])!.assert = { kind: 'namespace', strict: required.strict };
+      } else if (required && id?.type === 'ObjectPattern') {
+        for (const prop of children(id, 'properties')) {
+          const key = child(prop, 'key');
+          const value = child(prop, 'value');
+          const imported = key ? str(key, 'name') : undefined;
+          const local = value?.type === 'Identifier' ? str(value, 'name') : undefined;
+          const binding = local ? scope.names.get(local) : undefined;
+          if (!imported || !binding) continue;
+          binding.assert =
+            imported === 'strict'
+              ? { kind: 'namespace', strict: true }
+              : { kind: 'named', imported, strict: required.strict };
+        }
+      }
     },
     'VariableDeclarator:exit': popTarget,
 
@@ -956,43 +1164,30 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       if (!leftRaw || !rightRaw) return;
       const left = unwrap(leftRaw);
       const right = unwrap(rightRaw);
-      const binding =
-        left.type === 'Identifier' ? scope.lookup(str(left, 'name') ?? '') : undefined;
+      const name = left.type === 'Identifier' ? (str(left, 'name') ?? '') : undefined;
+      const enclosing = innermostHelper(); // before the new function is registered
       if (isFunction(right)) {
         const def = deferFunction(right);
         targets[targets.length - 1]!.node = node;
-        if (binding) binding.helper = def;
+        if (name !== undefined) reassign(name, { mock: false, helper: def }, enclosing);
         return;
       }
-      // only local bindings: assigning to an import or a global is not tracked
-      if (binding && binding.importFrom === undefined) {
-        const classified = classify(rightRaw);
-        binding.mock = classified.mock;
-        if (classified.derivedFrom) binding.derivedFrom = classified.derivedFrom;
-        else delete binding.derivedFrom;
-      }
+      if (name !== undefined) reassign(name, bindingFrom(rightRaw), enclosing);
     },
     'AssignmentExpression:exit': popTarget,
   };
 
   const finish = (source: string): TestSummary => {
-    const isMock = (binding: Binding | undefined, depth = 0): boolean => {
-      if (!binding || depth > 8) return false;
-      if (binding.mock) return true;
-      if (binding.importFrom !== undefined && mockedModules.has(binding.importFrom)) return true;
-      const from = binding.derivedFrom;
-      return from ? isMock(from.scope.lookup(from.name), depth + 1) : false;
-    };
+    const isMock = (state: MockState): boolean =>
+      state.mock || state.imports.some((spec) => mockedModules.has(spec));
 
     const toUse = (e: Extract<Entry, { ref: MatcherRef }>): MatcherUse => {
       const resolved = lattice.resolveMatcher(e.ref);
-      const rootName = e.signals.root;
       return {
         name: e.ref.name,
         strength: resolved.strength,
         negated: resolved.negated,
-        subjectIsMock:
-          e.signals.viaMock || (rootName !== undefined && isMock(e.scope.lookup(rootName))),
+        subjectIsMock: e.signals.viaMock || isMock(e.mock),
       };
     };
 
@@ -1017,9 +1212,24 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       }
     };
 
+    // Tests that a function registers exist once per call, under the suite that calls it.
+    const registered: RawTest[] = [];
+    for (const call of invocations) {
+      const def = call.scope.lookup(call.name)?.helper;
+      for (const template of def?.templates ?? []) {
+        registered.push({
+          ...template,
+          path: [...call.frames.map((f) => f.name), ...template.path],
+          ancestors: [...call.frames, ...template.ancestors],
+          order: call.pos + template.order / 1e9,
+        });
+      }
+    }
+    const all = [...tests, ...registered].sort((a, b) => a.order - b.order);
+
     const used = new Set<string>();
     const counters = new Map<string, number>();
-    const cases: TestCase[] = tests.map((t) => {
+    const cases: TestCase[] = all.map((t) => {
       const out: { uses: MatcherUse[]; timeout?: number } = { uses: [] };
       // `test('x', namedFn)`: the named function is the test body, so it is expanded exactly like
       // an inline body, with one level of helper calls.

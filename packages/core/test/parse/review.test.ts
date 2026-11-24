@@ -591,3 +591,283 @@ describe('second review', () => {
     });
   });
 });
+
+describe('third review', () => {
+  describe('generic callback references', () => {
+    test('test(name, body<T>) is still a test', () => {
+      const s = sum(`function body<T>() { expect(1).toBe(1); }\ntest('x', body<number>);`);
+      expect(shape(s)).toEqual({ x: ['toBe:4'] });
+    });
+
+    test('an instantiation expression does not change what a name resolves to', () => {
+      const s = sum(
+        `const check = <T,>() => expect(1).toBe(1);\ntest('x', () => { check<number>(); });`,
+      );
+      expect(shape(s)).toEqual({ x: ['toBe:4'] });
+    });
+  });
+
+  describe('node:assert is resolved through bindings', () => {
+    test.each([
+      [
+        'a shadowed named import',
+        `import { strictEqual as check } from 'node:assert';
+         test('x', () => { const check = () => {}; check(1, 1); });`,
+      ],
+      [
+        'a shadowed default import',
+        `import assert from 'node:assert';
+         test('x', () => { const assert = { equal() {} }; assert.equal(1, 1); });`,
+      ],
+      [
+        'a shadowed namespace import',
+        `import * as a from 'node:assert';
+         test('x', () => { const a = { equal() {} }; a.equal(1, 1); });`,
+      ],
+      [
+        'a parameter named assert',
+        `test('x', () => { [{ equal() {} }].forEach((assert) => assert.equal(1, 1)); });`,
+      ],
+      [
+        'a local object that only looks like assert',
+        `const assert = { equal() {} };\ntest('x', () => { assert.equal(1, 1); });`,
+      ],
+    ])('%s is not an assertion', (_label, source) => {
+      expect(shape(sum(source)).x).toEqual([]);
+    });
+
+    test('real imports are still assertions, whatever they are called', () => {
+      const s = sum(`import { strictEqual as same } from 'node:assert';
+        import eq from 'node:assert/strict';
+        test('x', () => { same(1, 1); eq.equal(2, 2); });`);
+      expect(shape(s).x).toEqual(['assert.strictEqual:4', 'assert.strictEqual:4']);
+    });
+  });
+
+  describe('CommonJS assert keeps its strictness', () => {
+    test.each([
+      [
+        `const assert = require('node:assert/strict');`,
+        'assert.equal(1, 1);',
+        'assert.strictEqual:4',
+      ],
+      [`const assert = require('assert/strict');`, 'assert.equal(1, 1);', 'assert.strictEqual:4'],
+      [
+        `const assert = require('node:assert').strict;`,
+        'assert.equal(1, 1);',
+        'assert.strictEqual:4',
+      ],
+      [
+        `const { strict: assert } = require('node:assert');`,
+        'assert.equal(1, 1);',
+        'assert.strictEqual:4',
+      ],
+      [`const { equal } = require('node:assert/strict');`, 'equal(1, 1);', 'assert.strictEqual:4'],
+      [
+        `const { deepEqual: same } = require('node:assert/strict');`,
+        'same(1, 1);',
+        'assert.deepStrictEqual:4',
+      ],
+      // loose stays loose
+      [`const assert = require('node:assert');`, 'assert.equal(1, 1);', 'assert.equal:3'],
+      [`const { equal } = require('node:assert');`, 'equal(1, 1);', 'assert.equal:3'],
+      [
+        `const assert = require('node:assert');`,
+        'assert.strict.equal(1, 1);',
+        'assert.strictEqual:4',
+      ],
+    ])('%s %s', (decl, call, expected) => {
+      expect(shape(sum(`${decl}\ntest('x', () => { ${call} });`)).x).toEqual([expected]);
+    });
+
+    test('switching a require from strict to loose is visible', () => {
+      const strict = shape(
+        sum(
+          `const assert = require('node:assert/strict');\ntest('x', () => { assert.equal(1, 1); });`,
+        ),
+      ).x;
+      const loose = shape(
+        sum(`const assert = require('node:assert');\ntest('x', () => { assert.equal(1, 1); });`),
+      ).x;
+      expect(strict).not.toEqual(loose);
+    });
+  });
+
+  describe('the node:test context can be called anything', () => {
+    test.each(['t', 'ctx', 'context', 'tc'])('%s.assert', (name) => {
+      const s = sum(
+        `import { test } from 'node:test';\ntest('x', (${name}) => { ${name}.assert.strictEqual(1, 1); ${name}.assert.equal(2, 2); });`,
+      );
+      expect(shape(s).x).toEqual(['assert.strictEqual:4', 'assert.equal:3']);
+    });
+
+    test('an unrelated object called t is not the context', () => {
+      const s = sum(`import { test } from 'node:test';
+        test('x', (ctx) => { const t = { assert: { equal() {} } }; t.assert.equal(1, 1); });`);
+      expect(shape(s).x).toEqual([]);
+    });
+
+    test('only node:test callbacks have a context', () => {
+      const s = sum(
+        `import { test } from 'vitest';\ntest('x', (ctx) => { ctx.assert.equal(1, 1); });`,
+      );
+      expect(shape(s).x).toEqual([]);
+    });
+
+    test('the context is not the strict module', () => {
+      const s = sum(`import { test } from 'node:test';\nimport assert from 'node:assert/strict';
+        test('x', (ctx) => { ctx.assert.equal(1, 1); assert.equal(1, 1); });`);
+      expect(shape(s).x).toEqual(['assert.equal:3', 'assert.strictEqual:4']);
+    });
+  });
+
+  describe('replacing a value replaces what it was', () => {
+    test('a function assigned over a mock is not a mock', () => {
+      const s = sum(`test('x', () => { let fn = vi.fn(); fn = () => 1; expect(fn()).toBe(1); });`);
+      expect(shape(s).x).toEqual(['toBe:4']);
+    });
+
+    test('a non-function assigned over a helper removes its assertions', () => {
+      const s = sum(`const noop = () => {};
+        test('x', () => { let check = () => expect(1).toBe(1); check = noop; check(); });`);
+      expect(shape(s).x).toEqual([]);
+    });
+
+    test('assigning another helper makes this one that helper', () => {
+      const s = sum(`const real = () => expect(2).toEqual(2);
+        test('x', () => { let check = () => {}; check = real; check(); });`);
+      expect(shape(s).x).toEqual(['toEqual:4']);
+    });
+
+    test('reassigned object methods are replaced too', () => {
+      const s = sum(`const page = { ok() { expect(1).toBe(1); } };
+        test('x', () => { let p = page; p = {}; p.ok(); });`);
+      expect(shape(s).x).toEqual([]);
+    });
+
+    test('an alias keeps the methods of what it points at', () => {
+      const s = sum(`const page = { ok() { expect(1).toBe(1); } };
+        test('x', () => { const p = page; p.ok(); });`);
+      expect(shape(s).x).toEqual(['toBe:4']);
+    });
+  });
+
+  describe('mock state is read where it is used', () => {
+    test('an earlier use keeps the state it had', () => {
+      const s = sum(`test('x', () => {
+        let fn = vi.fn();
+        expect(fn).toBeDefined();
+        fn = realFn;
+        expect(fn).toBeDefined();
+      });`);
+      expect(shape(s).x).toEqual(['toBeDefined:1@mock', 'toBeDefined:1']);
+    });
+
+    test('a value derived from a mock stays derived from it', () => {
+      const s = sum(`test('x', () => {
+        let m = vi.fn();
+        const out = m();
+        m = realFn;
+        expect(out).toBe(1);
+        expect(m).toBeDefined();
+      });`);
+      expect(shape(s).x).toEqual(['toBe:4@mock', 'toBeDefined:1']);
+    });
+
+    test('an assignment inside a function that never runs changes nothing outside it', () => {
+      const s = sum(`let fn = vi.fn();
+        function reset() { fn = realFn; }
+        test('x', () => { expect(fn).toBeDefined(); });`);
+      expect(shape(s).x).toEqual(['toBeDefined:1@mock']);
+    });
+
+    test('a variable local to such a function can still change', () => {
+      const s = sum(`function helper() { let a = vi.fn(); a = realFn; expect(a).toBeDefined(); }
+        test('x', () => { helper(); });`);
+      expect(shape(s).x).toEqual(['toBeDefined:1']);
+    });
+
+    test('an assignment in the test body takes effect', () => {
+      const s = sum(`let fn = vi.fn();
+        test('x', () => { fn = realFn; expect(fn).toBeDefined(); });`);
+      expect(shape(s).x).toEqual(['toBeDefined:1']);
+    });
+  });
+
+  describe('tests declared inside functions exist where the function is called', () => {
+    test('an uncalled function registers nothing', () => {
+      const s = sum(`function unused() { test('x', () => { expect(1).toBe(1); }); }`);
+      expect(s.tests).toEqual([]);
+    });
+
+    test('wrapping every test in a function that is never called leaves no tests', () => {
+      const before = sum(
+        `test('a', () => { expect(1).toBe(1); });\ntest('b', () => { expect(2).toBe(2); });`,
+      );
+      const after = sum(
+        `function all() { test('a', () => { expect(1).toBe(1); }); test('b', () => { expect(2).toBe(2); }); }`,
+      );
+      expect(before.tests).toHaveLength(2);
+      expect(after.tests).toEqual([]);
+    });
+
+    test('a call at the top of the file registers them', () => {
+      const s = sum(`function suite() { test('works', () => { expect(1).toBe(1); }); }\nsuite();`);
+      expect(shape(s)).toEqual({ works: ['toBe:4'] });
+    });
+
+    test('a function declared after its call still registers them', () => {
+      const s = sum(`suite();\nfunction suite() { test('works', () => { expect(1).toBe(1); }); }`);
+      expect(shape(s)).toEqual({ works: ['toBe:4'] });
+    });
+
+    test('a shared suite called from two describes exists in both', () => {
+      const s = sum(`function shared() { test('works', () => { expect(1).toBe(1); }); }
+        describe('A', () => { shared(); });
+        describe('B', () => { shared(); });`);
+      expect(s.tests.map((t) => t.id)).toEqual(['A > works', 'B > works']);
+    });
+
+    test('called twice in one place, the second gets a suffix', () => {
+      const s = sum(`function shared() { test('works', () => {}); }\nshared();\nshared();`);
+      expect(s.tests.map((t) => t.id)).toEqual(['works', 'works #2']);
+    });
+
+    test('a describe inside the function is relative to the caller', () => {
+      const s = sum(`function suite() { describe('inner', () => { test('t', () => {}); }); }
+        describe('outer', () => { suite(); });`);
+      expect(s.tests.map((t) => t.id)).toEqual(['outer > inner > t']);
+    });
+
+    test('describe(name, namedFunction) puts its tests under that name', () => {
+      const s = sum(`function register() { test('a', () => { expect(1).toBe(1); }); }
+        describe('s', register);`);
+      expect(shape(s)).toEqual({ 's > a': ['toBe:4'] });
+    });
+
+    test('a describe modifier reaches the tests a named function registers', () => {
+      const s = sum(`function register() { test('a', () => {}); }\ndescribe.skip('s', register);`);
+      expect(s.tests.map((t) => [t.id, t.modifier])).toEqual([['s > a', 'skip']]);
+    });
+
+    test('the order of ids follows the order of the calls', () => {
+      const s = sum(`function shared() { test('shared', () => {}); }
+        test('before', () => {});
+        shared();
+        test('after', () => {});`);
+      expect(s.tests.map((t) => t.id)).toEqual(['before', 'shared', 'after']);
+    });
+
+    test('an anonymous function that runs on the spot still registers', () => {
+      const s = sum(`(() => { test('x', () => {}); })();`);
+      expect(s.tests.map((t) => t.id)).toEqual(['x']);
+    });
+
+    test('tests registered by a function are checked like any other', () => {
+      const s = sum(
+        `function shared() { test.skip('works', () => { expect(1).toBe(1); }); }\nshared();`,
+      );
+      expect(s.tests[0]).toMatchObject({ id: 'works', modifier: 'skip' });
+    });
+  });
+});

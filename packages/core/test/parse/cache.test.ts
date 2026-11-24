@@ -10,6 +10,7 @@ import {
   hashText,
   summarizeTestFile,
   SUMMARY_VERSION,
+  isTestSummary,
 } from '../../src/parse/index.js';
 
 const SRC = `import { test, expect } from 'vitest';\ntest('a', () => { expect(1).toBe(1); });\n`;
@@ -114,6 +115,58 @@ describe('summary cache', () => {
       const file = join(tmp(), 'summaries.json');
       if (content !== undefined) writeFileSync(file, content);
       expect(SummaryCache.load(file).size).toBe(0);
+    });
+
+    test('a damaged entry is dropped on its own, the rest still load', () => {
+      const file = join(tmp(), 'summaries.json');
+      const good = fake('good');
+      writeFileSync(
+        file,
+        JSON.stringify({
+          v: SUMMARY_VERSION,
+          entries: {
+            empty: {},
+            noImports: { hash: 'h', framework: 'vitest', tests: [] },
+            badFramework: { ...good, framework: 'mocha' },
+            badTest: { ...good, tests: [{ id: 'x' }] },
+            badMatcher: {
+              ...good,
+              tests: [
+                {
+                  id: 'x',
+                  bodyHash: 'b',
+                  loc: { line: 1, col: 1 },
+                  matchers: [{ name: 'a', strength: 9, negated: false, subjectIsMock: false }],
+                },
+              ],
+            },
+            nullEntry: null,
+            good,
+          },
+        }),
+      );
+      const cache = SummaryCache.load(file);
+      expect(cache.size).toBe(1);
+      expect(cache.get('good')).toEqual(good);
+    });
+
+    test('a damaged entry is a miss, not a crash', () => {
+      const file = join(tmp(), 'summaries.json');
+      const key = cacheKey(hashText(SRC), 'a.test.ts', {});
+      writeFileSync(file, JSON.stringify({ v: SUMMARY_VERSION, entries: { [key]: {} } }));
+      const cache = SummaryCache.load(file);
+      const s = summarizeTestFile('a.test.ts', SRC, { cache, resolve: false });
+      expect(s.tests).toHaveLength(1);
+    });
+
+    test('isTestSummary accepts what the parser produces', () => {
+      const parsed = summarizeTestFile('a.test.ts', SRC + `test.skip('b', () => {});\n`, {
+        resolve: false,
+      });
+      expect(isTestSummary(parsed)).toBe(true);
+      expect(isTestSummary({ ...parsed, imports: [1] })).toBe(false);
+      expect(isTestSummary(null)).toBe(false);
+      expect(isTestSummary([])).toBe(false);
     });
 
     test('save never throws: an unwritable path just returns false', () => {

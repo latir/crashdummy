@@ -36,6 +36,7 @@ const WRAPPERS = new Set([
   'TSNonNullExpression',
   'TSSatisfiesExpression',
   'TSTypeAssertion',
+  'TSInstantiationExpression',
   'ChainExpression',
 ]);
 
