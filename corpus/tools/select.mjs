@@ -234,6 +234,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     ...(arg(argv, 'out') ? { out: arg(argv, 'out') } : {}),
     ...(arg(argv, 'pool') ? { pool: arg(argv, 'pool') } : {}),
   });
-  const { cases, ...summary } = result;
-  console.log(JSON.stringify(summary, null, 2));
+  console.log(JSON.stringify({ ...result, cases: undefined }, null, 2));
 }
