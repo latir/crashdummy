@@ -198,3 +198,28 @@ describe('help and version', () => {
     expect(r.err).toContain('See --help');
   });
 });
+
+describe('review round 1', () => {
+  test('an empty list on stdin is a normal run with nothing to check', async () => {
+    async function* empty() {
+      yield '';
+    }
+    const r = await cli(['--stdin', '--format', 'agent'], { stdin: empty() });
+    expect(r).toMatchObject({ code: 0, out: 'crashdummy: PASS (0 files)\n', err: '' });
+  });
+
+  test('forcing the files source with no list is still a mistake', async () => {
+    const r = await cli(['--source', 'files']);
+    expect(r.code).toBe(3);
+    expect(r.err).toContain('--source files needs --files or --stdin');
+  });
+
+  test('explain with an id from Object.prototype is an unknown rule, not a crash', async () => {
+    for (const id of ['constructor', '__proto__', 'toString']) {
+      const r = await cli(['explain', id]);
+      expect(r.code).toBe(3);
+      expect(r.err).toContain(`unknown rule "${id}"`);
+      expect(r.err).not.toContain('unexpected error');
+    }
+  });
+});

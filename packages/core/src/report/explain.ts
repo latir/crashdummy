@@ -126,7 +126,8 @@ export const explainableRules = (): string[] => Object.keys(DOCS).sort();
 
 /** What a rule catches, the evidence behind it and an example fix. Undefined for an unknown id. */
 export function explainRule(id: string): string | undefined {
-  const doc = DOCS[id];
+  // own keys only: `constructor` and `__proto__` are not rules
+  const doc = Object.prototype.hasOwnProperty.call(DOCS, id) ? DOCS[id] : undefined;
   if (!doc) return undefined;
   const meta = [...oracleRules, ...integrityRules].find((r) => r.id === id)?.meta;
   const indent = (code: string): string =>

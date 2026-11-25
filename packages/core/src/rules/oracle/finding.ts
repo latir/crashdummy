@@ -22,7 +22,7 @@ export function oracleFinding(
   };
   if (rest.hint) finding.hint = oneLine(rest.hint);
   if (rest.loc) finding.loc = rest.loc;
-  if (rest.test) finding.test = rest.test;
+  if (rest.test !== undefined) finding.test = rest.test;
   return finding;
 }
 

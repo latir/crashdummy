@@ -35,7 +35,7 @@ export function formatAgent(report: Report): string {
       const e = file.error;
       const at = e ? ` (line ${e.line}: ${e.message})` : '';
       const text = `${file.file}: could not parse${at}. Fix the syntax error, then re-run.`;
-      if (body.length + 1 <= budget) body.push(text);
+      if (body.length + 1 <= budget - 1) body.push(text);
       else {
         hidden += 1;
         hiddenFiles += 1;

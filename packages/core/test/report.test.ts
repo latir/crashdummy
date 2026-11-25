@@ -273,3 +273,31 @@ describe('end to end', () => {
     expect(out.split('\n').length).toBeLessThanOrEqual(AGENT_MAX_LINES);
   });
 });
+
+describe('review round 1', () => {
+  test('ids that only exist on Object.prototype are not rules', () => {
+    for (const id of ['constructor', 'toString', '__proto__', 'hasOwnProperty']) {
+      expect(explainRule(id)).toBeUndefined();
+    }
+  });
+
+  test('many unparseable files still fit in 25 lines', () => {
+    const files = Array.from({ length: 40 }, (_, i) => {
+      const f = fileScore({
+        file: `src/f${i}.test.ts`,
+        status: 'unparseable',
+        findings: [],
+        gates: [],
+        error: { line: 1, col: 1, message: 'Unexpected token' },
+      });
+      delete (f as { score?: number }).score;
+      return f;
+    });
+    const out = formatAgent(report(files));
+    expect(out.split('\n').length).toBeLessThanOrEqual(AGENT_MAX_LINES);
+    expect(out).toMatch(/more finding.*not shown/);
+    // exactly at the edge: 24 files
+    const edge = formatAgent(report(files.slice(0, 24)));
+    expect(edge.split('\n').length).toBeLessThanOrEqual(AGENT_MAX_LINES);
+  });
+});

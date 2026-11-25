@@ -166,7 +166,11 @@ async function collect(
 
   const source = values.source ?? (files.length > 0 || values.stdin ? 'files' : 'git');
   if (source === 'files') {
-    if (files.length === 0) throw new UsageError('--source files needs --files or --stdin');
+    // an empty list from --stdin is a normal run with nothing to check (a filter found no
+    // changed tests); only a forced `--source files` with no list at all is a mistake
+    if (files.length === 0 && !values.stdin) {
+      throw new UsageError('--source files needs --files or --stdin');
+    }
     return filesSource.collect({ ...common, files });
   }
   if (source === 'git') {

@@ -276,3 +276,45 @@ describe('config', () => {
     expect(() => parseConfig(input)).toThrow(message);
   });
 });
+
+describe('review round 1', () => {
+  const run = (changes: ChangedFile[], options = {}) =>
+    score(changes, { cwd: '/nonexistent', ...options });
+
+  test('a test with an empty title keeps its attribution, so size still averages it out', async () => {
+    const r = await run([
+      added(
+        'a.test.ts',
+        `${T}test('', () => { expect(f()).toBeTruthy(); });\ntest('ok', () => { expect(f()).toEqual(1); });`,
+      ),
+    ]);
+    expect(r.files[0]!.findings.find((x) => x.ruleId === 'oracle/weak-matcher')?.test).toBe('');
+    // 5 points over two tests: 2.5, not 5
+    expect(r.files[0]!.score).toBe(98);
+  });
+
+  test('a modified file with no old version still reports a syntax error', async () => {
+    for (const [mode, verdict] of [
+      ['fail', 'fail'],
+      ['warn', 'warn'],
+    ] as const) {
+      const r = await run([{ path: 'a.test.ts', kind: 'modified', after: 'test(' }], {
+        onParseError: mode,
+      });
+      expect(r.files[0]).toMatchObject({ status: 'unparseable' });
+      expect(r.files[0]!.findings.map((x) => x.ruleId)).toEqual(['integrity/unparseable']);
+      expect(r.verdict).toBe(verdict);
+    }
+    const renamed = await run([
+      { path: 'b.test.ts', previousPath: 'a.test.ts', kind: 'renamed', after: 'test(' },
+    ]);
+    expect(renamed.verdict).toBe('fail');
+  });
+
+  test('the syntax error is reported once', async () => {
+    const r = await run([{ path: 'a.test.ts', kind: 'modified', before: 'test(', after: 'test(' }]);
+    expect(r.files[0]!.findings.filter((x) => x.ruleId === 'integrity/unparseable')).toHaveLength(
+      1,
+    );
+  });
+});
