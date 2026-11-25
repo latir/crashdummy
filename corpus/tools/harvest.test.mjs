@@ -18,7 +18,7 @@ const body = (name, n = 14) =>
   `import { test, expect } from 'vitest';\n${Array.from({ length: n }, (_, i) => `// ${name} ${i}`).join('\n')}\ntest('${name}', () => { expect(1).toBe(1); });\n`;
 
 /** A local repository to fetch from, standing in for GitHub. */
-function sourceRepo(name, license) {
+function sourceRepo(name, license, licenseFile = 'LICENSE') {
   const path = join(dir, 'remotes', name);
   mkdirSync(path, { recursive: true });
   const git = (...args) =>
@@ -33,7 +33,7 @@ function sourceRepo(name, license) {
   git('init', '-q', '-b', 'main');
   git('config', 'uploadpack.allowAnySHA1InWant', 'true');
   git('config', 'uploadpack.allowFilter', 'true');
-  write('LICENSE', license);
+  write(licenseFile, license);
   write('src/a.test.ts', body('a'));
   write('src/keep.test.ts', body('keep'));
   write('src/old-name.test.ts', body('renamed'));
@@ -42,6 +42,7 @@ function sourceRepo(name, license) {
   git('commit', '-q', '-m', 'one');
   write('src/a.test.ts', body('a-changed'));
   write('src/b.spec.ts', body('b'));
+  write('src/日本語.test.ts', body('unicode'));
   write('src/c.ts', 'export const c = 1;\n');
   write('src/tiny.test.ts', 'test("x", () => {});\n');
   git('mv', 'src/old-name.test.ts', 'src/new-name.test.ts');
@@ -72,8 +73,12 @@ describe('fetchCommits', () => {
     );
 
     const kept = pool.readLines(pool.candidates);
-    expect(kept.map((c) => c.path).sort()).toEqual(['src/a.test.ts', 'src/b.spec.ts']);
-    expect(stats.kept).toBe(2);
+    expect(kept.map((c) => c.path).sort()).toEqual([
+      'src/a.test.ts',
+      'src/b.spec.ts',
+      'src/日本語.test.ts',
+    ]);
+    expect(stats.kept).toBe(3);
     // tiny test file, pure rename, delete and source file are all left out
     const a = kept.find((c) => c.path === 'src/a.test.ts');
     expect(a).toMatchObject({
@@ -127,8 +132,8 @@ describe('fetchCommits', () => {
       { limit: 100, perRepo: 5 },
       io({ 'acme/one': r.path, 'acme/two': r.path }),
     );
-    expect(pool.readLines(pool.candidates)).toHaveLength(2);
-    expect(stats.skipped.duplicate).toBe(2);
+    expect(pool.readLines(pool.candidates)).toHaveLength(3);
+    expect(stats.skipped.duplicate).toBe(3);
   });
 
   test('resumes: a second run does no more work', async () => {
@@ -139,7 +144,62 @@ describe('fetchCommits', () => {
     await fetchCommits(pool, { limit: 100, perRepo: 5 }, io(remotes));
     const again = await fetchCommits(pool, { limit: 100, perRepo: 5 }, io(remotes));
     expect(again).toEqual({ fetched: 0, kept: 0, skipped: {} });
-    expect(pool.readLines(pool.candidates)).toHaveLength(2);
+    expect(pool.readLines(pool.candidates)).toHaveLength(3);
+  });
+
+  test('a commit cut short by a cap is replayed when the cap is raised, without duplicates', async () => {
+    const r = sourceRepo('widgets', MIT);
+    const pool = new Pool(join(dir, 'pool'));
+    pool.append(pool.commits, commit('acme/widgets', r.sha));
+    const remotes = { 'acme/widgets': r.path };
+    await fetchCommits(pool, { limit: 100, perRepo: 1 }, io(remotes));
+    expect(pool.readLines(pool.candidates)).toHaveLength(1);
+    await fetchCommits(pool, { limit: 100, perRepo: 5 }, io(remotes));
+    const paths = pool
+      .readLines(pool.candidates)
+      .map((c) => c.path)
+      .sort();
+    expect(paths).toEqual(['src/a.test.ts', 'src/b.spec.ts', 'src/日本語.test.ts']);
+    // and once it has been seen in full it is not looked at again
+    const again = await fetchCommits(pool, { limit: 100, perRepo: 5 }, io(remotes));
+    expect(again.fetched).toBe(0);
+  });
+
+  test('a file with a non-ASCII name is kept', async () => {
+    const r = sourceRepo('widgets', MIT);
+    const pool = new Pool(join(dir, 'pool'));
+    pool.append(pool.commits, commit('acme/widgets', r.sha));
+    await fetchCommits(pool, { limit: 100, perRepo: 5 }, io({ 'acme/widgets': r.path }));
+    expect(pool.readLines(pool.candidates).map((c) => c.path)).toContain('src/日本語.test.ts');
+  });
+
+  test('a licence file that covers bundled code is not the project licence', async () => {
+    const r = sourceRepo('bundled', MIT, 'LICENSE-3rdparty.txt');
+    const pool = new Pool(join(dir, 'pool'));
+    pool.append(pool.commits, commit('acme/bundled', r.sha));
+    const stats = await fetchCommits(
+      pool,
+      { limit: 100, perRepo: 5 },
+      io({ 'acme/bundled': r.path }),
+    );
+    expect(pool.readLines(pool.candidates)).toEqual([]);
+    expect(stats.skipped).toEqual({ 'license:none': 1 });
+  });
+
+  test('an MIT licence with a non-commercial condition added is not taken', async () => {
+    const r = sourceRepo(
+      'restricted',
+      `${MIT}\nAdditional condition: this software may only be used for non-commercial purposes.\n`,
+    );
+    const pool = new Pool(join(dir, 'pool'));
+    pool.append(pool.commits, commit('acme/restricted', r.sha));
+    const stats = await fetchCommits(
+      pool,
+      { limit: 100, perRepo: 5 },
+      io({ 'acme/restricted': r.path }),
+    );
+    expect(pool.readLines(pool.candidates)).toEqual([]);
+    expect(stats.skipped).toEqual({ 'license:other': 1 });
   });
 
   test('a commit that cannot be fetched is recorded and skipped, not fatal', async () => {
@@ -175,11 +235,11 @@ describe('fetchCommits', () => {
     await fetchCommits(pool, { limit: 100, perRepo: 5 }, io({ 'acme/widgets': r.path }));
     expect(status(pool)).toMatchObject({
       commits: 1,
-      candidates: 2,
+      candidates: 3,
       repos: 1,
       withBefore: 1,
-      byLicense: [['MIT', 2]],
-      byFramework: [['vitest', 2]],
+      byLicense: [['MIT', 3]],
+      byFramework: [['vitest', 3]],
     });
   });
 });

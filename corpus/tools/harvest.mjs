@@ -267,6 +267,7 @@ export async function fetchCommits(pool, options, io = defaultIo) {
     const names = (
       await git(io, dir, [
         'diff-tree',
+        '-z',
         '--root',
         '--no-commit-id',
         '--name-status',
@@ -283,8 +284,12 @@ export async function fetchCommits(pool, options, io = defaultIo) {
     }
 
     let kept = 0;
+    let capped = false;
     for (const change of changes) {
-      if ((perRepo.get(commit.repo) ?? 0) >= options.perRepo || total >= options.limit) break;
+      if ((perRepo.get(commit.repo) ?? 0) >= options.perRepo || total >= options.limit) {
+        capped = true; // files are left over: keep the commit pending so a higher cap can replay it
+        break;
+      }
       const after = await showBlob(io, dir, commit.sha, change.path);
       if (after === undefined || !usableSource(after)) {
         skip('unusable');
@@ -330,7 +335,7 @@ export async function fetchCommits(pool, options, io = defaultIo) {
       kept++;
       stats.kept++;
     }
-    finish(kept > 0 ? 'kept' : 'nothing-usable');
+    if (!capped) finish(kept > 0 ? 'kept' : 'nothing-usable');
   }
   return stats;
 }

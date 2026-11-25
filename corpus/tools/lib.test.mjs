@@ -62,9 +62,24 @@ describe('isTestPath', () => {
   ])('%s is not', (p) => expect(isTestPath(p)).toBe(false));
 });
 
-describe('git name-status', () => {
-  const out =
-    'A\tsrc/a.test.ts\nM\tsrc/b.test.ts\nR087\told.test.ts\tnew.test.ts\nR100\tx.test.ts\ty.test.ts\nD\tgone.test.ts\nA\tsrc/c.ts\n';
+describe('git name-status (-z)', () => {
+  const z = (...fields) => `${fields.join('\0')}\0`;
+  const out = z(
+    'A',
+    'src/a.test.ts',
+    'M',
+    'src/b.test.ts',
+    'R087',
+    'old.test.ts',
+    'new.test.ts',
+    'R100',
+    'x.test.ts',
+    'y.test.ts',
+    'D',
+    'gone.test.ts',
+    'A',
+    'src/c.ts',
+  );
 
   test('parses added, modified, renamed and deleted', () => {
     expect(parseNameStatus(out)).toEqual([
@@ -83,6 +98,19 @@ describe('git name-status', () => {
       'src/b.test.ts',
       'new.test.ts',
     ]);
+  });
+
+  test('paths with non-ASCII characters, tabs and quotes come through whole', () => {
+    const paths = ['src/日本語.test.ts', 'src/a\tb.test.ts', 'src/say "hi".test.ts'];
+    const parsed = parseNameStatus(z('A', paths[0], 'M', paths[1], 'R090', 'o.test.ts', paths[2]));
+    expect(parsed.map((e) => e.path)).toEqual(paths);
+    expect(interestingChanges(parsed)).toHaveLength(3);
+  });
+
+  test('truncated or empty output does not throw', () => {
+    expect(parseNameStatus('')).toEqual([]);
+    expect(parseNameStatus('A\0')).toEqual([]);
+    expect(parseNameStatus('R087\0old.test.ts\0')).toEqual([]);
   });
 });
 
@@ -113,10 +141,27 @@ describe('licences', () => {
     '',
   ])('does not accept %j', (text) => expect(classifyLicense(text)).toBeNull());
 
-  test('a MIT text with a non-commercial condition is not MIT', () => {
+  test('a standard MIT grant with a restriction added is not MIT, wherever it is added', () => {
+    const extra = [
+      'Additional condition: This software may only be used for non-commercial purposes.',
+      'Commercial use is prohibited.',
+      'This software is for personal use only.',
+    ];
+    for (const line of extra) {
+      expect(classifyLicense(`${MIT}\n\n${line}`)).toBeNull();
+      expect(classifyLicense(`${line}\n\n${MIT}`)).toBeNull();
+      expect(classifyLicense(`${ISC}\n\n${line}`)).toBeNull();
+      expect(classifyLicense(`${BSD3}\n\n${line}`)).toBeNull();
+    }
     expect(
-      classifyLicense(`${MIT.replace('without restriction', 'for non-commercial use only')}`),
+      classifyLicense(MIT.replace('without restriction', 'for non-commercial use only')),
     ).toBeNull();
+  });
+
+  test('the Apache text mentions commercial damages and is still Apache', () => {
+    expect(
+      classifyLicense(`${APACHE}\n  other commercial damages or losses), even if such Contributor`),
+    ).toBe('Apache-2.0');
   });
 
   test('finds the licence file, preferring the plain name', () => {
@@ -126,6 +171,17 @@ describe('licences', () => {
     expect(findLicenseFile(['COPYING', 'a'])).toBe('COPYING');
     expect(findLicenseFile(['licence.txt'])).toBe('licence.txt');
     expect(findLicenseFile(['README.md', 'package.json'])).toBeNull();
+  });
+
+  test('licences of bundled code are not the project licence', () => {
+    expect(findLicenseFile(['LICENSE-3rdparty.txt'])).toBeNull();
+    expect(findLicenseFile(['LICENSE.vendor', 'THIRD-PARTY-LICENSE', 'LICENSES'])).toBeNull();
+    expect(findLicenseFile(['LICENSE-3rdparty.txt', 'LICENSE'])).toBe('LICENSE');
+  });
+
+  test('the dual-licence forms are the project licence', () => {
+    expect(findLicenseFile(['LICENSE-MIT', 'LICENSE-APACHE'])).toBe('LICENSE-MIT');
+    expect(findLicenseFile(['LICENSE-APACHE.md'])).toBe('LICENSE-APACHE.md');
   });
 
   test('the copyright line', () => {
@@ -178,7 +234,13 @@ describe('small helpers', () => {
       ['2025-02-01', '2025-02-28'],
       ['2025-03-01', '2025-03-10'],
     ]);
-    expect(monthWindows('2025-02-01', '2025-02-01')).toEqual([]);
+    // the end date is included, including when it is the first of a month
+    expect(monthWindows('2025-02-01', '2025-02-01')).toEqual([['2025-02-01', '2025-02-01']]);
+    expect(monthWindows('2025-01-20', '2025-02-01')).toEqual([
+      ['2025-01-20', '2025-01-31'],
+      ['2025-02-01', '2025-02-01'],
+    ]);
+    expect(monthWindows('2025-03-02', '2025-03-01')).toEqual([]);
   });
 });
 

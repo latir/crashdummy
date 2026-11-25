@@ -48,21 +48,29 @@ export function isTestPath(path) {
 }
 
 /**
- * `git diff-tree --name-status -M` output: `A\tpath`, `M\tpath`, `R087\told\tnew`, `D\tpath`.
+ * `git diff-tree -z --name-status -M` output, NUL separated: `A\0path\0`, `M\0path\0`,
+ * `R087\0old\0new\0`, `D\0path\0`. Without `-z` git quotes paths with non-ASCII characters, tabs
+ * or quotes, so `src/日本語.test.ts` would look like it ends in a quote.
  * A rename with no change (R100) is not a new test, so callers drop it.
  */
 export function parseNameStatus(output) {
   const out = [];
-  for (const line of output.split('\n')) {
-    if (!line) continue;
-    const [code, a, b] = line.split('\t');
-    if (!code || a === undefined) continue;
+  const fields = output.split('\0');
+  for (let i = 0; i < fields.length; i++) {
+    const code = fields[i];
+    if (!code) continue;
     const status = code[0];
     if (status === 'R' || status === 'C') {
-      if (b === undefined) continue;
-      out.push({ status, similarity: Number(code.slice(1) || 0), oldPath: a, path: b });
+      const oldPath = fields[i + 1];
+      const path = fields[i + 2];
+      i += 2;
+      if (!oldPath || !path) break;
+      out.push({ status, similarity: Number(code.slice(1) || 0), oldPath, path });
     } else {
-      out.push({ status, similarity: 100, path: a });
+      const path = fields[i + 1];
+      i += 1;
+      if (!path) break;
+      out.push({ status, similarity: 100, path });
     }
   }
   return out;
@@ -77,12 +85,15 @@ export function interestingChanges(entries) {
   );
 }
 
-const LICENSE_FILE = /^(licen[cs]e|copying|unlicense)([._-][^/]*)?$/i;
+// The project's own licence: LICENSE, LICENSE.md, COPYING, and the dual-licence forms
+// LICENSE-MIT / LICENSE-APACHE. Not LICENSE-3rdparty.txt or LICENSE.vendor: those cover code the
+// project bundles, so they say nothing about the project's own tests.
+const LICENSE_FILE =
+  /^(?:(?:licen[cs]e|copying|unlicense)(?:\.(?:md|markdown|txt|rst))?|licen[cs]e[-_.](?:mit|apache(?:-2\.0)?|bsd(?:-[23]-clause)?|isc)(?:\.(?:md|markdown|txt))?)$/i;
 
-/** Which root-level file holds the licence. */
+/** Which root-level file holds the project's own licence, or null. */
 export function findLicenseFile(names) {
   const hits = names.filter((n) => LICENSE_FILE.test(n));
-  // LICENSE and LICENSE.md before LICENSE-3rdparty.txt and friends
   hits.sort((a, b) => a.length - b.length || a.localeCompare(b));
   return hits[0] ?? null;
 }
@@ -93,14 +104,11 @@ export function findLicenseFile(names) {
  */
 export function classifyLicense(text) {
   const t = text.replace(/\s+/g, ' ').toLowerCase();
-  if (t.includes('permission is hereby granted, free of charge')) {
-    // some variants add conditions, such as a non-commercial clause
-    return /non-?commercial|no(?:t)? .{0,40}(?:sell|commercial)/.test(t) &&
-      !t.includes('without restriction')
-      ? null
-      : 'MIT';
-  }
   if (t.includes('apache license') && t.includes('version 2.0')) return 'Apache-2.0';
+  // MIT, ISC and BSD are short, and people append their own conditions to them. Whatever the
+  // grant says, a restriction anywhere in the text means it is no longer the standard licence.
+  if (RESTRICTION.test(t)) return null;
+  if (t.includes('permission is hereby granted, free of charge')) return 'MIT';
   if (t.includes('permission to use, copy, modify, and/or distribute this software')) return 'ISC';
   if (t.includes('redistribution and use in source and binary forms')) {
     if (/neither the name of .{0,120} nor the names of its contributors/.test(t))
@@ -112,6 +120,9 @@ export function classifyLicense(text) {
   }
   return null;
 }
+
+const RESTRICTION =
+  /non-?commercial|not for commercial|no commercial use|commercial use (is )?(prohibited|not (allowed|permitted))|(may|can) not be (used|sold|redistributed) (commercially|for)|only be used for|for (personal|educational|research) (use )?only|additional condition/;
 
 export const PERMISSIVE = new Set(['MIT', 'Apache-2.0', 'ISC', 'BSD-2-Clause', 'BSD-3-Clause']);
 
@@ -166,7 +177,7 @@ export function monthWindows(since, until) {
   const out = [];
   let from = new Date(`${since}T00:00:00Z`);
   const end = new Date(`${until}T00:00:00Z`);
-  while (from < end) {
+  while (from <= end) {
     const next = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + 1, 1));
     const to = new Date(Math.min(next.getTime() - 86400000, end.getTime()));
     out.push([from.toISOString().slice(0, 10), to.toISOString().slice(0, 10)]);
