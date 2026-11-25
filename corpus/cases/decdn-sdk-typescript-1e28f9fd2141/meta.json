@@ -1,0 +1,17 @@
+{
+  "id": "1e28f9fd2141",
+  "set": "targeted",
+  "repo": "decdn/sdk-typescript",
+  "url": "https://github.com/decdn/sdk-typescript/blob/8acb60ba63eb8b6a9a4bc1d2f8b11ac64a2628c6/test/unit/client.test.ts",
+  "commit": "8acb60ba63eb8b6a9a4bc1d2f8b11ac64a2628c6",
+  "path": "test/unit/client.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-11-25T02:55:12.000+03:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE-MIT",
+  "copyright": "Copyright 2026 deCDN Contributors",
+  "framework": "vitest",
+  "tests": 84,
+  "hasBefore": true
+}

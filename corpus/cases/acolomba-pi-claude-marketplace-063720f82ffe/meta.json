@@ -1,0 +1,17 @@
+{
+  "id": "063720f82ffe",
+  "set": "targeted",
+  "repo": "acolomba/pi-claude-marketplace",
+  "url": "https://github.com/acolomba/pi-claude-marketplace/blob/e40d3dda389929927c9441cf6cf277bf0ab23d8f/tests/edge/register.test.ts",
+  "commit": "e40d3dda389929927c9441cf6cf277bf0ab23d8f",
+  "path": "tests/edge/register.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-09-30T19:19:38.000-04:00",
+  "license": "MIT",
+  "licenseFile": "COPYING",
+  "copyright": "Copyright 2026 Alessandro Colomba (https://github.com/acolomba)",
+  "framework": "node-test",
+  "tests": 23,
+  "hasBefore": true
+}

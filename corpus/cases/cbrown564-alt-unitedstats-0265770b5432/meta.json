@@ -1,0 +1,17 @@
+{
+  "id": "0265770b5432",
+  "set": "random",
+  "repo": "cbrown564-alt/unitedstats",
+  "url": "https://github.com/cbrown564-alt/unitedstats/blob/37fecfdf1ab3b4308a4eb34db0acba32f0984979/tests/revalidation.test.ts",
+  "commit": "37fecfdf1ab3b4308a4eb34db0acba32f0984979",
+  "path": "tests/revalidation.test.ts",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-06-30T16:13:59.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 UnitedStats contributors",
+  "framework": "node-test",
+  "tests": 3,
+  "hasBefore": false
+}

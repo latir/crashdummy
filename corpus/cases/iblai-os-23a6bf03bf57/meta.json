@@ -1,0 +1,17 @@
+{
+  "id": "23a6bf03bf57",
+  "set": "targeted",
+  "repo": "iblai/os",
+  "url": "https://github.com/iblai/os/blob/6d64c731f91cbf1e2ba5fbb820906cb0475195ae/e2e/journeys/52-tool-call-indicator-and-reasoning.spec.ts",
+  "commit": "6d64c731f91cbf1e2ba5fbb820906cb0475195ae",
+  "path": "e2e/journeys/52-tool-call-indicator-and-reasoning.spec.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-09-01T01:56:35.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 iBL Education",
+  "framework": "unknown",
+  "tests": 9,
+  "hasBefore": true
+}

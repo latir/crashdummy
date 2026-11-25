@@ -1,0 +1,17 @@
+{
+  "id": "42116ca27b25",
+  "set": "targeted",
+  "repo": "braian-io/braian",
+  "url": "https://github.com/braian-io/braian/blob/7ad8eb1a98661506a699e885b5737224732bb8d4/apps/web/e2e/link-types.spec.ts",
+  "commit": "7ad8eb1a98661506a699e885b5737224732bb8d4",
+  "path": "apps/web/e2e/link-types.spec.ts",
+  "status": "M",
+  "agent": "cursor",
+  "date": "2026-11-25T00:09:34.000+01:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "framework": "playwright",
+  "tests": 3,
+  "hasBefore": true
+}

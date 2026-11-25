@@ -1,0 +1,17 @@
+{
+  "id": "a6a9a43a56e0",
+  "set": "random",
+  "repo": "ANT1OFF/gram",
+  "url": "https://github.com/ANT1OFF/gram/blob/5491548fd42978ad7e83f2387e93d81f84ae47ac/apps/web/src/thread/transcript-hold-still.test.ts",
+  "commit": "5491548fd42978ad7e83f2387e93d81f84ae47ac",
+  "path": "apps/web/src/thread/transcript-hold-still.test.ts",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-11-25T00:57:49.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Johan Selnes",
+  "framework": "vitest",
+  "tests": 1,
+  "hasBefore": false
+}

@@ -1,0 +1,17 @@
+{
+  "id": "822f7f297aab",
+  "set": "random",
+  "repo": "AwsomeFox/campfire",
+  "url": "https://github.com/AwsomeFox/campfire/blob/ddac37ac8f3a59c8f518e5ae3738bcfc08848163/apps/server/test/unit/ai-dm-service-coverage.spec.ts",
+  "commit": "ddac37ac8f3a59c8f518e5ae3738bcfc08848163",
+  "path": "apps/server/test/unit/ai-dm-service-coverage.spec.ts",
+  "status": "A",
+  "agent": "codex",
+  "date": "2026-07-31T17:57:49.000-04:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 AwsomeFox",
+  "framework": "jest",
+  "tests": 1,
+  "hasBefore": false
+}

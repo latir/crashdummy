@@ -1,0 +1,17 @@
+{
+  "id": "0ea6aca93503",
+  "set": "targeted",
+  "repo": "aelmanaa/hardhat-kms",
+  "url": "https://github.com/aelmanaa/hardhat-kms/blob/cfdaf785ec450f344c55c8be2af91f8ad529fe6b/packages/hardhat-kms-aws/test/unit/adapter.test.ts",
+  "commit": "cfdaf785ec450f344c55c8be2af91f8ad529fe6b",
+  "path": "packages/hardhat-kms-aws/test/unit/adapter.test.ts",
+  "status": "R",
+  "agent": "claude",
+  "date": "2026-10-01T01:41:26.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Amine El Manaa",
+  "framework": "node-test",
+  "tests": 11,
+  "hasBefore": true
+}

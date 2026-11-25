@@ -1,0 +1,17 @@
+{
+  "id": "192d39253d13",
+  "set": "random",
+  "repo": "hypothetical-money-machine/hype-comms",
+  "url": "https://github.com/hypothetical-money-machine/hype-comms/blob/90c5e9f1c890c13e74c7533db606b07de8c13629/scripts/ci-workflow.test.mjs",
+  "commit": "90c5e9f1c890c13e74c7533db606b07de8c13629",
+  "path": "scripts/ci-workflow.test.mjs",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-08-30T17:40:10.000-07:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Morgan Allen and Dan Buck",
+  "framework": "node-test",
+  "tests": 3,
+  "hasBefore": true
+}

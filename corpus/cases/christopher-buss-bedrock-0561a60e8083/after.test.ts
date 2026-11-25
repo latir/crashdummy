@@ -1,0 +1,851 @@
+import { type } from "arktype";
+import { assert, describe, it } from "vitest";
+
+import { BADGE_TRAP } from "#tests/helpers/drivers";
+import { environmentFrom } from "#tests/helpers/environment";
+import { fakeStateBackendPlugins } from "#tests/helpers/plugins";
+import {
+	fakeStateLock,
+	neverForceReleaseAsync,
+	neverInspectAsync,
+} from "#tests/helpers/state-lock";
+import type { ResourceKind } from "../core/resources.ts";
+import type { Config } from "../core/schema.ts";
+import type { BedrockState } from "../core/state.ts";
+import type { ProgressEvent, ProgressPort } from "../ports/progress-port.ts";
+import type { DriverRegistry, ResourceDriver } from "../ports/resource-driver.ts";
+import type { StateLockError, StateLockPort, StateLockWaiting } from "../ports/state-lock-port.ts";
+import type { StatePort } from "../ports/state-port.ts";
+import { asResourceKey, asRobloxAssetId, asSha256Hex } from "../types/ids.ts";
+import { deploy, provision, publish } from "./deploy.ts";
+
+const ICON_HASH = asSha256Hex("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+
+const SILENT_PROGRESS: ProgressPort = { emit: () => {} };
+
+const CONTENDED_WAIT: StateLockWaiting = {
+	elapsedMs: 1000,
+	holder: "ci-run-7",
+	remainingMs: 299_000,
+};
+
+const WAIT_EVENT_TAIL = { environment: "production", kind: "stateLockWaiting" } as const;
+
+const LEASE_LOST: StateLockError = { reason: "the hold is another run's now" };
+
+async function readIconAsync(): Promise<Uint8Array> {
+	return new Uint8Array();
+}
+
+function vipPassConfig(): Config {
+	return {
+		environments: { production: {} },
+		passes: {
+			"vip-pass": {
+				name: "VIP Pass",
+				description: "Grants VIP perks.",
+				icon: { "en-us": "assets/vip-icon.png" },
+				price: 500,
+			},
+		},
+	};
+}
+
+function vipPassCurrent() {
+	return {
+		key: asResourceKey("vip-pass"),
+		name: "VIP Pass",
+		description: "Grants VIP perks.",
+		icon: { "en-us": "assets/vip-icon.png" },
+		iconFileHashes: { "en-us": ICON_HASH },
+		kind: "gamePass" as const,
+		outputs: {
+			assetId: asRobloxAssetId("9876543210"),
+			iconAssetIds: { "en-us": asRobloxAssetId("1122334455") },
+		},
+		price: 500,
+	};
+}
+
+function neverDriver<K extends ResourceKind>(): ResourceDriver<K> {
+	return {
+		async create() {
+			throw new Error("driver must not run for this fixture");
+		},
+		async retire() {
+			throw new Error("Unexpected retirement in this fixture");
+		},
+	};
+}
+
+/**
+ * Build a registry whose game-pass create records that it ran.
+ *
+ * @param trace - Log the create appends to when it is dispatched.
+ * @returns A driver table whose game-pass create succeeds.
+ */
+function tracingRegistry(trace: Array<string>): DriverRegistry {
+	return {
+		badge: BADGE_TRAP,
+		developerProduct: neverDriver(),
+		gamePass: {
+			async create() {
+				trace.push("create");
+				return { data: vipPassCurrent(), success: true };
+			},
+			async retire() {
+				throw new Error("Unexpected retirement in this fixture");
+			},
+		},
+		place: neverDriver(),
+		universe: neverDriver(),
+	};
+}
+
+/**
+ * Build a state port whose write records that it ran.
+ *
+ * @param trace - Log the write appends to when the snapshot is persisted.
+ * @returns A state port that reads empty and accepts every write.
+ */
+function tracingStatePort(trace: Array<string>): StatePort {
+	return {
+		async read() {
+			return { data: {}, success: true };
+		},
+		async write() {
+			trace.push("write");
+			return { data: undefined, success: true };
+		},
+	};
+}
+
+function refusingWriteStatePort(): StatePort {
+	return {
+		async read() {
+			return { data: {}, success: true };
+		},
+		async write() {
+			return {
+				err: {
+					file: "state/production.json",
+					kind: "stateAccessDenied",
+					reason: "the credential was refused",
+				},
+				success: false,
+			};
+		},
+	};
+}
+
+/**
+ * Collect every progress event the deploy emits, in order.
+ *
+ * @param events - Log each event is appended to.
+ * @returns A progress port that records rather than renders.
+ */
+function recordingProgress(events: Array<ProgressEvent>): ProgressPort {
+	return {
+		emit(event) {
+			events.push(event);
+		},
+	};
+}
+
+/**
+ * Wrap a lock port so it reports one wait before granting the hold, which
+ * is what a **Backend** does while another run holds the environment.
+ *
+ * @param port - The port that grants the hold once the wait is reported.
+ * @param waiting - The wait to report.
+ * @returns A port that reports the wait, then delegates.
+ */
+function waitingLockPort(port: StateLockPort, waiting: StateLockWaiting): StateLockPort {
+	return {
+		...port,
+		async acquire(environment, options) {
+			options?.onWaiting?.(waiting);
+			return port.acquire(environment);
+		},
+	};
+}
+
+/**
+ * Wrap a lock port so the hold it grants loses its **Lease** while the
+ * deploy is still running.
+ *
+ * @param port - The port that grants the hold.
+ * @param error - Why the lease could not be kept.
+ * @returns A port whose hold reports a lease it could not keep.
+ */
+function leaseLosingLockPort(port: StateLockPort, error: StateLockError): StateLockPort {
+	return {
+		...port,
+		async acquire(environment, options) {
+			const hold = await port.acquire(environment, options);
+			options?.onLeaseLost?.(error);
+			return hold;
+		},
+	};
+}
+
+/**
+ * Wrap a lock port so it records what the caller said the hold is for.
+ *
+ * @param port - The port that grants the hold.
+ * @param asked - Log each acquisition's operation is appended to.
+ * @returns A port that records the operation, then delegates.
+ */
+function operationRecordingLockPort(
+	port: StateLockPort,
+	asked: Array<string | undefined>,
+): StateLockPort {
+	return {
+		...port,
+		async acquire(environment, options) {
+			asked.push(options?.operation);
+			return port.acquire(environment);
+		},
+	};
+}
+
+describe("deploy under a locking backend", () => {
+	it("should take the hold before dispatching any driver", async ({ expect }) => {
+		expect.assertions(2);
+
+		const trace: Array<string> = [];
+		const lock = fakeStateLock();
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: SILENT_PROGRESS,
+			readFile: readIconAsync,
+			registry: tracingRegistry(trace),
+			stateLockPort: {
+				acquire: async (environment) => {
+					trace.push("acquire");
+					return lock.port.acquire(environment);
+				},
+				forceRelease: neverForceReleaseAsync,
+				inspect: neverInspectAsync,
+			},
+			statePort: tracingStatePort(trace),
+		});
+
+		assert(result.success);
+
+		expect(trace).toStrictEqual(["acquire", "create", "write"]);
+		expect(lock.acquired).toStrictEqual(["production"]);
+	});
+
+	it("should report a contended wait through the progress port before applying anything", async ({
+		expect,
+	}) => {
+		expect.assertions(1);
+
+		const events: Array<ProgressEvent> = [];
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: recordingProgress(events),
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			stateLockPort: waitingLockPort(fakeStateLock().port, CONTENDED_WAIT),
+			statePort: tracingStatePort([]),
+		});
+
+		assert(result.success);
+
+		expect(events[0]).toStrictEqual({ ...CONTENDED_WAIT, ...WAIT_EVENT_TAIL });
+	});
+
+	it("should surface a lease the backend could not keep", async ({ expect }) => {
+		expect.assertions(1);
+
+		const events: Array<ProgressEvent> = [];
+		const progress: ProgressPort = {
+			emit: (event) => {
+				events.push(event);
+			},
+		};
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress,
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			stateLockPort: leaseLosingLockPort(fakeStateLock().port, LEASE_LOST),
+			statePort: tracingStatePort([]),
+		});
+
+		assert(result.success);
+
+		expect(events[0]).toStrictEqual({
+			environment: "production",
+			error: LEASE_LOST,
+			kind: "stateLockLeaseLost",
+		});
+	});
+
+	it("should tell the backend which operation the hold is for", async ({ expect }) => {
+		expect.assertions(1);
+
+		const asked: Array<string | undefined> = [];
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: SILENT_PROGRESS,
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			stateLockPort: operationRecordingLockPort(fakeStateLock().port, asked),
+			statePort: tracingStatePort([]),
+		});
+
+		assert(result.success);
+
+		expect(asked).toStrictEqual(["deploy"]);
+	});
+
+	it("should give the hold up once the state write has been attempted", async ({ expect }) => {
+		expect.assertions(4);
+
+		const trace: Array<string> = [];
+		const lock = fakeStateLock();
+		const events: Array<ProgressEvent> = [];
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: recordingProgress(events),
+			readFile: readIconAsync,
+			registry: tracingRegistry(trace),
+			stateLockPort: lock.port,
+			statePort: tracingStatePort(trace),
+		});
+
+		assert(result.success);
+
+		expect(trace).toStrictEqual(["create", "write"]);
+		expect(lock.released).toStrictEqual(["production"]);
+		expect(result.data).not.toHaveProperty("lockReleaseError");
+		expect(events.map((event) => event.kind)).not.toContain("stateLockReleaseFailed");
+	});
+
+	it("should give the hold up when the state write fails", async ({ expect }) => {
+		expect.assertions(2);
+
+		const lock = fakeStateLock();
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: SILENT_PROGRESS,
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			stateLockPort: lock.port,
+			statePort: refusingWriteStatePort(),
+		});
+
+		assert(!result.success);
+
+		expect(result.err.kind).toBe("stateWriteFailed");
+		expect(lock.released).toStrictEqual(["production"]);
+	});
+
+	it("should give the hold up when the deploy throws", async ({ expect }) => {
+		expect.assertions(2);
+
+		const lock = fakeStateLock();
+
+		const thrown = deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: SILENT_PROGRESS,
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			stateLockPort: lock.port,
+			statePort: {
+				read: async () => {
+					throw new Error("state store unreachable");
+				},
+				write: async () => ({ data: undefined, success: true }),
+			},
+		});
+
+		await expect(thrown).rejects.toThrow("state store unreachable");
+
+		expect(lock.released).toStrictEqual(["production"]);
+	});
+
+	it("should abort with lockAcquireFailed before dispatching any driver when the hold is refused", async ({
+		expect,
+	}) => {
+		expect.assertions(5);
+
+		const trace: Array<string> = [];
+		const events: Array<ProgressEvent> = [];
+		const lock = fakeStateLock({
+			refuseAcquire: {
+				detail: { holder: "ci-run-42" },
+				reason: "production is already held",
+			},
+		});
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: recordingProgress(events),
+			readFile: readIconAsync,
+			registry: tracingRegistry(trace),
+			stateLockPort: lock.port,
+			statePort: tracingStatePort(trace),
+		});
+
+		assert(!result.success);
+		assert(result.err.kind === "lockAcquireFailed");
+
+		expect(result.err.cause).toStrictEqual({
+			detail: { holder: "ci-run-42" },
+			reason: "production is already held",
+		});
+		expect(trace).toBeEmpty();
+		expect(lock.released).toBeEmpty();
+		expect(result.err).not.toHaveProperty("lockReleaseError");
+		expect(events.map((event) => event.kind)).not.toContain("stateLockReleaseFailed");
+	});
+
+	it("should keep the deploy result when the hold cannot be given up", async ({ expect }) => {
+		expect.assertions(4);
+
+		const releaseError = { detail: { holder: "ci-run-7" }, reason: "lock record already gone" };
+		const lock = fakeStateLock({ refuseRelease: releaseError });
+		const events: Array<ProgressEvent> = [];
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: recordingProgress(events),
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			stateLockPort: lock.port,
+			statePort: tracingStatePort([]),
+		});
+
+		assert(result.success);
+
+		expect(result.data.resources).toHaveLength(1);
+		expect(lock.released).toStrictEqual(["production"]);
+		expect(result.data).toHaveProperty("lockReleaseError", releaseError);
+		expect(events.at(-2)).toStrictEqual({
+			environment: "production",
+			error: releaseError,
+			kind: "stateLockReleaseFailed",
+		});
+	});
+
+	it("should keep the deploy result when giving the hold up throws", async ({ expect }) => {
+		expect.assertions(5);
+
+		const released: Array<string> = [];
+		const rejection = new Error("lock store unreachable");
+		const events: Array<ProgressEvent> = [];
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: recordingProgress(events),
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			stateLockPort: {
+				acquire: async (environment) => {
+					return {
+						data: {
+							release: async () => {
+								released.push(environment);
+								throw rejection;
+							},
+						},
+						success: true,
+					};
+				},
+				forceRelease: neverForceReleaseAsync,
+				inspect: neverInspectAsync,
+			},
+			statePort: refusingWriteStatePort(),
+		});
+
+		assert(!result.success);
+
+		expect(result.err.kind).toBe("stateWriteFailed");
+		expect(released).toStrictEqual(["production"]);
+		expect(result.err).toHaveProperty("lockReleaseError", {
+			detail: rejection,
+			reason: "lock store unreachable",
+		});
+		expect(result.err).toHaveProperty("unrecorded", [vipPassCurrent()]);
+		expect(events.at(-2)).toStrictEqual({
+			environment: "production",
+			error: { detail: rejection, reason: "lock store unreachable" },
+			kind: "stateLockReleaseFailed",
+		});
+	});
+
+	it("should take the hold the configured backend supplies", async ({ expect }) => {
+		expect.assertions(2);
+
+		const trace: Array<string> = [];
+		const lock = fakeStateLock();
+		const statePort = tracingStatePort(trace);
+
+		const result = await deploy({
+			config: { ...vipPassConfig(), state: { backend: "s3", bucket: "my-bucket" } },
+			environment: "production",
+			getEnv: environmentFrom({}),
+			plugins: fakeStateBackendPlugins({
+				name: "s3",
+				createLockPort: () => ({ data: lock.port, success: true }),
+				createPort: () => ({ data: statePort, success: true }),
+				schema: type({ bucket: "string > 0" }),
+				specifier: "@example/state-s3",
+			}),
+			progress: SILENT_PROGRESS,
+			readFile: readIconAsync,
+			registry: tracingRegistry(trace),
+		});
+
+		assert(result.success);
+
+		expect(lock.acquired).toStrictEqual(["production"]);
+		expect(lock.released).toStrictEqual(["production"]);
+	});
+
+	it("should take the hold the caller supplies over the one the backend declares", async ({
+		expect,
+	}) => {
+		expect.assertions(2);
+
+		const declared = fakeStateLock();
+		const supplied = fakeStateLock();
+		const statePort = tracingStatePort([]);
+
+		const result = await deploy({
+			config: { ...vipPassConfig(), state: { backend: "s3", bucket: "my-bucket" } },
+			environment: "production",
+			getEnv: environmentFrom({}),
+			plugins: fakeStateBackendPlugins({
+				name: "s3",
+				createLockPort: () => ({ data: declared.port, success: true }),
+				createPort: () => ({ data: statePort, success: true }),
+				schema: type({ bucket: "string > 0" }),
+				specifier: "@example/state-s3",
+			}),
+			progress: SILENT_PROGRESS,
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			stateLockPort: supplied.port,
+		});
+
+		assert(result.success);
+
+		expect(supplied.acquired).toStrictEqual(["production"]);
+		expect(declared.acquired).toBeEmpty();
+	});
+
+	it("should take the hold a caller supplies even where the config turned locking off", async ({
+		expect,
+	}) => {
+		expect.assertions(2);
+
+		const supplied = fakeStateLock();
+		const events: Array<ProgressEvent> = [];
+		const statePort = tracingStatePort([]);
+
+		const result = await deploy({
+			config: {
+				...vipPassConfig(),
+				state: { backend: "s3", bucket: "my-bucket", locking: false },
+			},
+			environment: "production",
+			getEnv: environmentFrom({}),
+			plugins: fakeStateBackendPlugins({
+				name: "s3",
+				createLockPort: () => ({ data: fakeStateLock().port, success: true }),
+				createPort: () => ({ data: statePort, success: true }),
+				schema: type({ bucket: "string > 0" }),
+				specifier: "@example/state-s3",
+			}),
+			progress: recordingProgress(events),
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			stateLockPort: supplied.port,
+		});
+
+		assert(result.success);
+
+		expect(supplied.acquired).toStrictEqual(["production"]);
+		expect(events.map((event) => event.kind)).not.toContain("stateLockDisabled");
+	});
+
+	it("should deploy without taking a hold when the config turned locking off", async ({
+		expect,
+	}) => {
+		expect.assertions(2);
+
+		const lock = fakeStateLock();
+		const statePort = tracingStatePort([]);
+
+		const result = await deploy({
+			config: {
+				...vipPassConfig(),
+				state: { backend: "s3", bucket: "my-bucket", locking: false },
+			},
+			environment: "production",
+			getEnv: environmentFrom({}),
+			plugins: fakeStateBackendPlugins({
+				name: "s3",
+				createLockPort: () => ({ data: lock.port, success: true }),
+				createPort: () => ({ data: statePort, success: true }),
+				schema: type({ bucket: "string > 0" }),
+				specifier: "@example/state-s3",
+			}),
+			progress: SILENT_PROGRESS,
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+		});
+
+		assert(result.success);
+
+		expect(result.data.resources).toHaveLength(1);
+		expect(lock.acquired).toBeEmpty();
+	});
+
+	it("should report that locking is off when the config turned it off", async ({ expect }) => {
+		expect.assertions(1);
+
+		const events: Array<ProgressEvent> = [];
+		const statePort = tracingStatePort([]);
+
+		const result = await deploy({
+			config: {
+				...vipPassConfig(),
+				state: { backend: "s3", bucket: "my-bucket", locking: false },
+			},
+			environment: "production",
+			getEnv: environmentFrom({}),
+			plugins: fakeStateBackendPlugins({
+				name: "s3",
+				createLockPort: () => ({ data: fakeStateLock().port, success: true }),
+				createPort: () => ({ data: statePort, success: true }),
+				schema: type({ bucket: "string > 0" }),
+				specifier: "@example/state-s3",
+			}),
+			progress: recordingProgress(events),
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+		});
+
+		assert(result.success);
+
+		expect(events[0]).toStrictEqual({ environment: "production", kind: "stateLockDisabled" });
+	});
+
+	it("should say nothing about locking when the configured backend offers none", async ({
+		expect,
+	}) => {
+		expect.assertions(1);
+
+		const events: Array<ProgressEvent> = [];
+		const statePort = tracingStatePort([]);
+
+		const result = await deploy({
+			config: { ...vipPassConfig(), state: { backend: "s3", bucket: "my-bucket" } },
+			environment: "production",
+			getEnv: environmentFrom({}),
+			plugins: fakeStateBackendPlugins({
+				name: "s3",
+				createPort: () => ({ data: statePort, success: true }),
+				schema: type({ bucket: "string > 0" }),
+				specifier: "@example/state-s3",
+			}),
+			progress: recordingProgress(events),
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+		});
+
+		assert(result.success);
+
+		expect(events.map((event) => event.kind)).not.toContain("stateLockDisabled");
+	});
+
+	it("should say nothing about locking when the backend offers none to turn off", async ({
+		expect,
+	}) => {
+		expect.assertions(1);
+
+		const events: Array<ProgressEvent> = [];
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: recordingProgress(events),
+			readFile: readIconAsync,
+			registry: tracingRegistry([]),
+			statePort: tracingStatePort([]),
+		});
+
+		assert(result.success);
+
+		expect(events.map((event) => event.kind)).not.toContain("stateLockDisabled");
+	});
+
+	it("should take the hold for a provision, which shares the deploy's lifetime", async ({
+		expect,
+	}) => {
+		expect.assertions(2);
+
+		const trace: Array<string> = [];
+		const lock = fakeStateLock();
+
+		const result = await provision({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: SILENT_PROGRESS,
+			readFile: readIconAsync,
+			registry: tracingRegistry(trace),
+			stateLockPort: lock.port,
+			statePort: tracingStatePort(trace),
+		});
+
+		assert(result.success);
+
+		expect(lock.acquired).toStrictEqual(["production"]);
+		expect(lock.released).toStrictEqual(["production"]);
+	});
+
+	it("should deploy without taking a hold when the backend declares no locking", async ({
+		expect,
+	}) => {
+		expect.assertions(2);
+
+		const trace: Array<string> = [];
+
+		const result = await deploy({
+			config: vipPassConfig(),
+			environment: "production",
+			getEnv: environmentFrom({}),
+			progress: SILENT_PROGRESS,
+			readFile: readIconAsync,
+			registry: tracingRegistry(trace),
+			statePort: tracingStatePort(trace),
+		});
+
+		assert(result.success);
+
+		expect(trace).toStrictEqual(["create", "write"]);
+		expect(result.data.resources).toHaveLength(1);
+	});
+});
+
+describe.for([
+	{ name: "deploy", run: deploy },
+	{ name: "provision", run: provision },
+	{ name: "publish", run: publish },
+])("$name release reporting", ({ run }) => {
+	describe.for([
+		{ outcome: "success", resultField: "data", statePort: tracingStatePort([]) },
+		{ outcome: "failure", resultField: "err", statePort: refusingWriteStatePort() },
+	])("after reconcile $outcome", ({ resultField, statePort }) => {
+		const releaseError: StateLockError = {
+			detail: { holder: "ci-run-7" },
+			reason: "lock store unreachable",
+		};
+		const rejection = new Error("lock store unreachable");
+
+		it.for([
+			{
+				lockReleaseError: releaseError,
+				release: "typed",
+				releaseHold: async () => ({ err: releaseError, success: false as const }),
+			},
+			{
+				lockReleaseError: { detail: rejection, reason: "lock store unreachable" },
+				release: "rejected",
+				releaseHold: async () => {
+					throw rejection;
+				},
+			},
+		])(
+			"should report a $release release failure",
+			async ({ lockReleaseError, releaseHold }, { expect }) => {
+				expect.assertions(5);
+
+				const events: Array<ProgressEvent> = [];
+				const written: Array<BedrockState> = [];
+				const options = {
+					config: vipPassConfig(),
+					environment: "production",
+					getEnv: environmentFrom({}),
+					progress: recordingProgress(events),
+					readFile: readIconAsync,
+					registry: tracingRegistry([]),
+					statePort,
+				};
+				const baseline = await run(options);
+				events.length = 0;
+				let releases = 0;
+				const result = await run({
+					...options,
+					stateLockPort: {
+						...fakeStateLock().port,
+						async acquire() {
+							return {
+								data: {
+									async release() {
+										releases++;
+										return releaseHold();
+									},
+								},
+								success: true,
+							};
+						},
+					},
+					statePort: {
+						...options.statePort,
+						async write(state, version) {
+							written.push(state);
+							return options.statePort.write(state, version);
+						},
+					},
+				});
+
+				expect(result).toMatchObject(baseline);
+				expect(result).toHaveProperty(`${resultField}.lockReleaseError`, lockReleaseError);
+				expect(events.at(-2)).toStrictEqual({
+					environment: "production",
+					error: lockReleaseError,
+					kind: "stateLockReleaseFailed",
+				});
+				expect(
+					written.map((state) => Object.hasOwn(state, "lockReleaseError")),
+				).toStrictEqual([false]);
+				expect(releases).toBe(1);
+			},
+		);
+	});
+});

@@ -1,0 +1,17 @@
+{
+  "id": "20cac635bb5d",
+  "set": "targeted",
+  "repo": "andreisavu/ambion",
+  "url": "https://github.com/andreisavu/ambion/blob/bfc883d0f3d035cbbd983d3f50d83d377297d137/packages/ambion/test/package.test.ts",
+  "commit": "bfc883d0f3d035cbbd983d3f50d83d377297d137",
+  "path": "packages/ambion/test/package.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-09-30T16:25:57.000-07:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "framework": "vitest",
+  "tests": 7,
+  "hasBefore": true
+}

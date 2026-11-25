@@ -1,0 +1,17 @@
+{
+  "id": "ac7ee3c04de0",
+  "set": "random",
+  "repo": "orange-case/JoustMania",
+  "url": "https://github.com/orange-case/JoustMania/blob/3bf77e07bfa3b52ed096be6fe463ddd6e96f7f58/services/dashboard/src/__tests__/follow.test.ts",
+  "commit": "3bf77e07bfa3b52ed096be6fe463ddd6e96f7f58",
+  "path": "services/dashboard/src/__tests__/follow.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-10-31T23:46:06.000Z",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2015-2026 JoustMania Contributors",
+  "framework": "vitest",
+  "tests": 20,
+  "hasBefore": true
+}

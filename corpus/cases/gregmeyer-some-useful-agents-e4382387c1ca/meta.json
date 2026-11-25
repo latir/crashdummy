@@ -1,0 +1,17 @@
+{
+  "id": "e4382387c1ca",
+  "set": "random",
+  "repo": "gregmeyer/some-useful-agents",
+  "url": "https://github.com/gregmeyer/some-useful-agents/blob/01778e8db5763b4081a83f6231f1b63afd39f284/packages/dashboard/src/routes/inbox-events.test.ts",
+  "commit": "01778e8db5763b4081a83f6231f1b63afd39f284",
+  "path": "packages/dashboard/src/routes/inbox-events.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-07-31T16:47:38.000-07:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Greg Meyer",
+  "framework": "vitest",
+  "tests": 8,
+  "hasBefore": true
+}

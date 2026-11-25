@@ -1,0 +1,17 @@
+{
+  "id": "6e43db7b7afc",
+  "set": "targeted",
+  "repo": "Gambitnl/Aralia",
+  "url": "https://github.com/Gambitnl/Aralia/blob/e79b3fad0f3796eb1a785893935b6f77aa472286/src/state/__tests__/stage4AtlasTravelArrival.test.ts",
+  "commit": "e79b3fad0f3796eb1a785893935b6f77aa472286",
+  "path": "src/state/__tests__/stage4AtlasTravelArrival.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-07-01T01:52:26.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2024 Aralia RPG",
+  "framework": "vitest",
+  "tests": 2,
+  "hasBefore": true
+}

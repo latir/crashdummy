@@ -1,0 +1,17 @@
+{
+  "id": "4239d4f32525",
+  "set": "random",
+  "repo": "MGrin/scani-oss",
+  "url": "https://github.com/MGrin/scani-oss/blob/5d85552c576f80dff08899e69a47459d0e1ad26c/apps/backend/api/tests/integration/payments-idor.test.ts",
+  "commit": "5d85552c576f80dff08899e69a47459d0e1ad26c",
+  "path": "apps/backend/api/tests/integration/payments-idor.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-09-01T11:56:59.000+12:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Scani contributors",
+  "framework": "unknown",
+  "tests": 8,
+  "hasBefore": true
+}
