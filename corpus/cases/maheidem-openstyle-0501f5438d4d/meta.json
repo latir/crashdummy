@@ -1,0 +1,17 @@
+{
+  "id": "0501f5438d4d",
+  "set": "random",
+  "repo": "Maheidem/openstyle",
+  "url": "https://github.com/Maheidem/openstyle/blob/c80d4505bc2d6f45a0ee211cadb148c9f6cade8c/apps/server/tests/chat-choices.test.ts",
+  "commit": "c80d4505bc2d6f45a0ee211cadb148c9f6cade8c",
+  "path": "apps/server/tests/chat-choices.test.ts",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-10-31T20:20:51.000-03:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Maheidem",
+  "framework": "vitest",
+  "tests": 23,
+  "hasBefore": false
+}

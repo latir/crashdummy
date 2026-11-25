@@ -1,0 +1,17 @@
+{
+  "id": "e3e4f36a120d",
+  "set": "targeted",
+  "repo": "XFuel-Lab/chit402",
+  "url": "https://github.com/XFuel-Lab/chit402/blob/51a8dc534d76c60e7792b79b271da0d66cd6e35e/apps/web/test/seo.test.mjs",
+  "commit": "51a8dc534d76c60e7792b79b271da0d66cd6e35e",
+  "path": "apps/web/test/seo.test.mjs",
+  "status": "M",
+  "agent": "cursor",
+  "date": "2026-08-31T22:07:40.000+01:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "framework": "node-test",
+  "tests": 7,
+  "hasBefore": true
+}

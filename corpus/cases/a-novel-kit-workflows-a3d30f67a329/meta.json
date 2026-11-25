@@ -1,0 +1,17 @@
+{
+  "id": "a3d30f67a329",
+  "set": "random",
+  "repo": "a-novel-kit/workflows",
+  "url": "https://github.com/a-novel-kit/workflows/blob/1d2b5a51de601345b35fa2c6fd34e876baf6e7d0/tests/release.test.mjs",
+  "commit": "1d2b5a51de601345b35fa2c6fd34e876baf6e7d0",
+  "path": "tests/release.test.mjs",
+  "status": "A",
+  "agent": "codex",
+  "date": "2026-10-01T01:10:08.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2024 A-Novel",
+  "framework": "node-test",
+  "tests": 7,
+  "hasBefore": false
+}

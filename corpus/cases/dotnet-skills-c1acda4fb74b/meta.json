@@ -1,0 +1,17 @@
+{
+  "id": "c1acda4fb74b",
+  "set": "targeted",
+  "repo": "dotnet/skills",
+  "url": "https://github.com/dotnet/skills/blob/0c7d74080ed509e793e7293556c528dcc9941d65/tests/dotnet-test/assertion-quality/fixtures/jest-shallow/tests/order.test.ts",
+  "commit": "0c7d74080ed509e793e7293556c528dcc9941d65",
+  "path": "tests/dotnet-test/assertion-quality/fixtures/jest-shallow/tests/order.test.ts",
+  "status": "M",
+  "agent": "copilot",
+  "date": "2026-09-30T23:30:57.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) .NET Foundation and Contributors",
+  "framework": "unknown",
+  "tests": 10,
+  "hasBefore": true
+}

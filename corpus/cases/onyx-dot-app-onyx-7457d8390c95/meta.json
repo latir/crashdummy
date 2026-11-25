@@ -1,0 +1,17 @@
+{
+  "id": "7457d8390c95",
+  "set": "random",
+  "repo": "onyx-dot-app/onyx",
+  "url": "https://github.com/onyx-dot-app/onyx/blob/d9e63f57582527e8e91314f8df834ce50e0e3e55/web/src/sections/chat/ChatActivity.test.tsx",
+  "commit": "d9e63f57582527e8e91314f8df834ce50e0e3e55",
+  "path": "web/src/sections/chat/ChatActivity.test.tsx",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-11-24T23:51:41.000Z",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2023-present DanswerAI, Inc.",
+  "framework": "jest",
+  "tests": 6,
+  "hasBefore": false
+}

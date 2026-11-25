@@ -1,0 +1,17 @@
+{
+  "id": "6bbcfdfac975",
+  "set": "random",
+  "repo": "sev7n4/pi-lnk",
+  "url": "https://github.com/sev7n4/pi-lnk/blob/1ba95ea0977648167facf74cf9cdb4f35c72c9cb/services/pi-runtime/src/app.test.ts",
+  "commit": "1ba95ea0977648167facf74cf9cdb4f35c72c9cb",
+  "path": "services/pi-runtime/src/app.test.ts",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-10-01T02:13:07.000+08:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 sev7n4",
+  "framework": "node-test",
+  "tests": 26,
+  "hasBefore": true
+}

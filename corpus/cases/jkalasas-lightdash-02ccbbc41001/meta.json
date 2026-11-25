@@ -1,0 +1,17 @@
+{
+  "id": "02ccbbc41001",
+  "set": "targeted",
+  "repo": "jkalasas/lightdash",
+  "url": "https://github.com/jkalasas/lightdash/blob/e484d8ffb45f40f77e49ea5d4bf2981a2d1a6efa/packages/backend/src/ee/services/AppGenerateService/AppGenerateService.getAppCode.test.ts",
+  "commit": "e484d8ffb45f40f77e49ea5d4bf2981a2d1a6efa",
+  "path": "packages/backend/src/ee/services/AppGenerateService/AppGenerateService.getAppCode.test.ts",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-08-27T14:00:33.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2021-present Telescope Technology Limited (trading as “Lightdash”)",
+  "framework": "vitest",
+  "tests": 17,
+  "hasBefore": true
+}

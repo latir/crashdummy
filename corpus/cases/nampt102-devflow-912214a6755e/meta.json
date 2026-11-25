@@ -1,0 +1,17 @@
+{
+  "id": "912214a6755e",
+  "set": "targeted",
+  "repo": "nampt102/devflow",
+  "url": "https://github.com/nampt102/devflow/blob/1d23cb6962f57c2f21a76d3402cec293d1a4dc76/.github/scripts/tests/typecheck-rust-cache.test.mjs",
+  "commit": "1d23cb6962f57c2f21a76d3402cec293d1a4dc76",
+  "path": ".github/scripts/tests/typecheck-rust-cache.test.mjs",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-09-30T16:04:23.000-07:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025 Paperclip AI",
+  "framework": "node-test",
+  "tests": 3,
+  "hasBefore": true
+}

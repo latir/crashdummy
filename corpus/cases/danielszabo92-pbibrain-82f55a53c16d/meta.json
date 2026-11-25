@@ -1,0 +1,17 @@
+{
+  "id": "82f55a53c16d",
+  "set": "random",
+  "repo": "DanielSzabo92/PBIBrain",
+  "url": "https://github.com/DanielSzabo92/PBIBrain/blob/bf43231e14ec64d31172876ddb11212bb83e245a/frontend/test/statusBadge.test.js",
+  "commit": "bf43231e14ec64d31172876ddb11212bb83e245a",
+  "path": "frontend/test/statusBadge.test.js",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-11-01T00:59:57.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Daniel",
+  "framework": "node-test",
+  "tests": 3,
+  "hasBefore": false
+}

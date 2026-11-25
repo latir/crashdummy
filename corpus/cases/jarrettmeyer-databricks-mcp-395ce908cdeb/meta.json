@@ -1,0 +1,17 @@
+{
+  "id": "395ce908cdeb",
+  "set": "random",
+  "repo": "jarrettmeyer/databricks-mcp",
+  "url": "https://github.com/jarrettmeyer/databricks-mcp/blob/82745553379765610d616ffc287933efc4b23e16/src/execute.test.ts",
+  "commit": "82745553379765610d616ffc287933efc4b23e16",
+  "path": "src/execute.test.ts",
+  "status": "M",
+  "agent": "copilot",
+  "date": "2026-09-30T18:18:56.000-04:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Jarrett Meyer",
+  "framework": "unknown",
+  "tests": 6,
+  "hasBefore": true
+}

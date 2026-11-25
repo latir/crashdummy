@@ -1,0 +1,17 @@
+{
+  "id": "009b932c328e",
+  "set": "targeted",
+  "repo": "egeominotti/bunqueue",
+  "url": "https://github.com/egeominotti/bunqueue/blob/ad5eb22f9106cdac0b7647e7d87255c7b24ee116/test/core-operations-edge-cases.test.ts",
+  "commit": "ad5eb22f9106cdac0b7647e7d87255c7b24ee116",
+  "path": "test/core-operations-edge-cases.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-07-01T01:53:51.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2024 Egeo Minotti",
+  "framework": "unknown",
+  "tests": 80,
+  "hasBefore": true
+}

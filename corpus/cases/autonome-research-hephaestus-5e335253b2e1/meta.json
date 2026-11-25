@@ -1,0 +1,17 @@
+{
+  "id": "5e335253b2e1",
+  "set": "targeted",
+  "repo": "autonome-research/hephaestus",
+  "url": "https://github.com/autonome-research/hephaestus/blob/6b020d96872111d3e7d4cc437fdfb2cf2a684bb2/web/test/operator-chrome.test.tsx",
+  "commit": "6b020d96872111d3e7d4cc437fdfb2cf2a684bb2",
+  "path": "web/test/operator-chrome.test.tsx",
+  "status": "M",
+  "agent": "cursor",
+  "date": "2026-08-31T12:56:27.000-07:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "framework": "vitest",
+  "tests": 18,
+  "hasBefore": true
+}

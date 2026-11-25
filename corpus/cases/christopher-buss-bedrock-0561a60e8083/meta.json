@@ -1,0 +1,17 @@
+{
+  "id": "0561a60e8083",
+  "set": "targeted",
+  "repo": "christopher-buss/bedrock",
+  "url": "https://github.com/christopher-buss/bedrock/blob/cef88d5564a39dae0537ad9c345361d696b8963e/packages/bedrock/src/shell/deploy-state-lock.spec.ts",
+  "commit": "cef88d5564a39dae0537ad9c345361d696b8963e",
+  "path": "packages/bedrock/src/shell/deploy-state-lock.spec.ts",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-10-28T19:59:26.000Z",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025 Christopher Buss",
+  "framework": "vitest",
+  "tests": 20,
+  "hasBefore": true
+}

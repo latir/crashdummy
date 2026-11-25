@@ -1,0 +1,17 @@
+{
+  "id": "69dd3de662d5",
+  "set": "random",
+  "repo": "Anco91/mbongo",
+  "url": "https://github.com/Anco91/mbongo/blob/a8778a6e6c8d27b46a18a1b326b47c1492b5c9d1/apps/web/__tests__/transfer-legs.test.ts",
+  "commit": "a8778a6e6c8d27b46a18a1b326b47c1492b5c9d1",
+  "path": "apps/web/__tests__/transfer-legs.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-11-25T00:48:18.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2024 Agent IA Expert Architect",
+  "framework": "unknown",
+  "tests": 14,
+  "hasBefore": true
+}

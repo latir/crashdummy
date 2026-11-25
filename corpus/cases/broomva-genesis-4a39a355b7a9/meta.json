@@ -1,0 +1,17 @@
+{
+  "id": "4a39a355b7a9",
+  "set": "random",
+  "repo": "broomva/genesis",
+  "url": "https://github.com/broomva/genesis/blob/6af1dab5c0cdd91e33968ff0859b1feb6aaadfdc/apps/api/src/ask-log.test.ts",
+  "commit": "6af1dab5c0cdd91e33968ff0859b1feb6aaadfdc",
+  "path": "apps/api/src/ask-log.test.ts",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-08-31T18:57:21.000-05:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Broomva / Carlos Escobar",
+  "framework": "unknown",
+  "tests": 39,
+  "hasBefore": false
+}

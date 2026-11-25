@@ -1,0 +1,17 @@
+{
+  "id": "229c2fcb2dd3",
+  "set": "random",
+  "repo": "bamr87/zer0-mistakes",
+  "url": "https://github.com/bamr87/zer0-mistakes/blob/03b584aab91332fd0e91f48210a7455da5bc6d08/test/visual/features-provenance.spec.js",
+  "commit": "03b584aab91332fd0e91f48210a7455da5bc6d08",
+  "path": "test/visual/features-provenance.spec.js",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-06-30T17:53:51.000-06:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2024-2026 Amr Abdel",
+  "framework": "playwright",
+  "tests": 4,
+  "hasBefore": false
+}

@@ -1,0 +1,17 @@
+{
+  "id": "7a48529f65f7",
+  "set": "random",
+  "repo": "civio/butterbot",
+  "url": "https://github.com/civio/butterbot/blob/f91b942570137e6db87d55677bc1b2818be9e0ff/test/agent.test.js",
+  "commit": "f91b942570137e6db87d55677bc1b2818be9e0ff",
+  "path": "test/agent.test.js",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-08-01T01:04:58.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Fundación Ciudadana Civio",
+  "framework": "node-test",
+  "tests": 7,
+  "hasBefore": false
+}

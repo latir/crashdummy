@@ -1,0 +1,17 @@
+{
+  "id": "1a626e1f906a",
+  "set": "targeted",
+  "repo": "tjorim/worktime",
+  "url": "https://github.com/tjorim/worktime/blob/1770f5193c98bb29d7ca42aa4c799d0b5a69a13b/frontend/tests/components/SettingsPage.test.tsx",
+  "commit": "1770f5193c98bb29d7ca42aa4c799d0b5a69a13b",
+  "path": "frontend/tests/components/SettingsPage.test.tsx",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-08-01T01:52:37.000+02:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "framework": "vitest",
+  "tests": 29,
+  "hasBefore": true
+}
