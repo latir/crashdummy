@@ -20,6 +20,8 @@ export interface AssertionFact {
   subjectIsMock: boolean;
   /** Reached by following a local helper, not written in the test itself. */
   viaHelper: boolean;
+  /** The matcher is in the strength lattice, so what it checks is known. */
+  known: boolean;
   /** A function named in `assertFunctionNames`. What it checks is up to the helper. */
   custom: boolean;
 }

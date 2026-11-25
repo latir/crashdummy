@@ -14,12 +14,22 @@ const PROMISE_CHAINS = new Set(['then', 'catch', 'finally']);
 /** Combinators that pass a rejection on to whoever waits for them. */
 const PROPAGATING = new Set(['Promise.all']);
 /**
- * Combinators where another promise can win: with two or more elements, a rejecting assertion
- * can be hidden by a fulfilment that settles first (`any`) or earlier (`race`).
+ * Combinators where another promise can win: a rejecting assertion can be hidden by a promise
+ * that is known to fulfil (`any`) or to settle first (`race`).
  */
 const COMPETING = new Set(['Promise.any', 'Promise.race']);
 /** `allSettled` swallows rejections: its results have to be read for a failure to show. */
 const SETTLING = 'Promise.allSettled';
+
+/** A value that is, or makes, a promise that fulfils: `Promise.resolve(x)` or a plain value. */
+function alwaysFulfils(node: AstNode): boolean {
+  const n = unwrap(node);
+  if (n.type === 'Literal' || n.type === 'TemplateLiteral') return true;
+  if (n.type === 'Identifier') return str(n, 'name') === 'undefined';
+  if (n.type !== 'CallExpression') return false;
+  const callee = child(n, 'callee');
+  return (callee ? memberPath(callee)?.join('.') : undefined) === 'Promise.resolve';
+}
 
 /** The names along `a.b.c(...)`'s callee, outermost property first: `['c', 'b']`. */
 function calleeProperties(call: AstNode): string[] {
@@ -67,7 +77,14 @@ function isHandled(ancestors: readonly AstNode[], node: AstNode): boolean {
         const callee = outer?.type === 'CallExpression' ? child(outer, 'callee') : undefined;
         const path = callee ? memberPath(callee)?.join('.') : undefined;
         if (path && (PROPAGATING.has(path) || COMPETING.has(path) || path === SETTLING)) {
-          if (COMPETING.has(path) && children(parent, 'elements').length > 1) settled = true;
+          // Only a competitor known to fulfil hides the assertion. One that may reject (a
+          // timeout) cannot, and one we cannot tell is left unknown.
+          if (
+            COMPETING.has(path) &&
+            children(parent, 'elements').some((e) => e !== current && alwaysFulfils(e))
+          ) {
+            settled = true;
+          }
           current = parent;
           break;
         }
@@ -86,7 +103,15 @@ function isHandled(ancestors: readonly AstNode[], node: AstNode): boolean {
         current = parent;
         break;
       }
-      case 'MemberExpression':
+      case 'MemberExpression': {
+        // `.then(cb)` on a settled promise: the callback reads the results and may rethrow a
+        // failure, so what comes out is not knowable
+        const property = child(parent, 'property');
+        const name = property && parent['computed'] !== true ? str(property, 'name') : undefined;
+        if (settled && name !== undefined && PROMISE_CHAINS.has(name)) return true;
+        current = parent;
+        break;
+      }
       case 'ConditionalExpression':
       case 'LogicalExpression':
       case 'TSAsExpression':

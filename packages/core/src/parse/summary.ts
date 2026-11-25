@@ -1535,6 +1535,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
             subjectText: entry.subject ? sourceText(source, unwrap(entry.subject)) : undefined,
             subjectIsMock: use.subjectIsMock,
             viaHelper: !follow,
+            known: lattice.resolveMatcher(entry.ref).known,
             custom: entry.custom,
           });
         } else if ('timeout' in entry) out.timeout = entry.timeout;

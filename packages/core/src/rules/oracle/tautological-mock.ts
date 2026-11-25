@@ -2,6 +2,7 @@ import {
   child,
   children,
   isFunction,
+  isNode,
   memberPath,
   str,
   unwrap,
@@ -57,6 +58,10 @@ function calledExpression(node: AstNode | undefined): AstNode | undefined {
 /** Something that happened at a place in the file, found while walking it in order. */
 interface Event {
   pos: number;
+  /** The functions around it, innermost last, and whether the runner calls each itself. */
+  fns: { node: AstNode; runner: boolean }[];
+  /** A one-shot value: the next call to the mock uses it up. */
+  once?: boolean;
   /** For a result: where the call that produced it sits. */
   at?: number;
   /** The mock, or the variable. */
@@ -100,19 +105,58 @@ const RUNNER_CALLBACKS = new Set([
 ]);
 
 /**
- * Does code at this place run when the file does? Not if it sits in a function nobody is known
- * to call: a helper, a callback handed to something else. Those are left unknown.
+ * The functions around a place. Whether code in them runs is decided when the file is done, once
+ * we know which functions are test callbacks (aliases and named callbacks included).
  */
-function runs(ancestors: readonly AstNode[]): boolean {
+function enclosing(ancestors: readonly AstNode[]): Event['fns'] {
+  const out: Event['fns'] = [];
   for (let i = 0; i < ancestors.length; i++) {
     const fn = ancestors[i]!;
     if (!isFunction(fn)) continue;
     const call = ancestors[i - 1];
     const callee = call?.type === 'CallExpression' ? child(call, 'callee') : undefined;
     const root = callee ? memberPath(callee)?.[0] : undefined;
-    if (!root || !RUNNER_CALLBACKS.has(root)) return false;
+    out.push({ node: fn, runner: root !== undefined && RUNNER_CALLBACKS.has(root) });
   }
-  return true;
+  return out;
+}
+
+/**
+ * A value that is the same every time it is written: a literal, a plain name, or (when equality
+ * is by value) an array or object of those. A call, or anything that reads through a property,
+ * can give a different value each time.
+ */
+function stable(node: AstNode, byValue: boolean): boolean {
+  const n = unwrap(node);
+  switch (n.type) {
+    case 'Literal':
+      return true;
+    case 'Identifier':
+      return true;
+    case 'TemplateLiteral':
+      return children(n, 'expressions').length === 0;
+    case 'UnaryExpression': {
+      const arg = child(n, 'argument');
+      return arg !== undefined && n['operator'] !== 'void' && stable(arg, byValue);
+    }
+    case 'ArrayExpression':
+      return byValue && children(n, 'elements').every((e) => isNode(e) && stable(e, byValue));
+    case 'ObjectExpression':
+      return (
+        byValue &&
+        children(n, 'properties').every(
+          (p) =>
+            p.type === 'Property' &&
+            p['computed'] !== true &&
+            p['method'] !== true &&
+            p['kind'] === 'init' &&
+            child(p, 'value') !== undefined &&
+            stable(child(p, 'value')!, byValue),
+        )
+      );
+    default:
+      return false;
+  }
 }
 
 /**
@@ -135,6 +179,8 @@ export const tautologicalMock: OracleRule = {
   create(ctx) {
     const returns: Event[] = [];
     const results: Event[] = [];
+    /** where each function was called, by what it was called as */
+    const calls = new Map<string, number[]>();
     /** A variable now holds the result of a call to `value`, or something we cannot follow. */
     const noteResult = (
       name: string,
@@ -142,11 +188,11 @@ export const tautologicalMock: OracleRule = {
       pos: number,
       ancestors: readonly AstNode[],
     ): void => {
-      if (!runs(ancestors)) return;
       const call = calledExpression(init);
       const callee = call ? child(call, 'callee') : undefined;
       results.push({
         pos,
+        fns: enclosing(ancestors),
         name,
         ...(call ? { at: call.start } : {}),
         value: callee ? target(callee, ctx.source) : '',
@@ -157,11 +203,17 @@ export const tautologicalMock: OracleRule = {
         CallExpression(node, walk) {
           const callee = child(node, 'callee');
           const c = callee ? unwrap(callee) : undefined;
+          if (c) {
+            const text = target(c, ctx.source);
+            const seen = calls.get(text);
+            if (seen) seen.push(node.start);
+            else calls.set(text, [node.start]);
+          }
           const arg = children(node, 'arguments')[0];
           if (c?.type !== 'MemberExpression' || c['computed'] === true || !arg) return;
           const method = str(child(c, 'property') ?? c, 'name');
           const object = child(c, 'object');
-          if (!method || !RETURNS.has(method) || !object || !runs(walk.ancestors)) return;
+          if (!method || !RETURNS.has(method) || !object) return;
           let name = target(object, ctx.source);
           // `const m = vi.fn().mockReturnValue(X)`: the mock is the variable
           const parent = walk.ancestors[walk.ancestors.length - 1];
@@ -169,7 +221,13 @@ export const tautologicalMock: OracleRule = {
           if (id?.type === 'Identifier' && /^(vi|jest)\.fn\(/.test(name)) {
             name = str(id, 'name') ?? name;
           }
-          returns.push({ pos: node.start, name, value: unwrap(arg) });
+          returns.push({
+            pos: node.start,
+            fns: enclosing(walk.ancestors),
+            name,
+            ...(method.endsWith('Once') ? { once: true } : {}),
+            value: unwrap(arg),
+          });
         },
         VariableDeclarator(node, walk) {
           const id = child(node, 'id');
@@ -186,6 +244,13 @@ export const tautologicalMock: OracleRule = {
       finish() {
         const findings = [];
         const seen = new Set<AstNode>();
+        // setup counts when everything around it runs: test callbacks (however they are named or
+        // passed) and the runner's own suite and hook callbacks. Other functions are left unknown.
+        const testFns = new Set(ctx.facts().flatMap((t) => (t.fn ? [t.fn] : [])));
+        const live = (events: readonly Event[]): Event[] =>
+          events.filter((e) => e.fns.every((f) => f.runner || testFns.has(f.node)));
+        const liveResults = live(results);
+        const liveReturns = live(returns);
         const tests = ctx.facts().filter((t) => t.body);
         const outsideTests = (p: number): boolean =>
           !tests.some((t) => p >= t.body!.start && p < t.body!.end);
@@ -205,7 +270,7 @@ export const tautologicalMock: OracleRule = {
             if (subject.type === 'Identifier') {
               // a variable holds what it was last assigned in this test
               const held = latest(
-                results,
+                liveResults,
                 str(subject, 'name') ?? '',
                 a.node.start,
                 range,
@@ -218,9 +283,29 @@ export const tautologicalMock: OracleRule = {
               producedAt = called?.start ?? producedAt;
             }
             if (via === undefined) continue;
-            const configured = latest(returns, via, producedAt, range, outsideTests);
+            const configured = latest(liveReturns, via, producedAt, range, outsideTests);
             if (!configured || typeof configured.value === 'string') continue;
-            if (canon(configured.value) !== canon(unwrap(expected))) continue;
+            if (configured.once) {
+              // A one-shot value is used up by the first call. It is the one this result got only
+              // if nothing else called the mock in between and no other one-shot value is queued.
+              const between = (calls.get(via) ?? []).some(
+                (at) => at > configured.pos && at < producedAt,
+              );
+              const queued = liveReturns.filter(
+                (e) =>
+                  e.name === via &&
+                  e.once &&
+                  e.pos < producedAt &&
+                  ((range && e.pos >= range.start && e.pos < range.end) || outsideTests(e.pos)),
+              );
+              if (between || queued.length > 1) continue;
+            }
+            // Same syntax is the same value only when it is written out the same way every time,
+            // and `toBe` compares objects by identity, so only primitives and names qualify there.
+            const byValue = a.matcher !== 'toBe';
+            const written = unwrap(expected);
+            if (!stable(configured.value, byValue) || !stable(written, byValue)) continue;
+            if (canon(configured.value) !== canon(written)) continue;
             seen.add(a.node);
             findings.push(
               oracleFinding(tautologicalMock, ctx.file, {

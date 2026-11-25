@@ -21,19 +21,28 @@ function* descendants(node: AstNode): Generator<AstNode> {
   }
 }
 
-/** Does this expression get the real module: `await importOriginal()`, `jest.requireActual(x)`? */
-function readsOriginal(node: AstNode, original: string | undefined): boolean {
-  for (const n of descendants(node)) {
-    if (n.type !== 'CallExpression') continue;
-    const callee = child(n, 'callee');
-    const c = callee ? unwrap(callee) : undefined;
-    if (c?.type === 'Identifier') {
-      const name = str(c, 'name');
-      if (name !== undefined && (name === original || ACTUAL_CALLS.has(name))) return true;
-    } else if (c?.type === 'MemberExpression' && c['computed'] !== true) {
-      const name = str(child(c, 'property') ?? c, 'name');
-      if (name !== undefined && ACTUAL_CALLS.has(name)) return true;
-    }
+/**
+ * Is this expression the real module itself: `await importOriginal()`, `jest.requireActual(x)`,
+ * `vi.importActual(x)`? A call to it somewhere inside a larger value does not make the whole
+ * value the real module.
+ */
+function isOriginalCall(node: AstNode, original: string | undefined): boolean {
+  let n = unwrap(node);
+  if (n.type === 'AwaitExpression') {
+    const arg = child(n, 'argument');
+    if (!arg) return false;
+    n = unwrap(arg);
+  }
+  if (n.type !== 'CallExpression') return false;
+  const callee = child(n, 'callee');
+  const c = callee ? unwrap(callee) : undefined;
+  if (c?.type === 'Identifier') {
+    const name = str(c, 'name');
+    return name !== undefined && (name === original || ACTUAL_CALLS.has(name));
+  }
+  if (c?.type === 'MemberExpression' && c['computed'] !== true) {
+    const name = str(child(c, 'property') ?? c, 'name');
+    return name !== undefined && ACTUAL_CALLS.has(name);
   }
   return false;
 }
@@ -79,7 +88,7 @@ function isPartial(factory: AstNode | undefined): boolean {
     if (id?.type !== 'Identifier' || !init) continue;
     const name = str(id, 'name') ?? '';
     declared.set(name, unwrap(init));
-    if (readsOriginal(init, original)) fromOriginal.add(name);
+    if (isOriginalCall(init, original)) fromOriginal.add(name);
   }
   const keepsOriginal = (expr: AstNode, depth = 0): boolean => {
     const e = unwrap(expr);
@@ -97,7 +106,7 @@ function isPartial(factory: AstNode | undefined): boolean {
         ? keepsOriginal(init, depth + 1)
         : false;
     }
-    return readsOriginal(e, original);
+    return isOriginalCall(e, original);
   };
   return returnedValues(factory).some((value) => keepsOriginal(value));
 }

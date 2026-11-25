@@ -15,3 +15,12 @@ test('inequality with itself can fail', () => {
   const x = Number.NaN;
   expect(x).not.toBe(x);
 });
+
+test('a property read can run a getter, so it can differ', () => {
+  const store = build();
+  expect(store.snapshot).toBe(store.snapshot);
+});
+
+test('a custom matcher with literal operands can run the code', () => {
+  expect('/health').toReturn200();
+});

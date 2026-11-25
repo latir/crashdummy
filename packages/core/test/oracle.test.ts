@@ -328,3 +328,113 @@ describe('review round 2', () => {
     expect(t(1)).toEqual(['oracle/tautological-mock']);
   });
 });
+
+describe('review round 3', () => {
+  const ids = (src: string, options = {}, file = 'a.test.ts') =>
+    run(src, options, file).findings.map((f) => f.ruleId);
+  const V = `import { test, expect, vi } from 'vitest';\nimport { f, load, calculate, notify } from './x.js';\n`;
+  const asyncTest = (body: string) => ids(`${V}test('x', async () => { ${body} });`);
+
+  test('a competitor that may reject cannot hide the assertion, one that fulfils can', () => {
+    expect(asyncTest(`await Promise.race([expect(load()).resolves.toBe(1), timeout()]);`)).toEqual(
+      [],
+    );
+    expect(
+      asyncTest(`await Promise.race([expect(load()).resolves.toBe(1), Promise.resolve()]);`),
+    ).toEqual(['oracle/swallowed-async']);
+    expect(
+      asyncTest(`await Promise.any([expect(load()).resolves.toBe(1), Promise.resolve(1)]);`),
+    ).toEqual(['oracle/swallowed-async']);
+  });
+
+  test('a callback on a settled promise may rethrow, so it is left unknown', () => {
+    expect(
+      asyncTest(
+        `await Promise.allSettled([expect(load()).resolves.toBe(1)]).then(([r]) => { if (r.status === 'rejected') throw r.reason; });`,
+      ),
+    ).toEqual([]);
+    expect(asyncTest(`await Promise.allSettled([expect(load()).resolves.toBe(1)]);`)).toEqual([
+      'oracle/swallowed-async',
+    ]);
+  });
+
+  test('a nested call to the original is not the original module', () => {
+    const penalty = (factory: string) =>
+      run(
+        `${V.replace("'./x.js'", "'./cart.js'")}vi.mock('./cart.js', ${factory});\ntest('x', () => { expect(f()).toBe(1); });`,
+        {},
+        'cart.test.ts',
+      ).findings.map((x) => x.penalty);
+    expect(
+      penalty(
+        `async (original) => { const replacement = { total: vi.fn(), original: await original() }; return replacement; }`,
+      ),
+    ).toEqual([15]);
+    expect(penalty(`async (original) => ({ ...(await original()), total: vi.fn() })`)).toEqual([0]);
+  });
+
+  test('mock setup counts in aliased and named test callbacks', () => {
+    const body = `const m = vi.fn().mockReturnValue(42); expect(m()).toBe(42);`;
+    expect(ids(`${V.replace('{ test,', '{ test as spec,')}spec('x', () => { ${body} });`)).toEqual([
+      'oracle/tautological-mock',
+    ]);
+    expect(ids(`${V}function body() { ${body} }\ntest('x', body);`)).toEqual([
+      'oracle/tautological-mock',
+    ]);
+  });
+
+  test('a property read can differ from itself', () => {
+    expect(
+      ids(`${V}test('x', () => { const s = f(); expect(s.snapshot).toBe(s.snapshot); });`),
+    ).toEqual([]);
+    expect(ids(`${V}test('x', () => { const s = f(); expect(s).toBe(s); });`)).toEqual([
+      'oracle/tautological-assertion',
+    ]);
+  });
+
+  test('a matcher outside the lattice is not judged by its arguments', () => {
+    expect(ids(`${V}test('x', () => { expect('/health').toReturn200(); });`)).toEqual([]);
+  });
+
+  test('interaction aliases from the lattice count as interactions', () => {
+    const t = (matcher: string) =>
+      ids(
+        `${V}test('x', () => { const send = vi.fn(); const r = calculate(send); expect(send).${matcher}; });`,
+      );
+    expect(t('lastCalledWith(1)')).toEqual(['oracle/interaction-only']);
+    expect(t('nthCalledWith(1, 2)')).toEqual(['oracle/interaction-only']);
+    expect(t('toReturn()')).toEqual(['oracle/interaction-only']);
+    expect(t('toReturnWith(1)')).toEqual([]);
+  });
+
+  test('functions inside the test that nothing calls are not part of it', () => {
+    const src = `${V}test('x', () => { function unused() { const result = calculate(); } const send = vi.fn(); notify(send); expect(send).toHaveBeenCalled(); });`;
+    expect(ids(src)).toEqual([]);
+  });
+
+  test('the mocking library under another name is still the mocking library', () => {
+    const src = `import { test, expect, vi as mocks } from 'vitest';\nimport { notify } from './x.js';\ntest('x', () => { const send = mocks.fn(); notify(send); expect(send).toHaveBeenCalled(); });`;
+    expect(ids(src)).toEqual([]);
+  });
+
+  test('a one-shot value used up by an earlier call is not what the result got', () => {
+    const t = (body: string) =>
+      ids(`${V}test('x', () => { const m = vi.fn(f).mockReturnValueOnce(42); ${body} });`);
+    expect(t(`m(); expect(m()).toBe(42);`)).toEqual([]);
+    expect(t(`expect(m()).toBe(42);`)).toEqual(['oracle/tautological-mock']);
+  });
+
+  test('the same call written twice is not the same value', () => {
+    const t = (expected: string, mock = 'nextId()') =>
+      ids(
+        `${V}test('x', () => { const m = vi.fn().mockReturnValue(${mock}); expect(m()).toEqual(${expected}); });`,
+      );
+    expect(t('nextId()')).toEqual([]);
+    expect(t('{ a: 1 }', '{ a: 1 }')).toEqual(['oracle/tautological-mock']);
+    expect(
+      ids(
+        `${V}test('x', () => { const m = vi.fn().mockReturnValue({ a: 1 }); expect(m()).toBe({ a: 1 }); });`,
+      ),
+    ).toEqual([]);
+  });
+});

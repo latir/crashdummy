@@ -39,13 +39,14 @@ function isLiteral(node: AstNode | undefined): boolean {
   }
 }
 
-/** A name or property path: reading it twice gives the same value, unlike a call. */
+/**
+ * A plain name: reading it twice gives the same value. A property read does not: it can run a
+ * getter or a Proxy trap, so `expect(store.snapshot).toBe(store.snapshot)` can fail.
+ */
 function isPlainReference(node: AstNode | undefined): boolean {
   if (!node) return false;
   const n = unwrap(node);
-  if (n.type === 'Identifier' || n.type === 'ThisExpression') return true;
-  if (n.type !== 'MemberExpression' || n['computed'] === true) return false;
-  return isPlainReference(child(n, 'object'));
+  return n.type === 'Identifier' || n.type === 'ThisExpression';
 }
 
 /**
@@ -73,8 +74,9 @@ export const tautologicalAssertion: OracleRule = {
         for (const test of ctx.facts()) {
           if (isDisabled(test.modifier)) continue;
           for (const a of test.assertions) {
-            // an opaque helper: its literal arguments do not say what it compares
-            if (seen.has(a.node) || a.custom) continue;
+            // An opaque helper or a matcher we do not know can run the code under test whatever
+            // its arguments look like, so only assertions with known meaning are judged.
+            if (seen.has(a.node) || a.custom || !a.known) continue;
             const args = children(a.node, 'arguments');
             const isAssert = a.matcher.startsWith('assert.');
             const subject = isAssert ? args[0] : a.subject;
