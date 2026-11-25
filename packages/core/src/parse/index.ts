@@ -3,7 +3,7 @@ import type { TestSummary } from '../types.js';
 import { SummaryCache, cacheKey } from './cache.js';
 import { parseFile, type ParseDiagnostic, type ParsedFile } from './oxc.js';
 import { resolveImports, type ResolveOptions } from './resolve.js';
-import type { TestFacts } from './facts.js';
+import type { ModuleMock, TestFacts } from './facts.js';
 import { createSummaryCollector, hashText, type SummaryOptions } from './summary.js';
 import { walk, type Visitor } from './walk.js';
 
@@ -25,6 +25,8 @@ export interface Analysis {
   summary: TestSummary;
   /** Per-test detail for rules, in the same order as `summary.tests`. Not stored. */
   facts: TestFacts[];
+  /** Module mocks that take effect, in source order. Not stored. */
+  mocks: ModuleMock[];
   /**
    * Syntax errors. oxc does not recover, so when this is not empty the summary is empty too and
    * must NOT be read as "the file has no tests". Report the file as unparseable instead.
@@ -62,6 +64,7 @@ export function analyzeTestFile(
   return {
     summary: finalize(raw, path, options.resolve),
     facts: collector.facts(),
+    mocks: collector.mocks(),
     errors: file.errors,
     file,
   };
@@ -103,4 +106,4 @@ export {
   type AstNode,
 } from './ast.js';
 export type { ParsedComment, ParsedFile, ParseDiagnostic } from './oxc.js';
-export type { AssertionFact, TestFacts } from './facts.js';
+export type { AssertionFact, ModuleMock, TestFacts } from './facts.js';

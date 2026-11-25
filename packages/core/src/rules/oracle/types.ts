@@ -1,5 +1,5 @@
 import type { AstNode } from '../../parse/ast.js';
-import type { TestFacts } from '../../parse/facts.js';
+import type { ModuleMock, TestFacts } from '../../parse/facts.js';
 import type { Visitor } from '../../parse/walk.js';
 import type { Finding, TestSummary } from '../../types.js';
 
@@ -23,6 +23,9 @@ export interface OracleContext {
   source: string;
   summary(): TestSummary;
   facts(): readonly TestFacts[];
+  mocks(): readonly ModuleMock[];
+  /** A module specifier as `summary().imports` would hold it, so the two can be compared. */
+  resolve(spec: string): string;
 }
 
 /** What a rule hands back from `create`. */

@@ -23,7 +23,7 @@ import {
   unwrap,
   type AstNode,
 } from './ast.js';
-import type { AssertionFact, TestFacts } from './facts.js';
+import type { AssertionFact, ModuleMock, TestFacts } from './facts.js';
 import type { Visitor, WalkContext } from './walk.js';
 
 export type TestModifier = NonNullable<TestCase['modifier']>;
@@ -714,6 +714,8 @@ export interface SummaryCollector {
   finish(source: string): TestSummary;
   /** Per-test detail for rules. Call after `finish`; it is not part of the summary. */
   facts(): TestFacts[];
+  /** `vi.mock` / `jest.mock` calls that take effect, in source order. */
+  mocks(): ModuleMock[];
 }
 
 export function createSummaryCollector(options: SummaryOptions = {}): SummaryCollector {
@@ -754,6 +756,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
   const deferredFns = new Set<AstNode>();
   /** Suite/file timeouts set while registering tests, applied in source order when finished. */
   const factList: TestFacts[] = [];
+  const moduleMocks: ModuleMock[] = [];
   const timeoutEvents: { pos: number; frame: Frame | undefined; ms: number }[] = [];
   /** Helpers an outer name stood for before the running test body rewrote them. */
   const testRestore = new Map<
@@ -953,7 +956,16 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         const s = spec ? staticString(spec) : undefined;
         // vi.mock is hoisted to the top of the file; vi.doMock only acts when it runs
         const neverRuns = joined.endsWith('doMock') && innermostHelper() !== undefined;
-        if (s !== undefined && !neverRuns) mockedModules.add(s);
+        if (s !== undefined && !neverRuns) {
+          mockedModules.add(s);
+          const factory = children(node, 'arguments')[1];
+          moduleMocks.push({
+            spec: s,
+            loc: ctx.loc(node.start),
+            node,
+            ...(factory ? { factory: unwrap(factory) } : {}),
+          });
+        }
       }
       if (calleePath[0] === 'vi') sawVi = true;
       if (calleePath[0] === 'jest') sawJest = true;
@@ -1626,5 +1638,5 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     return { hash: hashText(source), framework, imports, tests: cases };
   };
 
-  return { visitor, finish, facts: () => factList };
+  return { visitor, finish, facts: () => factList, mocks: () => moduleMocks };
 }

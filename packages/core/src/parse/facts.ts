@@ -34,3 +34,13 @@ export interface TestFacts {
   fn?: AstNode;
   assertions: AssertionFact[];
 }
+
+/** A `vi.mock('./x', factory?)` or `jest.mock(...)` that takes effect when the file runs. */
+export interface ModuleMock {
+  /** The module as written, before resolution. */
+  spec: string;
+  loc: { line: number; col: number };
+  node: AstNode;
+  /** The factory function. Absent for an automock: `vi.mock('./x')`. */
+  factory?: AstNode;
+}

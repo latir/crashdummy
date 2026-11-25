@@ -9,7 +9,7 @@ import { checkOracle, oracleRules } from '../src/rules/oracle/index.js';
  *
  * An `// expect: <ruleId>` comment marks a finding on the line after it (or on its own line when
  * it trails code). A `valid` file must produce no findings from that rule. A first line
- * `// options: {...}` passes analysis options, such as `assertFunctionNames`.
+ * `// options: {...}` passes analysis options, such as `assertFunctionNames`, and `path` to name the file.
  */
 const ROOT = fileURLToPath(new URL('../../../fixtures/oracle', import.meta.url));
 
@@ -47,10 +47,12 @@ describe('oracle rule fixtures', () => {
           const source = readFileSync(join(dir, f), 'utf8');
           const id = `oracle/${rule}`;
           const rules = oracleRules.filter((r) => r.id === id);
+          // `path` names the file the rule sees: some rules look at the test file's own name
+          const { path, ...options } = optionsOf(source);
           const { findings, analysis } = checkOracle(
-            `fixtures/${rule}/${kind}/${f}`,
+            typeof path === 'string' ? path : `fixtures/${rule}/${kind}/${f}`,
             source,
-            { resolve: false, ...optionsOf(source) },
+            { resolve: false, ...options },
             rules,
           );
           expect(analysis.errors).toEqual([]);
