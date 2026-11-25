@@ -12,11 +12,11 @@ You label **per test, per rule**, not per file. For every test in the case and e
 
 Answer from the test code alone. You do not see what crashdummy reported. Findings are hidden on purpose so they cannot bias you.
 
-| Answer    | Meaning                                                                    |
-| --------- | -------------------------------------------------------------------------- |
-| `yes`     | The test has the problem the rule describes.                               |
-| `no`      | The test does not have it.                                                 |
-| `unsure`  | You cannot tell from the code shown. Use sparingly; say why in the reason. |
+| Answer   | Meaning                                                                    |
+| -------- | -------------------------------------------------------------------------- |
+| `yes`    | The test has the problem the rule describes.                               |
+| `no`     | The test does not have it.                                                 |
+| `unsure` | You cannot tell from the code shown. Use sparingly; say why in the reason. |
 
 Also give each **file** a quality of `good` or `weak`: would you trust this file to catch a regression? This is a sanity check on the whole score, not tied to one rule.
 
@@ -160,7 +160,12 @@ One JSON file per labeller, `labels.<labeller>.json`:
 The reconciled result lives in `corpus/labels.json` with one extra block per test and rule:
 
 ```json
-{ "human": "yes", "claude": { "opus": "yes", "sonnet": "yes", "haiku": "no" }, "final": "yes", "source": "human" }
+{
+  "human": "yes",
+  "claude": { "opus": "yes", "sonnet": "yes", "haiku": "no" },
+  "final": "yes",
+  "source": "human"
+}
 ```
 
 `final` is decided by this order:
