@@ -101,10 +101,57 @@ export interface Finding {
    * position in the OLD version of the file, which is `previousPath` when the file was renamed.
    */
   loc?: { line: number; col: number };
+  /** The test it is about, as `TestCase.id`, when it is about one test. Scores are per test. */
+  test?: string;
   /** One line, agent-readable. */
   message: string;
   /** How to fix it. */
   hint?: string;
   /** Points removed from the file score. Gates are outside the score, so 0. */
   penalty: number;
+}
+
+export type Verdict = 'pass' | 'warn' | 'fail';
+
+/** What a file got from the checks that ran. */
+export interface FileScore {
+  file: string;
+  /**
+   * `scored`: the file was analysed. `unparseable`: it has a syntax error, so nothing could be
+   * checked and it has no score (never 0, never 100). `deleted`: the file is gone; only findings
+   * about its removal are shown.
+   */
+  status: 'scored' | 'unparseable' | 'deleted';
+  /** Integer 0-100. Missing unless `status` is `scored`. */
+  score?: number;
+  /** From the baseline, when there is one. */
+  previous?: number;
+  /** For an unparseable file: where the first syntax error is. */
+  error?: { line: number; col: number; message: string };
+  findings: Finding[];
+  subscores: {
+    static: number | 'unknown';
+    coverage: number | 'unknown';
+    mutation: number | 'unknown';
+  };
+  confidence: 'verified' | 'unverified' | 'static-estimate';
+  /** The findings that fail the check, also listed in `findings`. */
+  gates: Finding[];
+}
+
+export interface UnknownMatcher {
+  name: string;
+  count: number;
+  files: string[];
+}
+
+export interface Report {
+  version: 1;
+  tiersRun: (0 | 1 | 2)[];
+  durationMs: number;
+  files: FileScore[];
+  suite?: { score: number; previous?: number };
+  verdict: Verdict;
+  /** Matchers the strength lattice does not know. They are scored as neutral. */
+  unknownMatchers?: UnknownMatcher[];
 }

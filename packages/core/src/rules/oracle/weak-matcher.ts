@@ -33,6 +33,7 @@ export const weakMatcher: OracleRule = {
           if (!weak) continue;
           findings.push(
             oracleFinding(weakMatcher, ctx.file, {
+              test: test.id,
               loc: weak.loc,
               message: `test '${test.id}' only checks that ${weak.subjectText ?? 'a value'} exists (${weak.negated ? 'not.' : ''}${weak.matcher})`,
               hint: 'Assert the expected value, for example `toEqual(...)` or `toBe(...)`.',

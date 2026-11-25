@@ -103,6 +103,7 @@ export const tautologicalAssertion: OracleRule = {
             seen.add(a.node);
             findings.push(
               oracleFinding(tautologicalAssertion, ctx.file, {
+                test: test.id,
                 loc: a.loc,
                 message: `${a.matcher} in '${test.id}' cannot fail: ${why}`,
                 hint: 'Check a value produced by the code under test against an expected value from the requirement.',

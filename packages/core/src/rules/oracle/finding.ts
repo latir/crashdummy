@@ -8,7 +8,7 @@ const oneLine = (text: string): string => text.replace(/\s*[\r\n]+\s*/g, ' ').tr
 export function oracleFinding(
   rule: Pick<OracleRule, 'id' | 'meta'>,
   file: string,
-  rest: Pick<Finding, 'message' | 'hint'> & Partial<Pick<Finding, 'loc' | 'severity'>>,
+  rest: Pick<Finding, 'message' | 'hint'> & Partial<Pick<Finding, 'loc' | 'severity' | 'test'>>,
 ): Finding {
   const finding: Finding = {
     ruleId: rule.id,
@@ -22,6 +22,7 @@ export function oracleFinding(
   };
   if (rest.hint) finding.hint = oneLine(rest.hint);
   if (rest.loc) finding.loc = rest.loc;
+  if (rest.test) finding.test = rest.test;
   return finding;
 }
 
