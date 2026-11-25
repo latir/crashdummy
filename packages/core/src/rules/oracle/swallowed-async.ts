@@ -194,6 +194,7 @@ export const swallowedAsync: OracleRule = {
           ) {
             findings.push(
               oracleFinding(swallowedAsync, ctx.file, {
+                test: test.id,
                 loc: test.loc,
                 message: `test '${test.id}' is async and also takes 'done'`,
                 hint: 'Use either an async function or the done callback, not both.',
@@ -207,6 +208,7 @@ export const swallowedAsync: OracleRule = {
               seen.add(a.node);
               findings.push(
                 oracleFinding(swallowedAsync, ctx.file, {
+                  test: test.id,
                   loc: a.loc,
                   message: `${a.matcher} in '${test.id}' is not awaited, so a failure is lost`,
                   hint: 'Put `await` (or `return`) in front of `expect(...).resolves` / `.rejects`.',
@@ -227,6 +229,7 @@ export const swallowedAsync: OracleRule = {
               seen.add(a.node);
               findings.push(
                 oracleFinding(swallowedAsync, ctx.file, {
+                  test: test.id,
                   loc: a.loc,
                   message: `${a.matcher} in '${test.id}' runs inside a promise callback the test does not wait for`,
                   hint: 'Return the promise or `await` it, so the test waits for the assertion.',

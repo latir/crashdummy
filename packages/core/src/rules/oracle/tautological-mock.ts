@@ -309,6 +309,7 @@ export const tautologicalMock: OracleRule = {
             seen.add(a.node);
             findings.push(
               oracleFinding(tautologicalMock, ctx.file, {
+                test: test.id,
                 loc: a.loc,
                 message: `'${test.id}' sets '${via}' to return a value and asserts that same value`,
                 hint: 'Call the code under test and assert on what it does with the mock’s value.',

@@ -85,6 +85,7 @@ export const interactionOnly: OracleRule = {
           if (!test.body || !capturesResult(test.body, mocks)) continue;
           findings.push(
             oracleFinding(interactionOnly, ctx.file, {
+              test: test.id,
               loc: test.assertions[0]!.loc,
               message: `test '${test.id}' only checks that functions were called, not the result it captured`,
               hint: 'Assert on the returned value as well as the calls.',

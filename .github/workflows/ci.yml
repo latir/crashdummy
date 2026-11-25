@@ -30,4 +30,7 @@ jobs:
         with:
           node-version: 20
       - name: Smoke test bundle on Node 20
-        run: node packages/cli/dist/cli.js
+        run: |
+          node packages/cli/dist/cli.js --version
+          # parses a real file, so the native parser is loaded; a clean file must pass (exit 0)
+          node packages/cli/dist/cli.js --files fixtures/oracle/no-assertion/valid/direct.test.ts --format agent

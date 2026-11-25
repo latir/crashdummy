@@ -85,6 +85,20 @@ export interface IntegrityResult {
   allowed: AllowedFinding[];
 }
 
+function unparseableFinding(
+  file: string,
+  first: { line: number; col: number; message: string },
+  failOnParseError: boolean,
+): Finding {
+  return gateFinding('integrity/unparseable', file, {
+    gate: failOnParseError,
+    severity: failOnParseError ? 'error' : 'warn',
+    loc: { line: first.line, col: first.col },
+    message: `could not parse ${file} (line ${first.line}: ${first.message}), so it was not checked`,
+    hint: 'Fix the syntax error, then run crashdummy again.',
+  });
+}
+
 const EMPTY: TestSummary = { hash: '', framework: 'unknown', imports: [], tests: [] };
 
 interface Prepared {
@@ -158,8 +172,15 @@ export function checkIntegrity(
         importsRaw = false;
       }
     }
-    // nothing to compare against: the source did not give us the old version
-    if (before === undefined) continue;
+    // nothing to compare against: the source did not give us the old version. A syntax error in
+    // the new text is still a finding: the file cannot be checked at all.
+    if (before === undefined) {
+      if (change.kind !== 'deleted' && change.after !== undefined) {
+        const first = analyzeTestFile(file, change.after, summaryOptions).errors[0];
+        if (first) findings.push(unparseableFinding(file, first, failOnParseError));
+      }
+      continue;
+    }
 
     let after: TestSummary = EMPTY;
     let parsedAfter: ParsedFile | undefined;
@@ -167,16 +188,7 @@ export function checkIntegrity(
       if (change.after === undefined) continue;
       const analysis = analyzeTestFile(file, change.after, summaryOptions);
       if (analysis.errors.length > 0) {
-        const first = analysis.errors[0]!;
-        findings.push(
-          gateFinding('integrity/unparseable', file, {
-            gate: failOnParseError,
-            severity: failOnParseError ? 'error' : 'warn',
-            loc: { line: first.line, col: first.col },
-            message: `could not parse ${file} (line ${first.line}: ${first.message}), so it was not checked`,
-            hint: 'Fix the syntax error, then run crashdummy again.',
-          }),
-        );
+        findings.push(unparseableFinding(file, analysis.errors[0]!, failOnParseError));
         continue;
       }
       after = analysis.summary;

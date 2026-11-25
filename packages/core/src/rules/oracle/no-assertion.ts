@@ -25,6 +25,7 @@ export const noAssertion: OracleRule = {
           .filter((t) => !isDisabled(t.modifier) && t.assertions.length === 0)
           .map((t) =>
             oracleFinding(noAssertion, ctx.file, {
+              test: t.id,
               loc: t.loc,
               message: `test '${t.id}' has no assertion`,
               hint: 'Assert on the result. If a helper imported from another file asserts, add its name to `assertFunctionNames`.',
