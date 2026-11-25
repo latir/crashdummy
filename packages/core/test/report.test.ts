@@ -59,7 +59,8 @@ describe('agent format', () => {
         'Run `npx crashdummy explain <rule>` for details.',
       ].join('\n'),
     );
-    expect(out).not.toMatch(/\u001b|penalty|weight|15\b/);
+    expect(out.includes('\u001b')).toBe(false);
+    expect(out).not.toMatch(/penalty|weight|15\b/);
   });
 
   test('a passing report is one line', () => {
