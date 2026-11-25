@@ -23,6 +23,7 @@ import {
   unwrap,
   type AstNode,
 } from './ast.js';
+import type { AssertionFact, ModuleMock, TestFacts } from './facts.js';
 import type { Visitor, WalkContext } from './walk.js';
 
 export type TestModifier = NonNullable<TestCase['modifier']>;
@@ -203,6 +204,8 @@ const EXPECT_ROOTS = new Set(['expect', 'expect.soft', 'expect.poll']);
 
 interface Assertion {
   ref: MatcherRef;
+  /** Matched by `assertFunctionNames`: an opaque helper, not a framework assertion. */
+  custom?: true;
   /** The value being checked, for mock detection. */
   subject: AstNode | undefined;
 }
@@ -290,7 +293,7 @@ class AssertionFinder {
     if (asserted) return asserted;
 
     if (path[0] !== 'expect' && this.custom.some((re) => re.test(path.join('.')))) {
-      return { ref: { name: path.join('.') }, subject: args[0] };
+      return { ref: { name: path.join('.') }, subject: args[0], custom: true };
     }
     return undefined;
   }
@@ -651,7 +654,17 @@ interface Frame {
 }
 
 type Entry =
-  | { pos: number; ref: MatcherRef; signals: SubjectSignals; mock: MockState }
+  | {
+      pos: number;
+      ref: MatcherRef;
+      signals: SubjectSignals;
+      mock: MockState;
+      /** The assertion call and the value it checks, for rules that inspect the syntax. */
+      node: AstNode;
+      loc: { line: number; col: number };
+      subject: AstNode | undefined;
+      custom: boolean;
+    }
   /** A reference that may run a local helper: `check()`, `page.expectOk()`, `items.forEach(check)`. */
   | { pos: number; call: string; method?: string; scope: Scope; def?: HelperDef | null }
   /** A timeout set from inside a test or a helper, applied to the test that runs it. */
@@ -667,6 +680,9 @@ interface RawTest {
   /** Describe frames around this test, outermost first. Their state is read when finished. */
   ancestors: Frame[];
   bodyHash: string | undefined;
+  /** The body of an inline test callback, and the callback itself. */
+  body: AstNode | undefined;
+  fn: AstNode | undefined;
   /** For `test('x', namedFn)`: what the name stood for, or resolved when finished. */
   fnRef: { node: AstNode; scope: Scope; def?: HelperDef | null } | undefined;
   entries: Entry[];
@@ -699,6 +715,10 @@ export interface SummaryCollector {
   visitor: Visitor;
   /** Call after the walk. */
   finish(source: string): TestSummary;
+  /** Per-test detail for rules. Call after `finish`; it is not part of the summary. */
+  facts(): TestFacts[];
+  /** `vi.mock` / `jest.mock` calls that take effect, in source order. */
+  mocks(): ModuleMock[];
 }
 
 export function createSummaryCollector(options: SummaryOptions = {}): SummaryCollector {
@@ -738,6 +758,8 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
   /** Anonymous functions that only run if something calls them: mock implementations, factories. */
   const deferredFns = new Set<AstNode>();
   /** Suite/file timeouts set while registering tests, applied in source order when finished. */
+  const factList: TestFacts[] = [];
+  const moduleMocks: ModuleMock[] = [];
   const timeoutEvents: { pos: number; frame: Frame | undefined; ms: number }[] = [];
   /** Helpers an outer name stood for before the running test body rewrote them. */
   const testRestore = new Map<
@@ -937,7 +959,16 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         const s = spec ? staticString(spec) : undefined;
         // vi.mock is hoisted to the top of the file; vi.doMock only acts when it runs
         const neverRuns = joined.endsWith('doMock') && innermostHelper() !== undefined;
-        if (s !== undefined && !neverRuns) mockedModules.add(s);
+        if (s !== undefined && !neverRuns) {
+          mockedModules.add(s);
+          const factory = children(node, 'arguments')[1];
+          moduleMocks.push({
+            spec: s,
+            loc: ctx.loc(node.start),
+            node,
+            ...(factory ? { factory: unwrap(factory) } : {}),
+          });
+        }
       }
       if (calleePath[0] === 'vi') sawVi = true;
       if (calleePath[0] === 'jest') sawJest = true;
@@ -991,6 +1022,8 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
             timeout: decl.timeout,
             ancestors: frames.slice(base),
             bodyHash: decl.fn ? hashNode(child(decl.fn, 'body')) : undefined,
+            body: decl.fn ? child(decl.fn, 'body') : undefined,
+            fn: decl.fn,
             fnRef: decl.fnRef ? fnRefOf(decl.fnRef) : undefined,
             entries,
             order: node.start,
@@ -1016,6 +1049,10 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         ref: found.ref,
         signals,
         mock: signals.root ? mockStateOf(scope.lookup(signals.root)) : NOT_MOCK,
+        node,
+        loc: ctx.loc(node.start),
+        subject: found.subject,
+        custom: found.custom === true,
       });
       return;
     }
@@ -1481,12 +1518,27 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     /** Matchers and timeout effects of some code, with helper calls followed `follow` level(s). */
     const expand = (
       entries: readonly Entry[],
-      out: { uses: MatcherUse[]; timeout?: number },
+      out: { uses: MatcherUse[]; timeout?: number; facts: AssertionFact[] },
       follow: boolean,
     ): void => {
       for (const entry of [...entries].sort((a, b) => a.pos - b.pos)) {
-        if ('ref' in entry) out.uses.push(toUse(entry));
-        else if ('timeout' in entry) out.timeout = entry.timeout;
+        if ('ref' in entry) {
+          const use = toUse(entry);
+          out.uses.push(use);
+          out.facts.push({
+            node: entry.node,
+            loc: entry.loc,
+            matcher: use.name,
+            strength: use.strength,
+            negated: use.negated,
+            subject: entry.subject,
+            subjectText: entry.subject ? sourceText(source, unwrap(entry.subject)) : undefined,
+            subjectIsMock: use.subjectIsMock,
+            viaHelper: !follow,
+            known: lattice.resolveMatcher(entry.ref).known,
+            custom: entry.custom,
+          });
+        } else if ('timeout' in entry) out.timeout = entry.timeout;
         else if (follow) {
           const def = helperOf(entry);
           if (def) expand(def.entries, out, false);
@@ -1529,7 +1581,10 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     const used = new Set<string>();
     const counters = new Map<string, number>();
     const cases: TestCase[] = all.map((t) => {
-      const out: { uses: MatcherUse[]; timeout?: number } = { uses: [] };
+      const out: { uses: MatcherUse[]; timeout?: number; facts: AssertionFact[] } = {
+        uses: [],
+        facts: [],
+      };
       // `test('x', namedFn)`: the named function is the test body, so it is expanded exactly like
       // an inline body, with one level of helper calls.
       const callback = t.fnRef
@@ -1573,6 +1628,23 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         [...t.ancestors].reverse().find((f) => f.timeout !== undefined)?.timeout ??
         fileTimeout;
       if (timeout !== undefined) tc.timeoutMs = timeout;
+      // A test turned off anywhere on its path never runs, whatever its own modifier says
+      // (`describe.skip` around `test.fails`). The stored summary keeps the winner as before.
+      const off = [t.modifier, ...[...t.ancestors].reverse().map((f) => f.modifier)].find(
+        (m) => m === 'skip' || m === 'todo' || m === 'fixme',
+      );
+      const factModifier = off ?? modifier;
+      // `test('x', namedFn)`: the callback is the named function
+      const fn = t.fn ?? callback?.node;
+      const body = t.body ?? (callback ? child(callback.node, 'body') : undefined);
+      factList.push({
+        id,
+        loc: t.loc,
+        ...(factModifier ? { modifier: factModifier } : {}),
+        ...(body ? { body } : {}),
+        ...(fn ? { fn } : {}),
+        assertions: out.facts,
+      });
       return tc;
     });
 
@@ -1581,5 +1653,5 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     return { hash: hashText(source), framework, imports, tests: cases };
   };
 
-  return { visitor, finish };
+  return { visitor, finish, facts: () => factList, mocks: () => moduleMocks };
 }
