@@ -4,6 +4,19 @@ import type { OracleRule } from './types.js';
 
 const INTERACTION = /^(toHaveBeen(Nth|Last)?Called|toBeCalled|toHave(Last|Nth)?Returned)/;
 
+/** The name a chain of calls and property reads starts from: `vi` in `vi.fn().mockReturnValue(1)`. */
+function chainRoot(node: AstNode): AstNode | undefined {
+  let n: AstNode | undefined = unwrap(node);
+  for (let guard = 0; n && guard < 50; guard++) {
+    if (n.type === 'CallExpression') n = child(n, 'callee');
+    else if (n.type === 'MemberExpression') n = child(n, 'object');
+    else if (n.type === 'AwaitExpression') n = child(n, 'argument');
+    else return n;
+    n = n ? unwrap(n) : undefined;
+  }
+  return undefined;
+}
+
 /** A call whose result is stored or awaited: `const r = f()`, `const r = await f()`. */
 function capturesResult(node: AstNode): boolean {
   if (node.type === 'VariableDeclarator') {
@@ -12,12 +25,10 @@ function capturesResult(node: AstNode): boolean {
     const inner =
       value?.type === 'AwaitExpression' ? unwrap(child(value, 'argument') ?? value) : value;
     if (inner?.type === 'CallExpression') {
-      const callee = child(inner, 'callee');
-      const name = callee ? unwrap(callee) : undefined;
-      // creating a mock is not calling the code under test
-      const root = name?.type === 'MemberExpression' ? child(name, 'object') : name;
-      const rootName = root ? str(unwrap(root), 'name') : undefined;
-      return rootName !== 'vi' && rootName !== 'jest';
+      // creating or configuring a mock is not calling the code under test: follow the whole
+      // chain (`vi.fn().mockResolvedValue(x)`) back to what it starts from
+      const root = chainRoot(inner);
+      return !(root?.type === 'Identifier' && ['vi', 'jest'].includes(str(root, 'name') ?? ''));
     }
   }
   for (const value of Object.values(node)) {

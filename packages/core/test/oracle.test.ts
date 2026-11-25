@@ -129,3 +129,101 @@ describe('the summary is unchanged by the rules', () => {
     expect(JSON.stringify(plain)).not.toContain('subjectText');
   });
 });
+
+describe('review round 1', () => {
+  const ids = (src: string, options = {}, file = 'a.test.ts') =>
+    run(src, options, file).findings.map((f) => f.ruleId);
+  const V = `import { test, expect, describe, vi } from 'vitest';\nimport { f, load, getStatus } from './x.js';\n`;
+
+  test('a test under a skipped suite is not judged, whatever its own modifier is', () => {
+    expect(ids(`${V}describe.skip('s', () => { test.fails('c', () => {}); });`)).toEqual([]);
+  });
+
+  test('a named test callback is analysed like an inline one', () => {
+    const src = `${V}function body() { const r = f(); const send = vi.fn(); expect(send).toHaveBeenCalled(); }\ntest('x', body);`;
+    expect(ids(src)).toEqual(['oracle/interaction-only']);
+  });
+
+  test('done is a completion callback only in Jest', () => {
+    const body = `async (done) => { expect(await load()).toBe(1); }`;
+    expect(
+      ids(
+        `import { test } from 'node:test';\nimport { load } from './x.js';\nimport assert from 'node:assert';\ntest('x', async (done) => { assert.equal(await load(), 1); });`,
+      ),
+    ).toEqual([]);
+    expect(
+      ids(
+        `import { test, expect } from '@jest/globals';\nimport { load } from './x.js';\ntest('x', ${body});`,
+      ),
+    ).toEqual(['oracle/swallowed-async']);
+    expect(ids(`${V}test('x', ${body});`)).toEqual([]);
+  });
+
+  test('a test that finishes through done is left alone', () => {
+    const src = `import { test, expect } from '@jest/globals';\nimport { load } from './x.js';\ntest('x', (done) => { load().then((v) => { expect(v).toBe(1); done(); }).catch(done); });`;
+    expect(ids(src)).toEqual([]);
+  });
+
+  const taut = (src: string) => ids(src).filter((r) => r === 'oracle/tautological-assertion');
+  test('a literal checked against something from the code is not constant', () => {
+    expect(taut(`${V}test('x', () => { expect(200).toBe(getStatus()); });`)).toEqual([]);
+    expect(taut(`${V}test('x', () => { expect(getStatus()).toBe(200); });`)).toEqual([]);
+    expect(taut(`${V}test('x', () => { expect(200).toBe(200); });`)).toEqual([
+      'oracle/tautological-assertion',
+    ]);
+    expect(taut(`${V}test('x', () => { expect(true).toBeTruthy(); });`)).toEqual([
+      'oracle/tautological-assertion',
+    ]);
+  });
+
+  test('a dotted file name keeps its middle part', () => {
+    const src = `${V.replace("'./x.js'", "'./cart.service.js'")}vi.mock('./cart.service.js', () => ({ f: vi.fn(), load: vi.fn(), getStatus: vi.fn() }));\ntest('x', () => { expect(f()).toBe(1); });`;
+    expect(ids(src, {}, 'src/cart.service.test.ts')).toEqual(['oracle/mocks-subject']);
+  });
+
+  test('mock setup is not a captured result, even when chained', () => {
+    const src = `${V}test('x', () => { const send = vi.fn().mockResolvedValue(undefined); f(send); expect(send).toHaveBeenCalled(); });`;
+    expect(ids(src)).toEqual([]);
+  });
+
+  test('a partial mock is one that spreads the real module, not one that takes the parameter', () => {
+    const penalty = (factory: string) =>
+      run(
+        `${V.replace("'./x.js'", "'./cart.js'")}vi.mock('./cart.js', ${factory});\ntest('x', () => { expect(f()).toBe(1); });`,
+        {},
+        'cart.test.ts',
+      ).findings.map((x) => x.penalty);
+    expect(penalty(`async (importOriginal) => ({ total: vi.fn() })`)).toEqual([15]);
+    expect(penalty(`async (original) => ({ ...(await original()), tax: vi.fn() })`)).toEqual([0]);
+    expect(
+      penalty(
+        `async (importOriginal) => { const actual = await importOriginal(); return { ...actual, tax: vi.fn() }; }`,
+      ),
+    ).toEqual([0]);
+    expect(penalty(`() => ({ ...jest.requireActual('./cart.js'), tax: vi.fn() })`)).toEqual([0]);
+  });
+
+  test('Promise.allSettled hides a failure unless its results are read', () => {
+    const t = (body: string) => ids(`${V}test('x', async () => { ${body} });`);
+    expect(t(`await Promise.allSettled([expect(load()).resolves.toBe(1)]);`)).toEqual([
+      'oracle/swallowed-async',
+    ]);
+    expect(t(`const r = await Promise.allSettled([expect(load()).resolves.toBe(1)]);`)).toEqual([]);
+    expect(t(`await Promise.all([expect(load()).resolves.toBe(1)]);`)).toEqual([]);
+  });
+
+  test('a mock name reused in another test does not mix them up', () => {
+    const src = `${V}test('a', () => {\n  const m = vi.fn().mockReturnValue(42);\n  const result = m();\n  expect(result).toBe(42);\n});\ntest('b', () => {\n  const result = f();\n  expect(result).toBe(42);\n});`;
+    const found = run(src).findings.filter((x) => x.ruleId === 'oracle/tautological-mock');
+    expect(found.map((x) => x.loc?.line)).toEqual([6]);
+  });
+
+  test('values that differ only inside a string are different', () => {
+    const t = (expected: string) =>
+      ids(
+        `${V}test('x', () => { const m = vi.fn().mockReturnValue('a b'); expect(m()).toBe(${expected}); });`,
+      );
+    expect(t(`'ab'`)).toEqual([]);
+    expect(t(`'a b'`)).toEqual(['oracle/tautological-mock']);
+  });
+});

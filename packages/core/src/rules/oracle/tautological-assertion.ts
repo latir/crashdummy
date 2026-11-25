@@ -80,9 +80,12 @@ export const tautologicalAssertion: OracleRule = {
             const expected = isAssert ? args[1] : args[0];
             const compares = isAssert ? ASSERT_COMPARES.has(a.matcher) : COMPARES.has(a.matcher);
 
+            // Every value the assertion looks at is written in the test: nothing from the code
+            // under test is involved. `expect(200).toBe(getStatus())` still checks `getStatus()`.
+            const operands = isAssert ? args : [subject, ...args];
             let why: string | undefined;
-            if (isLiteral(subject)) {
-              why = 'the value being checked is a literal written in the test';
+            if (isLiteral(subject) && operands.every((o) => isLiteral(o))) {
+              why = 'every value it checks is a literal written in the test';
             } else if (
               compares &&
               !a.negated &&

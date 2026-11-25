@@ -1622,12 +1622,21 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         [...t.ancestors].reverse().find((f) => f.timeout !== undefined)?.timeout ??
         fileTimeout;
       if (timeout !== undefined) tc.timeoutMs = timeout;
+      // A test turned off anywhere on its path never runs, whatever its own modifier says
+      // (`describe.skip` around `test.fails`). The stored summary keeps the winner as before.
+      const off = [t.modifier, ...[...t.ancestors].reverse().map((f) => f.modifier)].find(
+        (m) => m === 'skip' || m === 'todo' || m === 'fixme',
+      );
+      const factModifier = off ?? modifier;
+      // `test('x', namedFn)`: the callback is the named function
+      const fn = t.fn ?? callback?.node;
+      const body = t.body ?? (callback ? child(callback.node, 'body') : undefined);
       factList.push({
         id,
         loc: t.loc,
-        ...(modifier ? { modifier } : {}),
-        ...(t.body ? { body: t.body } : {}),
-        ...(t.fn ? { fn: t.fn } : {}),
+        ...(factModifier ? { modifier: factModifier } : {}),
+        ...(body ? { body } : {}),
+        ...(fn ? { fn } : {}),
         assertions: out.facts,
       });
       return tc;

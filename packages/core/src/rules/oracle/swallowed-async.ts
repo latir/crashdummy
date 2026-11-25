@@ -11,12 +11,10 @@ import { oracleFinding, isDisabled } from './finding.js';
 import type { OracleRule } from './types.js';
 
 const PROMISE_CHAINS = new Set(['then', 'catch', 'finally']);
-const PROMISE_COMBINATORS = new Set([
-  'Promise.all',
-  'Promise.allSettled',
-  'Promise.race',
-  'Promise.any',
-]);
+/** Combinators that pass a rejection on to whoever waits for them. */
+const PROPAGATING = new Set(['Promise.all', 'Promise.race', 'Promise.any']);
+/** `allSettled` swallows rejections: its results have to be read for a failure to show. */
+const SETTLING = 'Promise.allSettled';
 
 /** The names along `a.b.c(...)`'s callee, outermost property first: `['c', 'b']`. */
 function calleeProperties(call: AstNode): string[] {
@@ -40,6 +38,7 @@ function calleeProperties(call: AstNode): string[] {
  */
 function isHandled(ancestors: readonly AstNode[], node: AstNode): boolean {
   let current = node;
+  let settled = false;
   for (let i = ancestors.length - 1; i >= 0; i--) {
     const parent = ancestors[i]!;
     switch (parent.type) {
@@ -48,7 +47,13 @@ function isHandled(ancestors: readonly AstNode[], node: AstNode): boolean {
       case 'Program':
         return false;
       case 'ArrowFunctionExpression':
-        return child(parent, 'body') === current; // `() => promise` returns it
+        // `() => promise` returns it. A settled promise never rejects.
+        return child(parent, 'body') === current && !settled;
+      case 'AwaitExpression':
+      case 'ReturnStatement':
+        if (!settled) return true;
+        current = parent; // `await Promise.allSettled(...)` still hides the failure
+        break;
       case 'ArrayExpression':
       case 'MemberExpression':
       case 'ConditionalExpression':
@@ -66,7 +71,8 @@ function isHandled(ancestors: readonly AstNode[], node: AstNode): boolean {
           break;
         }
         const path = callee ? memberPath(callee)?.join('.') : undefined;
-        if (path && PROMISE_COMBINATORS.has(path)) {
+        if (path && (PROPAGATING.has(path) || path === SETTLING)) {
+          if (path === SETTLING) settled = true;
           current = parent;
           break;
         }
@@ -119,8 +125,13 @@ export const swallowedAsync: OracleRule = {
         const seen = new Set<AstNode>();
         for (const test of ctx.facts()) {
           if (isDisabled(test.modifier)) continue;
-          const first = test.fn ? children(test.fn, 'params')[0] : undefined;
+          const params = test.fn ? children(test.fn, 'params') : [];
+          const first = params[0];
+          // `done` is a completion callback only in Jest. In `node:test` the first parameter is the
+          // test context whatever it is called, and a parameterized test can receive data by that
+          // name, so anywhere else the name alone says nothing.
           if (
+            ctx.summary().framework === 'jest' &&
             test.fn &&
             test.fn['async'] === true &&
             first?.type === 'Identifier' &&
@@ -148,6 +159,10 @@ export const swallowedAsync: OracleRule = {
               );
               continue;
             }
+            // A test that takes a parameter may finish through a completion callback
+            // (`.then(...).catch(done)`), which waits for the assertion. That is not knowable
+            // here, so it is left alone.
+            if (params.length > 0) continue;
             const chain = chains.find(
               (c) =>
                 !isHandled(c.ancestors, c.node) &&
