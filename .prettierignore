@@ -8,3 +8,5 @@ corpus/.pool
 docs/technical-plan.md
 .changeset/*.md
 CHANGELOG.md
+corpus/label-page
+corpus/label-data.json
