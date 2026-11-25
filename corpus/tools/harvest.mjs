@@ -26,6 +26,7 @@ import {
   detectFramework,
   findLicenseFile,
   interestingChanges,
+  interleave,
   monthWindows,
   parseNameStatus,
   repoDirName,
@@ -200,7 +201,7 @@ export async function fetchCommits(pool, options, io = defaultIo) {
   const skip = (why) => (stats.skipped[why] = (stats.skipped[why] ?? 0) + 1);
   let total = pool.readLines(pool.candidates).length;
 
-  for (const commit of pool.readLines(pool.commits)) {
+  for (const commit of interleave(pool.readLines(pool.commits))) {
     if (total >= options.limit) break;
     const key = `${commit.repo}@${commit.sha}`;
     if (state[key]) continue;

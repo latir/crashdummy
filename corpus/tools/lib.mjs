@@ -177,3 +177,31 @@ export function monthWindows(since, until) {
 
 /** One unit of search work, so a stopped run can resume. */
 export const searchKey = (query, [from, to], page) => `${query}|${from}..${to}|${page}`;
+
+/**
+ * Commits in turn from each agent, then from each repository within it, so a stage that stops at a
+ * limit has seen every agent and many repositories rather than only the first in the file.
+ */
+export function interleave(commits) {
+  const byAgent = new Map();
+  for (const c of commits) {
+    if (!byAgent.has(c.trailer)) byAgent.set(c.trailer, new Map());
+    const repos = byAgent.get(c.trailer);
+    if (!repos.has(c.repo)) repos.set(c.repo, []);
+    repos.get(c.repo).push(c);
+  }
+  // each agent becomes a list that takes one commit per repository, round after round
+  const lists = [...byAgent.values()].map((repos) => {
+    const queues = [...repos.values()];
+    const out = [];
+    for (let i = 0; queues.some((q) => i < q.length); i++) {
+      for (const q of queues) if (i < q.length) out.push(q[i]);
+    }
+    return out;
+  });
+  const out = [];
+  for (let i = 0; lists.some((l) => i < l.length); i++) {
+    for (const l of lists) if (i < l.length) out.push(l[i]);
+  }
+  return out;
+}

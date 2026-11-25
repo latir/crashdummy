@@ -7,6 +7,7 @@ import {
   detectFramework,
   findLicenseFile,
   interestingChanges,
+  interleave,
   isTestPath,
   monthWindows,
   parseNameStatus,
@@ -178,5 +179,36 @@ describe('small helpers', () => {
       ['2025-03-01', '2025-03-10'],
     ]);
     expect(monthWindows('2025-02-01', '2025-02-01')).toEqual([]);
+  });
+});
+
+describe('interleave', () => {
+  const c = (trailer, repo, n) => ({ trailer, repo, sha: `${trailer}-${repo}-${n}` });
+  test('takes turns across agents and, within an agent, across repositories', () => {
+    const input = [
+      c('claude', 'a/x', 1),
+      c('claude', 'a/x', 2),
+      c('claude', 'a/y', 1),
+      c('codex', 'b/z', 1),
+      c('codex', 'b/z', 2),
+    ];
+    expect(interleave(input).map((x) => x.sha)).toEqual([
+      'claude-a/x-1',
+      'codex-b/z-1',
+      'claude-a/y-1',
+      'codex-b/z-2',
+      'claude-a/x-2',
+    ]);
+  });
+  test('keeps every commit exactly once, and handles empty input', () => {
+    const input = Array.from({ length: 30 }, (_, i) =>
+      c(['claude', 'codex', 'cursor'][i % 3], `r/${i % 7}`, i),
+    );
+    expect(
+      interleave(input)
+        .map((x) => x.sha)
+        .sort(),
+    ).toEqual(input.map((x) => x.sha).sort());
+    expect(interleave([])).toEqual([]);
   });
 });
