@@ -1,6 +1,6 @@
 {
   "name": "crashdummy",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Scores the quality of new and changed JS/TS tests, and fails changes that weaken a suite.",
   "license": "MIT",
   "repository": {
