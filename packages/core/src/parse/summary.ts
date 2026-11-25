@@ -677,8 +677,9 @@ interface RawTest {
   /** Describe frames around this test, outermost first. Their state is read when finished. */
   ancestors: Frame[];
   bodyHash: string | undefined;
-  /** The body of an inline test callback. */
+  /** The body of an inline test callback, and the callback itself. */
   body: AstNode | undefined;
+  fn: AstNode | undefined;
   /** For `test('x', namedFn)`: what the name stood for, or resolved when finished. */
   fnRef: { node: AstNode; scope: Scope; def?: HelperDef | null } | undefined;
   entries: Entry[];
@@ -1007,6 +1008,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
             ancestors: frames.slice(base),
             bodyHash: decl.fn ? hashNode(child(decl.fn, 'body')) : undefined,
             body: decl.fn ? child(decl.fn, 'body') : undefined,
+            fn: decl.fn,
             fnRef: decl.fnRef ? fnRefOf(decl.fnRef) : undefined,
             entries,
             order: node.start,
@@ -1613,6 +1615,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         loc: t.loc,
         ...(modifier ? { modifier } : {}),
         ...(t.body ? { body: t.body } : {}),
+        ...(t.fn ? { fn: t.fn } : {}),
         assertions: out.facts,
       });
       return tc;

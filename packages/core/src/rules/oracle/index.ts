@@ -3,10 +3,18 @@ import type { Visitor } from '../../parse/walk.js';
 import type { Finding } from '../../types.js';
 import { interactionOnly } from './interaction-only.js';
 import { noAssertion } from './no-assertion.js';
+import { swallowedAsync } from './swallowed-async.js';
+import { tautologicalAssertion } from './tautological-assertion.js';
 import type { OracleRule } from './types.js';
 import { weakMatcher } from './weak-matcher.js';
 
-export const oracleRules: readonly OracleRule[] = [noAssertion, weakMatcher, interactionOnly];
+export const oracleRules: readonly OracleRule[] = [
+  noAssertion,
+  tautologicalAssertion,
+  swallowedAsync,
+  weakMatcher,
+  interactionOnly,
+];
 
 export interface OracleOptions extends Omit<AnalyzeOptions, 'visitors'> {
   /** Rule ids to leave out. */
@@ -51,4 +59,4 @@ export function checkOracle(
 }
 
 export type { OracleRule, OracleContext, OracleMeta, OracleInstance } from './types.js';
-export { noAssertion, weakMatcher, interactionOnly };
+export { noAssertion, tautologicalAssertion, swallowedAsync, weakMatcher, interactionOnly };

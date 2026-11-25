@@ -30,5 +30,7 @@ export interface TestFacts {
   modifier?: 'skip' | 'only' | 'todo' | 'fixme' | 'fails';
   /** The body of an inline test callback. Absent for `test('x', namedFn)`. */
   body?: AstNode;
+  /** The test callback itself, so a rule can see its parameters and whether it is async. */
+  fn?: AstNode;
   assertions: AssertionFact[];
 }
