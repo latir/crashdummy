@@ -3,7 +3,8 @@ dist
 coverage
 pnpm-lock.yaml
 fixtures
-corpus
+corpus/cases
+corpus/.pool
 docs/technical-plan.md
 .changeset/*.md
 CHANGELOG.md

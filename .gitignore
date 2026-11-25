@@ -4,3 +4,4 @@ coverage/
 .crashdummy/cache/
 .DS_Store
 *.tsbuildinfo
+corpus/.pool/
