@@ -4,7 +4,16 @@
 
 crashdummy is a fast, deterministic CLI that scores the quality of new and changed JS/TS tests out of 100, and fails changes that weaken a test suite. It is aimed at AI-written tests, but scores any test the same way.
 
-> **Status: coming soon.** This package is a placeholder while the first release is built. Nothing is usable yet.
+> **Status: early development.** The static checks (tier 0) work: scoring, integrity gates and the `pretty`, `agent` and `json` formats. Coverage, mutation, the baseline and the agent adapters are not built yet.
+
+```bash
+npx crashdummy                       # tests changed since the merge-base with origin/HEAD
+npx crashdummy --files a.test.ts     # or an explicit list
+npx crashdummy --format agent        # short, plain text for a coding agent
+npx crashdummy explain <rule>        # what a rule catches and how to fix it
+```
+
+See [scoring, verdicts and output](docs/scoring.md).
 
 ## Why
 

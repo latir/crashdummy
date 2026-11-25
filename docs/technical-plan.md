@@ -144,15 +144,18 @@ interface Finding {
   loc?: { line: number; col: number };
   message: string;              // one line, agent-readable
   hint?: string;                // how to fix
+  test?: string;                // TestCase.id, when the finding is about one test
   penalty: number;              // points removed from the file score
 }
 
 interface FileScore {
   file: string;
-  score: number;                // integer, 0–100
+  status: 'scored' | 'unparseable' | 'deleted';  // unparseable: syntax error, no score
+  score?: number;               // integer, 0–100. Absent unless status is 'scored'
+  error?: { line: number; col: number; message: string };  // for 'unparseable'
   previous?: number;            // from baseline
   findings: Finding[];
-  subscores: { static: number; coverage: number | 'unknown'; mutation: number | 'unknown' };
+  subscores: { static: number | 'unknown'; coverage: number | 'unknown'; mutation: number | 'unknown' };
   confidence: 'verified' | 'unverified' | 'static-estimate';
   gates: Finding[];             // tripped gates, reported outside the score
 }
@@ -164,6 +167,7 @@ interface Report {
   files: FileScore[];
   suite?: { score: number; previous?: number };
   verdict: 'pass' | 'warn' | 'fail';
+  unknownMatchers?: { name: string; count: number; files: string[] }[];  // lattice gaps
 }
 ```
 
@@ -299,6 +303,10 @@ Mutation gets the most weight because it has the strongest evidence and is the h
 
 **Display:** scores are plain integers out of 100, shown with the change since the baseline and the sub-scores, e.g. `72/100 (−14) · static 80 · cov 91 · mut 58`. There are no letter grades.
 
+**Files that cannot be checked.** A file with a syntax error has no AST, so no rule runs on it. It gets **no score** (never 0, never 100), is left out of the suite average, and is listed as `unparseable` with the first error's line and column. In `fail` mode (the default) it fails the check through `integrity/unparseable`; in `warn` mode it only warns. `onParseError` in config chooses the mode.
+
+**Unrecognised matchers.** A matcher the strength lattice does not know is scored as neutral. The scorer collects them, shows them as `info/unknown-matcher` findings (no penalty, never a gate) and lists them in `Report.unknownMatchers`. Matchers the user configured under `matchers` are not counted.
+
 **Verdict:**
 
 - `fail`: any gate tripped (integrity rules, `no-assertion`, `tautological-assertion`, full `mocks-subject`, `swallowed-async`), a file below `minScore` (default 50), or a drop from the baseline larger than `maxDrop` (default 10 points).
@@ -379,6 +387,9 @@ Config is plain JSON, in `.crashdummy/config.json` or the `"crashdummy"` key of 
   "rules": { "smell/vague-name": "off", "smell/weak-matcher": { "penalty": 5 } },
   "minScore": 65,
   "maxDrop": 10,
+  "onParseError": "fail",
+  "assertFunctionNames": ["expectValid", "check*"],
+  "matchers": { "toBeWithinRange": { "strength": 3 } },
   "storage": "repo",
   "linterInputs": ["oxlint.json"]
 }
