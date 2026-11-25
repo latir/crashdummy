@@ -38,34 +38,68 @@ function readsOriginal(node: AstNode, original: string | undefined): boolean {
   return false;
 }
 
+/** What a function hands back: an arrow's expression body, or each `return`, not nested ones. */
+function returnedValues(fn: AstNode): AstNode[] {
+  const body = child(fn, 'body');
+  if (!body) return [];
+  if (body.type !== 'BlockStatement') return [unwrap(body)];
+  const out: AstNode[] = [];
+  const visit = (node: AstNode): void => {
+    if (isFunction(node)) return;
+    if (node.type === 'ReturnStatement') {
+      const arg = child(node, 'argument');
+      if (arg) out.push(unwrap(arg));
+      return;
+    }
+    for (const value of Object.values(node)) {
+      for (const k of Array.isArray(value) ? value : [value]) if (isNode(k)) visit(k);
+    }
+  };
+  for (const statement of children(body, 'body')) visit(statement);
+  return out;
+}
+
 /**
- * A factory that spreads the real module into what it returns keeps the real behaviour: a
- * partial mock. It counts only when the spread comes from the real module, directly
- * (`...(await importOriginal())`) or through a variable (`const actual = await importOriginal()`),
- * not when the factory merely takes the parameter.
+ * A factory that returns the real module's exports with some replaced keeps the real behaviour: a
+ * partial mock. It counts only when what is returned spreads the real module, directly
+ * (`...(await importOriginal())`) or through a variable that holds it, or is the real module
+ * itself. A spread into an object that is never returned changes nothing, and neither does merely
+ * taking the parameter.
  */
 function isPartial(factory: AstNode | undefined): boolean {
   if (!factory || !isFunction(factory)) return false;
   const first = children(factory, 'params')[0];
   const original = first?.type === 'Identifier' ? str(first, 'name') : undefined;
+  const declared = new Map<string, AstNode>();
   const fromOriginal = new Set<string>();
   for (const n of descendants(factory)) {
     if (n.type !== 'VariableDeclarator') continue;
     const id = child(n, 'id');
     const init = child(n, 'init');
-    if (id?.type === 'Identifier' && init && readsOriginal(init, original)) {
-      fromOriginal.add(str(id, 'name') ?? '');
+    if (id?.type !== 'Identifier' || !init) continue;
+    const name = str(id, 'name') ?? '';
+    declared.set(name, unwrap(init));
+    if (readsOriginal(init, original)) fromOriginal.add(name);
+  }
+  const keepsOriginal = (expr: AstNode, depth = 0): boolean => {
+    const e = unwrap(expr);
+    if (e.type === 'ObjectExpression') {
+      return children(e, 'properties').some((p) => {
+        const arg = p.type === 'SpreadElement' ? child(p, 'argument') : undefined;
+        return arg !== undefined && keepsOriginal(arg, depth + 1);
+      });
     }
-  }
-  for (const n of descendants(factory)) {
-    if (n.type !== 'SpreadElement') continue;
-    const arg = child(n, 'argument');
-    if (!arg) continue;
-    const a = unwrap(arg);
-    if (readsOriginal(a, original)) return true;
-    if (a.type === 'Identifier' && fromOriginal.has(str(a, 'name') ?? '')) return true;
-  }
-  return false;
+    if (e.type === 'Identifier') {
+      const name = str(e, 'name') ?? '';
+      if (fromOriginal.has(name)) return true;
+      const init = declared.get(name);
+      return depth < 3 && init !== undefined && init.type === 'ObjectExpression'
+        ? keepsOriginal(init, depth + 1)
+        : false;
+    }
+    return readsOriginal(e, original);
+  };
+  return returnedValues(factory).some((value) => keepsOriginal(value));
 }
 
 /**

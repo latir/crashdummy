@@ -227,3 +227,104 @@ describe('review round 1', () => {
     expect(t(`'a b'`)).toEqual(['oracle/tautological-mock']);
   });
 });
+
+describe('review round 2', () => {
+  const ids = (src: string, options = {}, file = 'a.test.ts') =>
+    run(src, options, file).findings.map((f) => f.ruleId);
+  const V = `import { test, expect, vi } from 'vitest';\nimport { f, load, getStatus } from './x.js';\n`;
+  const asyncTest = (body: string) => ids(`${V}test('x', async () => { ${body} });`);
+
+  test('a spread into an object that is never returned is not a partial mock', () => {
+    const penalty = (factory: string) =>
+      run(
+        `${V.replace("'./x.js'", "'./cart.js'")}vi.mock('./cart.js', ${factory});\ntest('x', () => { expect(f()).toBe(1); });`,
+        {},
+        'cart.test.ts',
+      ).findings.map((x) => x.penalty);
+    expect(
+      penalty(
+        `async (original) => { const copy = { ...(await original()) }; return { total: vi.fn() }; }`,
+      ),
+    ).toEqual([15]);
+    expect(
+      penalty(
+        `async (original) => { const copy = { ...(await original()), tax: vi.fn() }; return copy; }`,
+      ),
+    ).toEqual([0]);
+    expect(penalty(`(importOriginal) => importOriginal()`)).toEqual([0]);
+  });
+
+  test('messages stay on one line even when they quote a multiline call', () => {
+    const r = run(
+      `${V}test('x', () => {\n  expect(f(\n    1,\n    2,\n  )).toBeTruthy();\n});`,
+    ).findings;
+    expect(r.length).toBeGreaterThan(0);
+    for (const x of r) expect(`${x.message}${x.hint ?? ''}`).not.toMatch(/[\r\n]/);
+  });
+
+  test('toHaveReturnedWith checks the value that came back', () => {
+    const src = `${V}test('x', () => { const spy = vi.spyOn(Math, 'max'); const r = f(spy); expect(spy).toHaveReturnedWith(42); });`;
+    expect(ids(src)).toEqual([]);
+    const only = `${V}test('x', () => { const spy = vi.spyOn(Math, 'max'); const r = f(spy); expect(spy).toHaveReturned(); });`;
+    expect(ids(only)).toEqual(['oracle/interaction-only']);
+  });
+
+  test('Promise.any and Promise.race can hide a failing assertion', () => {
+    const t = (c: string) =>
+      asyncTest(`await Promise.${c}([Promise.resolve(), expect(load()).resolves.toBe(1)]);`);
+    expect(t('any')).toEqual(['oracle/swallowed-async']);
+    expect(t('race')).toEqual(['oracle/swallowed-async']);
+    expect(t('all')).toEqual([]);
+    expect(asyncTest(`await Promise.race([expect(load()).resolves.toBe(1)]);`)).toEqual([]);
+  });
+
+  test('awaiting an array does not wait for its elements', () => {
+    expect(asyncTest(`await [expect(load()).resolves.toBe(1)];`)).toEqual([
+      'oracle/swallowed-async',
+    ]);
+    expect(
+      asyncTest(`const all = [expect(load()).resolves.toBe(1)]; await Promise.all(all);`),
+    ).toEqual([]);
+  });
+
+  test('only the last operand of a sequence comes out of it', () => {
+    expect(asyncTest(`return (expect(load()).resolves.toBe(1), Promise.resolve());`)).toEqual([
+      'oracle/swallowed-async',
+    ]);
+    expect(asyncTest(`return (Promise.resolve(), expect(load()).resolves.toBe(1));`)).toEqual([]);
+  });
+
+  test('void discards the promise', () => {
+    expect(asyncTest(`void expect(load()).resolves.toBe(1);`)).toEqual(['oracle/swallowed-async']);
+  });
+
+  test('an opaque assertion helper with literal arguments is not constant', () => {
+    const src = `${V}import * as helpers from './h.js';\ntest('x', () => { helpers.expectTotal(3); });`;
+    expect(ids(src, { assertFunctionNames: ['helpers.expectTotal'] })).toEqual([]);
+  });
+
+  test('reassigning a variable replaces what it held', () => {
+    const src = `${V}test('x', () => {\n  const m = vi.fn().mockReturnValue(42);\n  let result = m();\n  result = f();\n  expect(result).toBe(42);\n});`;
+    expect(ids(src)).toEqual([]);
+    const plain = `${V}test('x', () => {\n  const m = vi.fn().mockReturnValue(42);\n  let result = f();\n  result = m();\n  expect(result).toBe(42);\n});`;
+    expect(ids(plain)).toEqual(['oracle/tautological-mock']);
+  });
+
+  test('mock setup in a function nobody calls does not apply', () => {
+    const src = `${V}function unused() { vi.mocked(f).mockReturnValue(42); }\ntest('x', () => { expect(f()).toBe(42); });`;
+    expect(ids(src)).toEqual([]);
+    const hook = `${V}beforeEach(() => { vi.mocked(f).mockReturnValue(42); });\ntest('x', () => { expect(f()).toBe(42); });`;
+    expect(ids(hook.replace('{ test,', '{ beforeEach, test,'))).toEqual([
+      'oracle/tautological-mock',
+    ]);
+  });
+
+  test('a result is judged against the mock as it was when the value was produced', () => {
+    const t = (expected: number) =>
+      ids(
+        `${V}test('x', () => { const m = vi.fn().mockReturnValue(1); const result = m(); m.mockReturnValue(2); expect(result).toBe(${expected}); });`,
+      );
+    expect(t(2)).toEqual([]);
+    expect(t(1)).toEqual(['oracle/tautological-mock']);
+  });
+});

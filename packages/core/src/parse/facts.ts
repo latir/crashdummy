@@ -20,6 +20,8 @@ export interface AssertionFact {
   subjectIsMock: boolean;
   /** Reached by following a local helper, not written in the test itself. */
   viaHelper: boolean;
+  /** A function named in `assertFunctionNames`. What it checks is up to the helper. */
+  custom: boolean;
 }
 
 /** One test, with the detail rules need. Same order as `TestSummary.tests`. */

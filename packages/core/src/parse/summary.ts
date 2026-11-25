@@ -204,6 +204,8 @@ const EXPECT_ROOTS = new Set(['expect', 'expect.soft', 'expect.poll']);
 
 interface Assertion {
   ref: MatcherRef;
+  /** Matched by `assertFunctionNames`: an opaque helper, not a framework assertion. */
+  custom?: true;
   /** The value being checked, for mock detection. */
   subject: AstNode | undefined;
 }
@@ -291,7 +293,7 @@ class AssertionFinder {
     if (asserted) return asserted;
 
     if (path[0] !== 'expect' && this.custom.some((re) => re.test(path.join('.')))) {
-      return { ref: { name: path.join('.') }, subject: args[0] };
+      return { ref: { name: path.join('.') }, subject: args[0], custom: true };
     }
     return undefined;
   }
@@ -661,6 +663,7 @@ type Entry =
       node: AstNode;
       loc: { line: number; col: number };
       subject: AstNode | undefined;
+      custom: boolean;
     }
   /** A reference that may run a local helper: `check()`, `page.expectOk()`, `items.forEach(check)`. */
   | { pos: number; call: string; method?: string; scope: Scope; def?: HelperDef | null }
@@ -1049,6 +1052,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         node,
         loc: ctx.loc(node.start),
         subject: found.subject,
+        custom: found.custom === true,
       });
       return;
     }
@@ -1531,6 +1535,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
             subjectText: entry.subject ? sourceText(source, unwrap(entry.subject)) : undefined,
             subjectIsMock: use.subjectIsMock,
             viaHelper: !follow,
+            custom: entry.custom,
           });
         } else if ('timeout' in entry) out.timeout = entry.timeout;
         else if (follow) {

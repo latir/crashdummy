@@ -12,7 +12,12 @@ import type { OracleRule } from './types.js';
 
 const PROMISE_CHAINS = new Set(['then', 'catch', 'finally']);
 /** Combinators that pass a rejection on to whoever waits for them. */
-const PROPAGATING = new Set(['Promise.all', 'Promise.race', 'Promise.any']);
+const PROPAGATING = new Set(['Promise.all']);
+/**
+ * Combinators where another promise can win: with two or more elements, a rejecting assertion
+ * can be hidden by a fulfilment that settles first (`any`) or earlier (`race`).
+ */
+const COMPETING = new Set(['Promise.any', 'Promise.race']);
 /** `allSettled` swallows rejections: its results have to be read for a failure to show. */
 const SETTLING = 'Promise.allSettled';
 
@@ -45,6 +50,7 @@ function isHandled(ancestors: readonly AstNode[], node: AstNode): boolean {
       case 'ExpressionStatement':
       case 'BlockStatement':
       case 'Program':
+      case 'UnaryExpression': // `void promise` discards it on purpose
         return false;
       case 'ArrowFunctionExpression':
         // `() => promise` returns it. A settled promise never rejects.
@@ -54,11 +60,35 @@ function isHandled(ancestors: readonly AstNode[], node: AstNode): boolean {
         if (!settled) return true;
         current = parent; // `await Promise.allSettled(...)` still hides the failure
         break;
-      case 'ArrayExpression':
+      case 'ArrayExpression': {
+        // An array is only waited for through a combinator that looks at its elements:
+        // `await [p]` or `return [p]` does not wait for `p`.
+        const outer = ancestors[i - 1];
+        const callee = outer?.type === 'CallExpression' ? child(outer, 'callee') : undefined;
+        const path = callee ? memberPath(callee)?.join('.') : undefined;
+        if (path && (PROPAGATING.has(path) || COMPETING.has(path) || path === SETTLING)) {
+          if (COMPETING.has(path) && children(parent, 'elements').length > 1) settled = true;
+          current = parent;
+          break;
+        }
+        const t = outer?.type;
+        const waitedOnItself =
+          t === 'AwaitExpression' ||
+          t === 'ReturnStatement' ||
+          t === 'ArrowFunctionExpression' ||
+          t === 'ExpressionStatement';
+        return !waitedOnItself; // stored or passed on: not knowable
+      }
+      case 'SequenceExpression': {
+        // only the last operand's value comes out of `(a, b)`
+        const operands = children(parent, 'expressions');
+        if (operands[operands.length - 1] !== current) return false;
+        current = parent;
+        break;
+      }
       case 'MemberExpression':
       case 'ConditionalExpression':
       case 'LogicalExpression':
-      case 'SequenceExpression':
       case 'TSAsExpression':
       case 'TSNonNullExpression':
       case 'TSSatisfiesExpression':
@@ -71,7 +101,7 @@ function isHandled(ancestors: readonly AstNode[], node: AstNode): boolean {
           break;
         }
         const path = callee ? memberPath(callee)?.join('.') : undefined;
-        if (path && (PROPAGATING.has(path) || path === SETTLING)) {
+        if (path && (PROPAGATING.has(path) || COMPETING.has(path) || path === SETTLING)) {
           if (path === SETTLING) settled = true;
           current = parent;
           break;
@@ -79,7 +109,7 @@ function isHandled(ancestors: readonly AstNode[], node: AstNode): boolean {
         return true; // handed to something we cannot see into
       }
       default:
-        return true; // await, return, a variable, an argument...
+        return true; // a variable, a property, an argument...
     }
   }
   return true;

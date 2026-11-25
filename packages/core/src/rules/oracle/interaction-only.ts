@@ -2,7 +2,8 @@ import { child, isNode, str, unwrap, type AstNode } from '../../parse/ast.js';
 import { oracleFinding, isDisabled } from './finding.js';
 import type { OracleRule } from './types.js';
 
-const INTERACTION = /^(toHaveBeen(Nth|Last)?Called|toBeCalled|toHave(Last|Nth)?Returned)/;
+// `toHaveReturnedWith(x)` and friends check the value that came back, so they are not here
+const INTERACTION = /^(toHaveBeen(Nth|Last)?Called|toBeCalled|toHaveReturned(Times)?$)/;
 
 /** The name a chain of calls and property reads starts from: `vi` in `vi.fn().mockReturnValue(1)`. */
 function chainRoot(node: AstNode): AstNode | undefined {

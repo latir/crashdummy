@@ -73,7 +73,8 @@ export const tautologicalAssertion: OracleRule = {
         for (const test of ctx.facts()) {
           if (isDisabled(test.modifier)) continue;
           for (const a of test.assertions) {
-            if (seen.has(a.node)) continue;
+            // an opaque helper: its literal arguments do not say what it compares
+            if (seen.has(a.node) || a.custom) continue;
             const args = children(a.node, 'arguments');
             const isAssert = a.matcher.startsWith('assert.');
             const subject = isAssert ? args[0] : a.subject;

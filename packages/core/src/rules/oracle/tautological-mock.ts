@@ -1,4 +1,13 @@
-import { child, children, str, unwrap, sourceText, type AstNode } from '../../parse/ast.js';
+import {
+  child,
+  children,
+  isFunction,
+  memberPath,
+  str,
+  unwrap,
+  sourceText,
+  type AstNode,
+} from '../../parse/ast.js';
 import { oracleFinding, isDisabled } from './finding.js';
 import type { OracleRule } from './types.js';
 
@@ -48,6 +57,8 @@ function calledExpression(node: AstNode | undefined): AstNode | undefined {
 /** Something that happened at a place in the file, found while walking it in order. */
 interface Event {
   pos: number;
+  /** For a result: where the call that produced it sits. */
+  at?: number;
   /** The mock, or the variable. */
   name: string;
   /** For a mock: what it returns. For a variable: the function whose result it holds. */
@@ -74,6 +85,36 @@ function latest(
   return own ?? pick((e) => outsideTests(e.pos));
 }
 
+/** Functions the test runner calls itself: setup inside them does run. */
+const RUNNER_CALLBACKS = new Set([
+  'describe',
+  'suite',
+  'it',
+  'test',
+  'beforeEach',
+  'beforeAll',
+  'afterEach',
+  'afterAll',
+  'before',
+  'after',
+]);
+
+/**
+ * Does code at this place run when the file does? Not if it sits in a function nobody is known
+ * to call: a helper, a callback handed to something else. Those are left unknown.
+ */
+function runs(ancestors: readonly AstNode[]): boolean {
+  for (let i = 0; i < ancestors.length; i++) {
+    const fn = ancestors[i]!;
+    if (!isFunction(fn)) continue;
+    const call = ancestors[i - 1];
+    const callee = call?.type === 'CallExpression' ? child(call, 'callee') : undefined;
+    const root = callee ? memberPath(callee)?.[0] : undefined;
+    if (!root || !RUNNER_CALLBACKS.has(root)) return false;
+  }
+  return true;
+}
+
 /**
  * The test sets a mock to return X and then asserts that what it got back is X, without the code
  * under test in between. The assertion only checks the mock. Mocks are matched by name, using the
@@ -94,6 +135,23 @@ export const tautologicalMock: OracleRule = {
   create(ctx) {
     const returns: Event[] = [];
     const results: Event[] = [];
+    /** A variable now holds the result of a call to `value`, or something we cannot follow. */
+    const noteResult = (
+      name: string,
+      init: AstNode | undefined,
+      pos: number,
+      ancestors: readonly AstNode[],
+    ): void => {
+      if (!runs(ancestors)) return;
+      const call = calledExpression(init);
+      const callee = call ? child(call, 'callee') : undefined;
+      results.push({
+        pos,
+        name,
+        ...(call ? { at: call.start } : {}),
+        value: callee ? target(callee, ctx.source) : '',
+      });
+    };
     return {
       visitor: {
         CallExpression(node, walk) {
@@ -103,7 +161,7 @@ export const tautologicalMock: OracleRule = {
           if (c?.type !== 'MemberExpression' || c['computed'] === true || !arg) return;
           const method = str(child(c, 'property') ?? c, 'name');
           const object = child(c, 'object');
-          if (!method || !RETURNS.has(method) || !object) return;
+          if (!method || !RETURNS.has(method) || !object || !runs(walk.ancestors)) return;
           let name = target(object, ctx.source);
           // `const m = vi.fn().mockReturnValue(X)`: the mock is the variable
           const parent = walk.ancestors[walk.ancestors.length - 1];
@@ -113,17 +171,16 @@ export const tautologicalMock: OracleRule = {
           }
           returns.push({ pos: node.start, name, value: unwrap(arg) });
         },
-        VariableDeclarator(node) {
+        VariableDeclarator(node, walk) {
           const id = child(node, 'id');
-          const call = calledExpression(child(node, 'init'));
-          const callee = call ? child(call, 'callee') : undefined;
-          if (id?.type === 'Identifier' && callee) {
-            results.push({
-              pos: node.start,
-              name: str(id, 'name') ?? '',
-              value: target(callee, ctx.source),
-            });
-          }
+          if (id?.type !== 'Identifier') return;
+          noteResult(str(id, 'name') ?? '', child(node, 'init'), node.start, walk.ancestors);
+        },
+        // result = realSut(): the variable no longer holds what it did
+        AssignmentExpression(node, walk) {
+          const left = child(node, 'left');
+          if (node['operator'] !== '=' || left?.type !== 'Identifier') return;
+          noteResult(str(left, 'name') ?? '', child(node, 'right'), node.start, walk.ancestors);
         },
       },
       finish() {
@@ -143,6 +200,8 @@ export const tautologicalMock: OracleRule = {
             const called = calledExpression(subject);
             const callee = called ? child(called, 'callee') : undefined;
             let via: string | undefined;
+            // the mock is judged as it was when the value was produced, not at the assertion
+            let producedAt = a.node.start;
             if (subject.type === 'Identifier') {
               // a variable holds what it was last assigned in this test
               const held = latest(
@@ -152,12 +211,14 @@ export const tautologicalMock: OracleRule = {
                 range,
                 () => false,
               );
-              via = typeof held?.value === 'string' ? held.value : undefined;
+              via = typeof held?.value === 'string' && held.value ? held.value : undefined;
+              if (held?.at !== undefined) producedAt = held.at;
             } else if (callee) {
               via = target(callee, ctx.source);
+              producedAt = called?.start ?? producedAt;
             }
             if (via === undefined) continue;
-            const configured = latest(returns, via, a.node.start, range, outsideTests);
+            const configured = latest(returns, via, producedAt, range, outsideTests);
             if (!configured || typeof configured.value === 'string') continue;
             if (canon(configured.value) !== canon(unwrap(expected))) continue;
             seen.add(a.node);
