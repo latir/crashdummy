@@ -1,5 +1,11 @@
 import { describe, expect, test } from 'vitest';
 import {
+  caseSlug,
+  drawRandom,
+  drawTargeted,
+  looksSensitive,
+  seededRandom,
+  shuffle,
   candidateId,
   classifyLicense,
   contentHash,
@@ -272,5 +278,102 @@ describe('interleave', () => {
         .sort(),
     ).toEqual(input.map((x) => x.sha).sort());
     expect(interleave([])).toEqual([]);
+  });
+});
+
+describe('selection helpers', () => {
+  const file = (id, repo, framework = 'vitest') => ({ id, repo, framework });
+
+  test('the same seed gives the same numbers, another seed gives others', () => {
+    const a = seededRandom('x');
+    const b = seededRandom('x');
+    const c = seededRandom('y');
+    const first = [a(), a(), a()];
+    expect([b(), b(), b()]).toEqual(first);
+    expect([c(), c(), c()]).not.toEqual(first);
+    expect(first.every((n) => n >= 0 && n < 1)).toBe(true);
+  });
+
+  test('a shuffle keeps every item and is repeatable', () => {
+    const items = Array.from({ length: 50 }, (_, i) => i);
+    const s1 = shuffle(items, seededRandom('s'));
+    expect([...s1].sort((p, q) => p - q)).toEqual(items);
+    expect(shuffle(items, seededRandom('s'))).toEqual(s1);
+    expect(s1).not.toEqual(items);
+  });
+
+  test('credentials are spotted', () => {
+    expect(looksSensitive('const k = "AKIAABCDEFGHIJKLMNOP";')).toBe(true);
+    expect(looksSensitive('-----BEGIN RSA PRIVATE KEY-----')).toBe(true);
+    expect(looksSensitive(`token: 'ghp_${'a'.repeat(36)}'`)).toBe(true);
+    expect(looksSensitive('expect(add(1, 2)).toBe(3); // sk-learn')).toBe(false);
+  });
+
+  test('random draw: respects quotas, the per-repo cap and the size, fills a shortfall', () => {
+    const files = [
+      ...Array.from({ length: 30 }, (_, i) => file(`v${i}`, `r${i % 15}/x`, 'vitest')),
+      ...Array.from({ length: 3 }, (_, i) => file(`j${i}`, `j${i}/x`, 'jest')),
+    ];
+    const opts = { size: 12, quotas: { vitest: 6, jest: 6 }, perRepo: 2, seed: 'a' };
+    const out = drawRandom(files, opts);
+    expect(out).toHaveLength(12);
+    expect(out.filter((f) => f.framework === 'jest')).toHaveLength(3); // all there are
+    expect(out.filter((f) => f.framework === 'vitest')).toHaveLength(9); // quota 6 plus the fill
+    const perRepo = new Map();
+    for (const f of out) perRepo.set(f.repo, (perRepo.get(f.repo) ?? 0) + 1);
+    expect(Math.max(...perRepo.values())).toBeLessThanOrEqual(2);
+    expect(drawRandom(files, opts).map((f) => f.id)).toEqual(out.map((f) => f.id));
+    expect(drawRandom(files, { ...opts, seed: 'b' }).map((f) => f.id)).not.toEqual(
+      out.map((f) => f.id),
+    );
+  });
+
+  test('the random draw does not depend on anything but the files and the seed', () => {
+    const files = Array.from({ length: 40 }, (_, i) => ({
+      ...file(`f${i}`, `r${i}/x`),
+      findings: i,
+    }));
+    const a = drawRandom(files, { size: 10, quotas: { vitest: 10 }, perRepo: 3, seed: 's' });
+    const b = drawRandom(
+      files.map((f) => ({ ...f, findings: 99 - f.findings })),
+      { size: 10, quotas: { vitest: 10 }, perRepo: 3, seed: 's' },
+    );
+    expect(b.map((f) => f.id)).toEqual(a.map((f) => f.id));
+  });
+
+  test('targeted draw: rarest rule first, one file counts for every rule in it', () => {
+    const files = ['a', 'b', 'c', 'd', 'e'].map((id, i) => file(id, `r${i}/x`));
+    const findings = new Map([
+      ['a', ['weak', 'weak', 'rare']],
+      ['b', ['weak']],
+      ['c', ['weak']],
+      ['d', ['weak']],
+      ['e', []],
+    ]);
+    const { chosen, tally } = drawTargeted(files, findings, { target: 3, perRepo: 3, max: 10 });
+    expect(chosen.map((f) => f.id)).toEqual(['a', 'b']); // a: weak x2 + rare, then b makes 3 weak
+    expect(tally).toEqual({ rare: 1, weak: 3 });
+  });
+
+  test('targeted draw: stops at the cap, respects the per-repo cap and earlier picks', () => {
+    const files = Array.from({ length: 6 }, (_, i) => file(`f${i}`, 'same/repo'));
+    const findings = new Map(files.map((f) => [f.id, ['weak']]));
+    const out = drawTargeted(files, findings, {
+      target: 20,
+      perRepo: 3,
+      max: 10,
+      taken: [file('t', 'same/repo')],
+    });
+    expect(out.chosen).toHaveLength(2); // 3 allowed for the repo, 1 already taken
+    expect(drawTargeted(files, findings, { target: 20, perRepo: 99, max: 4 }).chosen).toHaveLength(
+      4,
+    );
+  });
+
+  test('case slugs are short, safe and unique per file', () => {
+    const slug = caseSlug({ repo: 'Acme/Wid_gets.js', id: 'abc123def456' });
+    expect(slug).toBe('acme-wid-gets-js-abc123def456');
+    expect(slug).toMatch(/^[a-z0-9-]+$/);
+    expect(caseSlug({ repo: 'a/b', id: '1' })).not.toBe(caseSlug({ repo: 'a/b', id: '2' }));
   });
 });

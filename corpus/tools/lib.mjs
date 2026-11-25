@@ -216,3 +216,116 @@ export function interleave(commits) {
   }
   return out;
 }
+
+// ---------------------------------------------------------------------------------------------
+// Selection
+
+/** A small seeded random number generator, so a selection can be repeated from its seed. */
+export function seededRandom(seed) {
+  let h = 1779033703 ^ seed.length;
+  for (let i = 0; i < seed.length; i++) {
+    h = Math.imul(h ^ seed.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  let a = h >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** A copy of `items` in a random order that depends only on the seed. */
+export function shuffle(items, random) {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+const SECRET =
+  /-----BEGIN [A-Z ]*PRIVATE KEY-----|\bAKIA[0-9A-Z]{16}\b|\bgh[pousr]_[A-Za-z0-9]{30,}\b|\bsk-[A-Za-z0-9_-]{20,}\b|\bxox[abprs]-[A-Za-z0-9-]{10,}|\bAIza[0-9A-Za-z_-]{30,}\b/;
+
+/** Text that looks like it holds a credential. Such a file is never copied into the repo. */
+export function looksSensitive(text) {
+  return SECRET.test(text);
+}
+
+/**
+ * The random sample. Files are taken in the shuffled order, so nothing about the files (and in
+ * particular nothing crashdummy says about them) decides which are picked. Each framework gets at
+ * most its quota, each repository at most `perRepo` files, and if a framework has too few files
+ * the shortfall is filled from the others, up to `size`.
+ */
+export function drawRandom(files, { size, quotas, perRepo, seed }) {
+  const random = seededRandom(`${seed}:random`);
+  const order = shuffle(files, random);
+  const taken = [];
+  const perRepoCount = new Map();
+  const perFramework = new Map();
+  const take = (file, ignoreQuota) => {
+    if (taken.length >= size) return;
+    if ((perRepoCount.get(file.repo) ?? 0) >= perRepo) return;
+    const used = perFramework.get(file.framework) ?? 0;
+    if (!ignoreQuota && used >= (quotas[file.framework] ?? 0)) return;
+    if (taken.includes(file)) return;
+    taken.push(file);
+    perRepoCount.set(file.repo, (perRepoCount.get(file.repo) ?? 0) + 1);
+    perFramework.set(file.framework, used + 1);
+  };
+  for (const file of order) take(file, false);
+  for (const file of order) take(file, true); // fill any shortfall
+  return taken;
+}
+
+/**
+ * The targeted sample: files picked because a rule fires in them, until every rule has `target`
+ * findings or the pool has no more. The rarest rule is served first, and every finding in a file
+ * counts for its rule, so one file can serve several. This sample measures precision only: it was
+ * chosen by the tool, so it says nothing about recall.
+ *
+ * `findings` maps a file id to an array of rule ids (one entry per finding).
+ */
+export function drawTargeted(files, findings, { target, perRepo, max, taken = [] }) {
+  const tally = new Map();
+  const chosen = [];
+  const perRepoCount = new Map();
+  for (const f of taken) perRepoCount.set(f.repo, (perRepoCount.get(f.repo) ?? 0) + 1);
+  const have = (id) => tally.get(id) ?? 0;
+  const supply = new Map();
+  for (const file of files) {
+    for (const rule of new Set(findings.get(file.id) ?? [])) {
+      supply.set(rule, (supply.get(rule) ?? 0) + 1);
+    }
+  }
+  const rules = [...supply.keys()].sort(
+    (a, b) => supply.get(a) - supply.get(b) || a.localeCompare(b),
+  );
+
+  for (const rule of rules) {
+    const candidates = files
+      .filter((f) => (findings.get(f.id) ?? []).includes(rule) && !chosen.includes(f))
+      .sort((a, b) => a.id.localeCompare(b.id));
+    for (const file of candidates) {
+      if (have(rule) >= target || chosen.length >= max) break;
+      if ((perRepoCount.get(file.repo) ?? 0) >= perRepo) continue;
+      chosen.push(file);
+      perRepoCount.set(file.repo, (perRepoCount.get(file.repo) ?? 0) + 1);
+      for (const r of findings.get(file.id) ?? []) tally.set(r, have(r) + 1);
+    }
+  }
+  return { chosen, tally: Object.fromEntries([...tally].sort((a, b) => a[0].localeCompare(b[0]))) };
+}
+
+/** A folder name for a case: readable, unique, and safe on every file system. */
+export function caseSlug(candidate) {
+  const repo = candidate.repo
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  return `${repo.slice(0, 48)}-${candidate.id}`;
+}
