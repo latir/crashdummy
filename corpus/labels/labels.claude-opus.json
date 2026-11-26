@@ -2174,6 +2174,18 @@
     "generateTOC > disambiguates duplicate headings consistently in TOC and ids": {},
     "generateTOC > does not overwrite an existing id attribute": {}
    }
+  },
+  "civio-butterbot-7a48529f65f7": {
+   "file": "good",
+   "tests": {
+    "buildSystemPrompt > lists an unrestricted skill everywhere": {},
+    "buildSystemPrompt > lists a restricted skill only in its channels": {},
+    "buildSystemPrompt > hides restricted skills in a DM": {},
+    "buildSystemPrompt > omits the skills section entirely when nothing is visible": {},
+    "buildSystemPrompt > describes the sandbox the tools actually run in": {},
+    "trimHistory > leaves a short transcript alone": {},
+    "trimHistory > drops the oldest turns once over the cap, and starts on a user message": {}
+   }
   }
  }
 }
