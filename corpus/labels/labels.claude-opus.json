@@ -1873,6 +1873,222 @@
     "AnalyticsOutboxHandler > should read consent once per batch with the distinct workspace and actor pairs": {},
     "AnalyticsOutboxHandler > should capture only in the workspace where the user granted consent when one user id appears in two": {}
    }
+  },
+  "timstewartj-copilot-bridge-45bd62257e58": {
+   "file": "good",
+   "tests": {
+    "copilot-cli-loader installed-package contract > resolves at least one installed @github/copilot app bundle": {},
+    "copilot-cli-loader installed-package contract > patches the installed bundle at %s": {},
+    "copilot-cli-loader installed-package contract > keeps pending interaction listing runtime-owned at %s": {},
+    "copilot-cli-loader > patches the current simple GitHub MCP config method shape": {},
+    "copilot-cli-loader > keeps the replaceable-tool exclusion from the older GitHub MCP config method shape": {},
+    "copilot-cli-loader > patches call sites when the minified options variable is renamed": {},
+    "copilot-cli-loader > patches call sites that use different minified session variables": {},
+    "copilot-cli-loader > patches the 1.0.68 method shape whose resolver is minified with a $ identifier": {},
+    "copilot-cli-loader > patches call sites whose minified variables contain $ identifiers": {},
+    "copilot-cli-loader > patches the 1.0.70 helper-based GitHub MCP config call sites": {},
+    "copilot-cli-loader > patches the 1.0.71 Fides-aware GitHub MCP config shape": {},
+    "copilot-cli-loader > rejects single-helper-based and mixed legacy/helper config call sites": {},
+    "copilot-cli-loader > rejects SDK drift that removes the runtime pending getters": {},
+    "copilot-cli-loader > rejects SDK drift that removes the runtime elicitation capability probe": {},
+    "copilot-cli-loader > asserts the native pending interaction runtime without rewriting it": {},
+    "copilot-cli-loader > rejects a pending interaction runtime that reverts to JS-owned state": {},
+    "copilot-cli-loader > patches the pending interaction snapshot facade independently": {}
+   }
+  },
+  "tjorim-worktime-1a626e1f906a": {
+   "file": "good",
+   "note": "T10 saves profile changes only checks the input shows the text just typed, which passes even if the save never happens; no rule covers it",
+   "tests": {
+    "SettingsPage Account Section > renders only the sign in button when not authenticated": {},
+    "SettingsPage Account Section > shows sync benefits description when not authenticated": {},
+    "SettingsPage Account Section > calls signinRedirect when Sign In is clicked": {},
+    "SettingsPage Account Section > calls signoutRedirect when Sign Out is clicked (authenticated state)": {},
+    "SettingsPage Account Section > loads profile details and sync stats for authenticated users": {},
+    "SettingsPage Account Section > shows the authenticated privacy notice with a link to the privacy policy": {},
+    "SettingsPage Account Section > renders a self-service account deletion danger zone": {},
+    "SettingsPage Account Section > does not delete the account when the confirmation dialog is cancelled": {},
+    "SettingsPage Account Section > deletes the account and signs out after confirmation": {},
+    "SettingsPage Account Section > shows an inline error when self-service account deletion fails": {},
+    "SettingsPage Account Section > saves profile changes for authenticated users": {},
+    "SettingsPage Account Section > renders account section title regardless of auth state": {},
+    "SettingsPage Account Section > shows sync benefits (backup and cross-device icons) when not authenticated": {},
+    "SettingsPage Account Section > shows signed-out sync messaging when unauthenticated": {},
+    "SettingsPage Account Section > renders sync status alongside the account profile and calls pull action when enabled": {},
+    "SettingsPage Account Section > disables pull action button while sync is in progress": {},
+    "SettingsPage API Tokens Section > shows an empty state when there are no tokens": {},
+    "SettingsPage API Tokens Section > generates a token, reveals it once, and copies it to the clipboard": {},
+    "SettingsPage API Tokens Section > revokes a token after confirmation": {},
+    "SettingsPage API Tokens Section > shows an error message when loading tokens fails": {},
+    "SettingsPage Admin Section > does not fetch admin users or render user management for non-admin accounts": {},
+    "SettingsPage Admin Section > renders the user management list for admin accounts": {},
+    "SettingsPage Admin Section > deletes another user from the admin user management table after confirmation": {},
+    "SettingsPage Admin Section > shows an inline error when deleting a managed user fails": {},
+    "SettingsPage Admin Section > disables self-delete for the current admin in the user management table": {},
+    "SettingsPage Data Section > opens reset confirmation, toggles clear options, and confirms side effects": {},
+    "SettingsPage General Section > handles schedule selection clicks and shows team selection for multi-team schedules": {},
+    "SettingsPage Time Tracking Section > renders the labels and templates panels": {},
+    "SettingsPage Features Section > toggles features and shows cross-border setup when enabled": {},
+    "SettingsPage Account Section > renders connect account and sign in buttons when not authenticated": {},
+    "SettingsPage Account Section > calls signinRedirect when Connect Account is clicked": {}
+   }
+  },
+  "tjorim-worktime-4efbd56fc18f": {
+   "file": "good",
+   "tests": {
+    "AuthContext > initial state > shows validating state when OIDC is loading": {},
+    "AuthContext > initial state > is not authenticated when OIDC returns no user": {},
+    "AuthContext > initial state > is authenticated when OIDC returns a user": {},
+    "AuthContext > initial state > handles missing name in profile and falls back to preferred_username": {},
+    "AuthContext > initial state > returns null displayName when no name or preferred_username in profile": {},
+    "AuthContext > initial state > shows a toast when OIDC reports an authentication error": {},
+    "AuthContext > initial state > does not show duplicate toasts for the same OIDC error object": {},
+    "AuthContext > initial state > shows a toast again when the same OIDC error object recurs after being cleared": {},
+    "AuthContext > initial state > stays silent while a token is merely approaching expiry": {},
+    "AuthContext > initial state > warns with a sign-in action once the access token has expired": {},
+    "AuthContext > initial state > warns when silent token renewal fails": {},
+    "AuthContext > initial state > unsubscribes from OIDC session lifecycle events on unmount": {},
+    "AuthContext > triggerLogin > calls signinRedirect when triggerLogin is invoked": {},
+    "AuthContext > triggerSignup > calls signinRedirect when triggerSignup is invoked": {},
+    "AuthContext > logout > calls signoutRedirect when logout is invoked": {},
+    "AuthContext > renewSession > resolves true when signinSilent returns a renewed user": {},
+    "AuthContext > renewSession > resolves false when the IdP session is gone": {},
+    "AuthContext > renewSession > resolves false when signinSilent throws": {},
+    "AuthContext > useAuth outside provider > throws when used outside AuthProvider": {},
+    "AuthContext > initial state > warns when the access token is about to expire": {},
+    "AuthContext > initial state > shows an error when silent token renewal fails": {}
+   }
+  },
+  "todd866-guns-only-5eb3ca902a3d": {
+   "file": "good",
+   "note": "T23 and T24 regex-match app.js source text, including a cache-bust version that the diff bumps",
+   "tests": {
+    "handoff presentation fails closed before the first simulation snapshot": {},
+    "medevac handoff debrief uses custody and coordination evidence, never combat copy": {},
+    "medevac terminal dispositions preserve capsule custody and never invent a fight": {},
+    "carrier water loss teaches from the recorded physical cause": {},
+    "deck and carrier-structure losses remain physically distinct": {},
+    "carrier qualification makes trap evidence authoritative instead of combat victory copy": {},
+    "carrier qualification reports a bolter even when the generic outcome token is draw": {},
+    "an explicit opponent destruction event retains the combat-loss diagnosis": {},
+    "a numerical terminal guard is not mislabeled as physical settlement": {},
+    "unknown defeat cause fails honest instead of inventing combat": {},
+    "maintenance score copy preserves recovered and incomplete outcomes": {},
+    "drone raid debrief distinguishes containment, penetration, and ownship loss": {},
+    "sorties without G-LOC preserve their established copy exactly": {},
+    "G-LOC teaching decorates combat, carrier, maintenance, and drone results once": {},
+    "sub-threshold push-pull state stays out of the concise G-LOC lesson": {},
+    "sorties without an Auto-GCAS fly-up preserve established copy exactly": {},
+    "an Auto-GCAS intervention teaches the procedural response without guessing cause": {},
+    "G-LOC and Auto-GCAS lessons coexist exactly once": {},
+    "Rapier exceedance evidence queues review without inventing damage or cost": {},
+    "a clean or unfinished lifecycle record adds no debrief clutter": {},
+    "combat handoff presentation preserves every authoritative phase flag": {},
+    "recovered handoff debrief keeps player and relief kills separate": {},
+    "handoff does not hide a subsequent ownship loss or invent reserve evidence": {},
+    "app consumes the pure evidence-based debrief module": {},
+    "carrier debrief keeps physical outcome, full-pass trend, and touchdown facts distinct": {}
+   }
+  },
+  "travistruett-10db-8356d5f5f1fb": {
+   "file": "good",
+   "tests": {
+    "opens a pass on two pages, answers one in place, sends a picture to the other, signs it off, and every view passes axe": {}
+   }
+  },
+  "unexpear-chipblocks-346345ca4085": {
+   "file": "good",
+   "tests": {
+    "crc16Trellis — matches Project Trellis's own implementation > reproduces values from Trellis's compiled C++ over a deterministic byte stream": {},
+    "crc16Trellis — matches Project Trellis's own implementation > is a DIFFERENT checksum from the iCE40 one (poly 0x8005 / init 0x0000)": {},
+    "ECP5_DEVICES — the device table > covers the ten ECP5 parts with distinct IDCODEs and whole-byte frames": {},
+    "parseEcp5Bitstream — reads the container > recovers the device, usercode, comment and frames, with the CRC verified": {},
+    "parseEcp5Bitstream — reads the container > a corrupted frame byte is reported as crcOk=false, not thrown": {},
+    "parseEcp5Bitstream — refuses honestly, never mis-parses > a file with no ECP5 preamble throws": {},
+    "parseEcp5Bitstream — refuses honestly, never mis-parses > frame data before the device is identified throws rather than guessing geometry": {},
+    "parseEcp5Bitstream — refuses honestly, never mis-parses > an unknown IDCODE is reported, and its frame data refused (geometry unknown)": {},
+    "parseEcp5Bitstream — refuses honestly, never mis-parses > a COMPRESSED bitstream is refused, not silently mis-read": {},
+    "parseEcp5Bitstream — refuses honestly, never mis-parses > EBR (block-RAM) data is refused": {},
+    "parseEcp5Bitstream — refuses honestly, never mis-parses > an unknown command byte throws": {},
+    "parseEcp5Bitstream — a GENUINE ecppack bitstream > reads a real vendor bitstream: right device, CRC verified, every frame recovered": {},
+    "parseEcp5Bitstream — a GENUINE ecppack bitstream > frames are stored in the REVERSED order ECP5 streams them in": {},
+    "parseEcp5Bitstream — a GENUINE ecppack bitstream > the config-word BIT ORDER, verified against the real tool rather than derived from its source": {}
+   }
+  },
+  "unexpear-chipblocks-adf72f858fc2": {
+   "file": "good",
+   "tests": {
+    "lowerNetlistToCanvas — a real bitstream becomes canvas gates our own engine runs > lowers to real logic-primitive gates, with a node per cell output and per primary input": {},
+    "lowerNetlistToCanvas — a real bitstream becomes canvas gates our own engine runs > the app's fast logic engine computes the same function: B = A = i0 & i1": {},
+    "lowerNetlistToCanvas — honest about what it cannot lower > a carry-driven input is reported in `unlowered`, not silently mis-wired": {},
+    "lowerNetlistToCanvas — honest about what it cannot lower > a LUT needing INVERTED minterms (XOR2) lowers correctly — the NOT gates are real": {},
+    "lowerNetlistToCanvas — honest about what it cannot lower > a constant-LUT cell lowers to a fixed level, and a registered cell is reported": {},
+    "lowerNetlistToCanvas — computes the SAME function as the FPGA simulator > a driver listed AFTER its consumer is still wired (two-pass lowering)": {},
+    "lowerNetlistToCanvas — computes the SAME function as the FPGA simulator > 100 random LUTs agree with the FPGA simulator on every input, including pins with no source": {},
+    "lowerNetlistToCanvas — registers are real boundaries (Q is the output, D is the LUT) > a registered cell's output is its stored Q; consumers follow Q, not the LUT's D": {},
+    "lowerNetlistToCanvas — registers are real boundaries (Q is the output, D is the LUT) > driving the state nodes from simulateClocked steps the canvas through real cycles": {}
+   }
+  },
+  "xfuel-lab-chit402-e3e4f36a120d": {
+   "file": "good",
+   "note": "copy-pinning tests over HTML and TSX source; the $0.01 USDC match became a negative check because the price was removed from the copy",
+   "tests": {
+    "homepage meta description describes paid /v1 and does not say unmetered": {
+     "unsure": [
+      "integrity/assertions-dropped"
+     ],
+     "reason": {
+      "integrity/assertions-dropped": "the shared helper lost its /v1/chat/completions check with no replacement; the $0.01 change is a product copy change, this one is not obviously"
+     }
+    },
+    "homepage og:description describes paid /v1 and does not say unmetered": {
+     "unsure": [
+      "integrity/assertions-dropped"
+     ],
+     "reason": {
+      "integrity/assertions-dropped": "the shared helper lost its /v1/chat/completions check with no replacement; the $0.01 change is a product copy change, this one is not obviously"
+     }
+    },
+    "homepage twitter:description matches the paid /v1 door": {
+     "unsure": [
+      "integrity/assertions-dropped"
+     ],
+     "reason": {
+      "integrity/assertions-dropped": "the shared helper lost its /v1/chat/completions check with no replacement; the $0.01 change is a product copy change, this one is not obviously"
+     }
+    },
+    "shared layout and homepage copy do not call paid /v1 unmetered, a free path, or lead with $0.01": {},
+    "homepage title and hero lead with the book, not a router": {},
+    "README first paragraph leads with the book": {},
+    "prerendered money pages have unique crawler titles (after build)": {},
+    "shared layout and homepage copy do not call paid /v1 unmetered or a free path": {}
+   }
+  },
+  "yaront1111-moe-s-tavern-740ea4a686b6": {
+   "file": "good",
+   "note": "migrated block calls beforeEach without importing it from vitest; only works if vitest globals are on",
+   "tests": {
+    "addCommentTool validation > rejects content longer than max allowed length": {},
+    "Task comments > adds a comment to a task": {},
+    "Task comments > uses workerId as author when provided": {},
+    "Task comments > preserves all comments when under limit": {},
+    "Task comments > trims oldest comment when adding at limit": {},
+    "Task comments > trims task with 300 existing comments down to max preserving newest": {},
+    "Task comments > handles null/undefined comments array gracefully": {},
+    "Task comments > always preserves newest comments including newly added one": {},
+    "Task comments > rejects empty content": {},
+    "Task comments > rejects missing taskId": {}
+   }
+  },
+  "yunz93-mozi-cd51f5a99c10": {
+   "file": "good",
+   "tests": {
+    "generateTOC > returns empty string when there are no headings": {},
+    "generateTOC > produces anchors that match injected heading ids for ASCII headings": {},
+    "generateTOC > preserves CJK headings instead of collapsing them to empty slugs": {},
+    "generateTOC > disambiguates duplicate headings consistently in TOC and ids": {},
+    "generateTOC > does not overwrite an existing id attribute": {}
+   }
   }
  }
 }
