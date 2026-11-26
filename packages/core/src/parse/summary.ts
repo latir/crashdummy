@@ -200,7 +200,7 @@ function pickModifier(mods: readonly TestModifier[]): TestModifier | undefined {
 // Assertions: expect chains, node:assert, custom helpers
 
 const CHAIN_MODS = new Set(['not', 'resolves', 'rejects']);
-const EXPECT_ROOTS = new Set(['expect', 'expect.soft', 'expect.poll']);
+const EXPECT_ROOTS = new Set(['expect', 'expect.soft', 'expect.poll', 'expectTypeOf']);
 
 interface Assertion {
   ref: MatcherRef;
@@ -248,6 +248,8 @@ const STRICT_METHODS: Record<string, string> = {
   deepEqual: 'deepStrictEqual',
   notDeepEqual: 'notDeepStrictEqual',
 };
+
+const CALL_WITH = /^(toHaveBeen(Nth|Last)?CalledWith|toBeCalledWith|lastCalledWith|nthCalledWith)$/;
 
 const ASSERT_MODULES = new Set(['assert', 'node:assert']);
 const ASSERT_STRICT_MODULES = new Set(['assert/strict', 'node:assert/strict']);
@@ -324,9 +326,20 @@ class AssertionFinder {
 
     const subject = children(obj, 'arguments')[0];
     return {
-      ref: { name: matcher, negated, arg: argKind(args[0], this.norm), modifiers },
+      ref: { name: matcher, negated, arg: this.matcherArg(matcher, args), modifiers },
       subject: root === 'expect.poll' ? undefined : subject,
     };
+  }
+
+  /**
+   * What the matcher is given. `toHaveBeenCalledWith(expect.anything(), 'ws_1')` pins its other
+   * arguments, so one `expect.anything()` among them does not make the check an existence one.
+   */
+  private matcherArg(matcher: string, args: AstNode[]): ArgKind {
+    const first = argKind(args[0], this.norm);
+    if (!CALL_WITH.test(matcher) || args.length < 2) return first;
+    const kinds = args.map((a) => argKind(a, this.norm));
+    return kinds.find((k) => k !== 'anything') ?? 'anything';
   }
 
   /**
@@ -740,6 +753,9 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     const fw = binding.framework;
     if (fw?.kind === 'named') return [fw.imported, ...path.slice(1)];
     if (fw?.kind === 'namespace') return path.length > 1 ? path.slice(1) : path;
+    // vitest hands each test its own `expect` through the context: `({ expect }) => { ... }`
+    if (head === 'expect' && binding.param === true && binding.importFrom === undefined)
+      return path;
     // other imports (bun:test, chai, ...) stay recognised by name; locals shadow the framework
     return binding.importFrom !== undefined ? path : [`${LOCAL}${head}`, ...path.slice(1)];
   };
