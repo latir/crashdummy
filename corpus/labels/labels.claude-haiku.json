@@ -731,6 +731,2716 @@
           "reason": {}
         }
       }
+    },
+    "autonome-research-hephaestus-19cc1bbfb82c": {
+      "file": "good",
+      "tests": {
+        "the context envelope > draws every member from the closed set and invents none": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the context envelope > carries the explode PARAMETER and has nowhere to put a displacement": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the context envelope > reports the hidden toggles, sorted, and never a visible count": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the context envelope > submits the selection ids and never describes the selection": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the context envelope > sends the pin mode only with the ref it qualifies": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the context envelope > is null for the blank canvas, whatever the tabs say": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the context envelope > honours a dropped member — every member is opt-out": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the context envelope > drops the whole envelope when every reference is dropped": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the context envelope > lets an explicit Add current view make the view a reference": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the chip row > offers a chip for every reference the state names, in a fixed order": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the chip row > renders the hidden set as a COUNT of toggles, not a value": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the chip row > offers no chip for pin_mode, which is not independently droppable": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the read-refresh boundary > names exactly the keys §7A.11 enumerates for a selected part": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the read-refresh boundary > still refreshes the project keys on the blank canvas": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the DOM contract > carries the closed state vocabulary and the session it is bound to": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the DOM contract > says no_session rather than rendering nothing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the DOM contract > names agent_unavailable, its cause, and the path the server checked": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the DOM contract > keeps every disabled reason inside the closed vocabulary": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the DOM contract > renders cancel as unavailable-with-a-reason, never as a dead button": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the DOM contract > puts no data-source on any context chip": {
+          "yes": [
+            "integrity/assertions-dropped"
+          ],
+          "unsure": [],
+          "reason": {
+            "integrity/assertions-dropped": "Rendered chip-row check was replaced by a grep of Composer.tsx source text, so data-source is no longer checked on rendered output."
+          }
+        },
+        "the DOM contract > keeps the existing composer selectors when chrome is present": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "session chrome from GET /providers > uses the provider's own model id as the identifier, never a house name": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "session chrome from GET /providers > names no models when the configuration file does not exist": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "session chrome from GET /providers > hides the model projection when the runtime is missing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "session chrome from GET /providers > renders the declared model id as a projection, not a picker, when a runtime is attached": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "session chrome from GET /providers > offers effort levels only when the selected model declared reasoning": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the idle composer does not host DFM chrome > still knows when the inspector may show the two §6.4 controls": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the idle composer does not host DFM chrome > does not put auto_run or Run DFM on the idle composer": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the idle composer does not host DFM chrome > does not grow DFM chrome on the agent_unavailable refusal": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "context chips do not force a 2400px stream > keeps the full artifact ref on the chip and shortens only the glyphs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the DFM chip is the engine equivalent, not a per-message flag > shows the two §6.4 controls only when a part's DFM document is in hand": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the DFM chip is the engine equivalent, not a per-message flag > names the absence when no part is selected and does not fake DFM chrome": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Test asserting the idle composer names the DFM absence was deleted; the replacement asserts the chrome is absent. Intent may be deliberate; not verifiable from the code."
+          }
+        },
+        "the DFM chip is the engine equivalent, not a per-message flag > hides DFM chrome on the agent_unavailable refusal": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "autonome-research-hephaestus-5e335253b2e1": {
+      "file": "good",
+      "note": "Many checks grep CSS and source text (stated in the file header, since jsdom cannot measure layout). Not labelled as a rule problem; DOM checks render for real.",
+      "tests": {
+        "stream column — composer is a pinned footer, not overflow > pins the composer as the last auto row under a shrinking main": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "stream column — composer is a pinned footer, not overflow > keeps the stream column from growing the 800px shell": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "stream column — composer is a pinned footer, not overflow > keeps Send inside the composer, which is the panel's last child in source": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "empty-session create — one sentence, two actions, no tutorial > renders the two create buttons and no explainer paragraphs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "empty-session create — one sentence, two actions, no tutorial > keeps the honest selected-part sentence and does not grow a tutorial": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rail providers — collapsed by default so Sign-in stays in the box > keeps the rail a height-bounded scroll host": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rail providers — collapsed by default so Sign-in stays in the box > fails if a rail descendant can force wider than --rail-width": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rail providers — collapsed by default so Sign-in stays in the box > does not mount the configuration table or allowlist until expanded": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rail providers — collapsed by default so Sign-in stays in the box > still offers Sign-in and discovery in the compact row": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rail providers — collapsed by default so Sign-in stays in the box > keeps acknowledged egress hosts in the compact DOM (G10C)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rail providers — collapsed by default so Sign-in stays in the box > keeps the zero-config empty action when there is no provider row": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "artifact pin — chip width that fits the 1280 header > shortens the visible pin below the width that ate Token": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "composer chrome — talking surface, not a Plan/DFM toolbar > does not render a bare effort off in the strip": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "composer chrome — talking surface, not a Plan/DFM toolbar > defaults the idle prompt to one row so Send stays on-screen": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rail project sections — listed, empty-honest, collapsed > keeps the closed inventory and does not expand empty bodies by default": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "header git identity — no invented branch, no HEAD without a sha > treats porcelain (detached) as no branch and still shows an oid head": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "header git identity — no invented branch, no HEAD without a sha > omits both fields when GET /git/status has not answered": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "header git identity — no invented branch, no HEAD without a sha > does not print the label HEAD when head is not an oid": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "composer chrome — no unlabelled off toggles > does not render a bare effort off in the strip": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "awsomefox-campfire-822f7f297aab": {
+      "file": "weak",
+      "note": "Coverage-style test; the name claims defaults and readiness but the defaults value is only checked with toBeDefined.",
+      "tests": {
+        "AiDmService unit coverage tests > manages AI DM seat configuration, defaults, and readiness": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "getSeatDefaults result is checked only with toBeDefined, and listUsageHistory only as Array.isArray; contents are not checked."
+          }
+        }
+      }
+    },
+    "awsomefox-campfire-8d7da00e07e6": {
+      "file": "weak",
+      "note": "Coverage-style smoke test on a fresh store; the checks are near-trivial.",
+      "tests": {
+        "AttachmentsService unit coverage tests > manages attachment storage stats and listing": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "totalBytes is checked only as >= 0, which any non-negative value passes on a fresh store."
+          }
+        }
+      }
+    },
+    "bamr87-zer0-mistakes-229c2fcb2dd3": {
+      "file": "good",
+      "tests": {
+        "Feature registry provenance (/features/) > reference table has a Provenance column": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Feature registry provenance (/features/) > a known feature exposes a PR link with the correct GitHub href": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Feature registry provenance (/features/) > commit links point at the repo commit endpoint": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Feature registry provenance (/features/) > feature cards render a provenance line": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "braian-io-braian-14af8aa389d3": {
+      "file": "good",
+      "tests": {
+        "Products create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Articles create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Suppliers create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "From type select stays readable in dark theme": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Object types create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Link types create dialog": {
+          "yes": [
+            "integrity/assertions-dropped"
+          ],
+          "unsure": [],
+          "reason": {
+            "integrity/assertions-dropped": "Rewritten flow dropped the held-save path: the create button is no longer checked as disabled during a save, and the Escape-during-save step is gone; nothing replaces them."
+          }
+        },
+        "Value lists create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "List values create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Units create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Attribute definitions create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Type attributes create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Structures create dialog": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "braian-io-braian-42116ca27b25": {
+      "file": "good",
+      "tests": {
+        "pairs with links two cheeses from the keyboard and the link type can be deleted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "removing a link with values opens a plain confirm with no text input": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "removing a link updates the peer list at once and Undo brings the row back": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "brendadeeznuts1111-project-r-score-b2c7e90feaa1": {
+      "file": "good",
+      "note": "Many checks are string-presence checks on source and HTML text (toContain on file contents), not rule problems; the registry and CLI-check tests are strong.",
+      "tests": {
+        "domain glossary portal > registry projection is integral, bounded, and color-normalized": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "domain glossary portal > portal vocabulary separates concept kind, semantic type, and UI role": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "domain glossary portal > board uses URLPattern.hash deep links and shared portal chrome": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "domain glossary portal > shared glossary UX keeps DOM, fragments, focus, and telemetry bounded": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "domain glossary portal > route, chrome, and weave make the glossary discoverable": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "domain glossary portal > registered limits sections and rendered concept references stay aligned": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "domain glossary portal > committed projection stays aligned with the canonical dump": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "broomva-genesis-4a39a355b7a9": {
+      "file": "good",
+      "tests": {
+        "DoD 1 — an ask survives a process restart and is still ackable > a subprocess writes; this process reads it back": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DoD 1 — an ask survives a process restart and is still ackable > a THIRD process answers it, and the ask is individually ackable": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DoD 1 — an ask survives a process restart and is still ackable > the bytes are on disk before the writing process exits": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DoD 2 — answering twice is a no-op, not a double effect > two identical answers leave one answered ask": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DoD 2 — answering twice is a no-op, not a double effect > a CHANGED answer for the same ask takes the later one": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DoD 2 — answering twice is a no-op, not a double effect > a duplicate ASK collapses too — a retried tool call yields a stable id": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DoD 5 — the ask log and queue.jsonl are separate stores > an ask never lands in the voice intake queue": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DoD 5 — the ask log and queue.jsonl are separate stores > a voice ticket in the same directory is not read as an ask": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "reading is tolerant, and says when it is not > no files yet is a healthy empty, not a degradation": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "reading is tolerant, and says when it is not > a torn final line is skipped, not fatal": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "reading is tolerant, and says when it is not > a row with no question is not an ask": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "reading is tolerant, and says when it is not > filtering by thread returns only that thread's asks": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "reading is tolerant, and says when it is not > oldest first — an operator answers the longest-waiting question": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "findings from the P20 review > a short write is COMPLETED — every byte of the record reaches the file": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "findings from the P20 review > a NON-ASCII record survives a short write — bytes, not code units": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "findings from the P20 review > a write making no progress throws instead of spinning forever": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "findings from the P20 review > the fd is closed even when a short write throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "findings from the P20 review > two asks sharing an id in different threads do not mask each other": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "findings from the P20 review > malformed options are dropped, not handed to the client as AskOption[]": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "findings from the P20 review > a non-string threadId is SKIPPED, not coerced to thread \"\"": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "findings from the P20 review > both journals unreadable reports BOTH, not just the last": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "answeredAt is typed, not trusted > a numeric answeredAt does not round-trip as a string field": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "answeredAt is typed, not trusted > a well-formed answeredAt still works": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > a record with no id is counted, not silently dropped": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > a record with no question is counted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > the count is the number of bad records, not a boolean": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > the exact shape dogfooding produced: askedAt instead of createdAt": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > sessionId present, createdAt missing — still counted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > createdAt present, sessionId missing — still counted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > a line that is valid JSON but not an object is counted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > a record missing BOTH sessionId and createdAt counts once, not twice": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > a well-formed log reports NOTHING degraded": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > both counters travel together, and the unreadable-file message survives": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readAsks accounts for malformed records > a filtered read still reports records the filter never reached": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readBounded > a body at exactly the cap is returned": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readBounded > one byte over the cap returns null": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readBounded > the cap counts BYTES, not characters": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readBounded > an empty body is an empty string, not null": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readBounded > the stream is CANCELLED past the cap, not merely abandoned": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "cbrown564-alt-unitedstats-0265770b5432": {
+      "file": "good",
+      "tests": {
+        "revalidationPathsForMatches covers shared surfaces and per-match paths": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "revalidationPathsForMatches adds enriched player and manager pages": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "revalidationPathsForMatches dedupes paths across multiple matches": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "cbrown564-alt-unitedstats-0b34131ac5a1": {
+      "file": "good",
+      "tests": {
+        "buildProfile defaults to full outside Vercel preview": {
+          "yes": [
+            "integrity/assertions-dropped"
+          ],
+          "unsure": [],
+          "reason": {
+            "integrity/assertions-dropped": "Deleted the staticBuildDynamicParams assertion and nothing replaces it; if the function was removed on purpose its behaviour is now untested."
+          }
+        },
+        "buildProfile follows VERCEL_ENV=preview": {
+          "yes": [
+            "integrity/assertions-dropped"
+          ],
+          "unsure": [],
+          "reason": {
+            "integrity/assertions-dropped": "Deleted the staticBuildDynamicParams assertion and nothing replaces it; if the function was removed on purpose its behaviour is now untested."
+          }
+        },
+        "sampleStaticIds returns a stable preview subset": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "sampleStaticIds returns all ids on full builds": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "civio-butterbot-7a48529f65f7": {
+      "file": "good",
+      "tests": {
+        "buildSystemPrompt > lists an unrestricted skill everywhere": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildSystemPrompt > lists a restricted skill only in its channels": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildSystemPrompt > hides restricted skills in a DM": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildSystemPrompt > omits the skills section entirely when nothing is visible": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildSystemPrompt > describes the sandbox the tools actually run in": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "trimHistory > leaves a short transcript alone": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "trimHistory > drops the oldest turns once over the cap, and starts on a user message": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "commandershadow9-sicherheitsdienst-tool-adc2482e6625": {
+      "file": "good",
+      "tests": {
+        "listParams mapping > toSearchParams maps all fields including filters": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "listParams mapping > fromSearchParams reads values and defaults pageSize 25": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "listParams mapping > respects provided defaults": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "danielszabo92-pbibrain-82f55a53c16d": {
+      "file": "good",
+      "tests": {
+        "StatusBadge refuses a tone with no label": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "StatusBadge refuses a tone that is not known": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "StatusBadge accepts each tone with a word": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "che-incubator-che-code-ce05745f51a7": {
+      "file": "good",
+      "tests": {
+        "SessionsWindowNotifier > uses confirmation setting for needs-input transitions": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SessionsWindowNotifier > uses response setting for completed and failed transitions": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SessionsWindowNotifier > does not notify for initial or duplicate state and respects focus": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SessionsWindowNotifier > opens the exact session when the toast is activated": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SessionsWindowNotifier > debounces completion notifications until the session stays completed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SessionsWindowNotifier > notifies for a question waiting in an inactive visible pane while the window is focused": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SessionsWindowNotifier > does not notify an inactive ordinary pane while the window is focused": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SessionsWindowNotifier > does not notify an inactive pane of an archived comparison while the window is focused": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SessionsWindowNotifier > falls back to session status when a live model misses its needs-input state": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SessionsWindowNotifier > stays silent when a live chat model exists for the session": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "christopher-buss-bedrock-2137ed581feb": {
+      "file": "good",
+      "tests": {
+        "createClackProgressAdapter > should warn that a failed release may need lock recovery": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should identify a created product by its marketplace ID": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should identify an adopted universe by its root place ID": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render a deploySuccess event as the existing per-env summary line": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should delegate a deployFailure event to renderDeployError": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should stay silent on resourceOpStarted (no spinner, no line)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render resourceOpSucceeded (create form) with the per-kind Roblox ID": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render resourceOpSucceeded (create form) without an ID for places": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render resourceOpSucceeded (update form) listing the changed fields": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render resourceOpNoop as an unchanged line": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render resourceOpFailed with the driverFailure cause message": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should follow a failed resource line with diagnostics only when verbose is $verbose": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should print a failed resource's diagnostics once when the deploy then fails on it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should follow a deploy failure with its cause chain when verbose": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should expand a network driverFailure with its transport code and failing call": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render resourceOpFailed for the unexpectedThrow ApplyError": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render resourceOpFailed for a permission driverFailure with the scope guidance": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render resourceOpFailed for the updateUnsupported ApplyError": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render applySummary as the aggregate footer with one-decimal seconds": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render applySummary with failed ops as an error that does not claim success": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render locking being off as a warning naming the environment": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render a contended lock wait naming the holder and the time left": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render a contended lock wait without a holder when the record was unreadable": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render a lease the backend could not keep as an error": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render stateWritten with the gist backend label resolved from the config": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render stateWritten with the generic 'state' label when no config is provided": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render stateWritten with the generic 'state' label when state config is absent for the environment": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should render stateWritten with the raw backend tag for non-gist backends": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createClackProgressAdapter > should count state-only untrack operations in the summary": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "christopher-buss-bedrock-0561a60e8083": {
+      "file": "good",
+      "tests": {
+        "deploy under a locking backend > should take the hold before dispatching any driver": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should report a contended wait through the progress port before applying anything": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should surface a lease the backend could not keep": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should tell the backend which operation the hold is for": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should give the hold up once the state write has been attempted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should give the hold up when the state write fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should give the hold up when the deploy throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should abort with lockAcquireFailed before dispatching any driver when the hold is refused": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should keep the deploy result when the hold cannot be given up": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should keep the deploy result when giving the hold up throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should take the hold the configured backend supplies": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should take the hold the caller supplies over the one the backend declares": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should take the hold a caller supplies even where the config turned locking off": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should deploy without taking a hold when the config turned locking off": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should report that locking is off when the config turned it off": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should say nothing about locking when the configured backend offers none": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should say nothing about locking when the backend offers none to turn off": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should take the hold for a provision, which shares the deploy's lifetime": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deploy under a locking backend > should deploy without taking a hold when the backend declares no locking": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "$name release reporting > after reconcile $outcome > should report a $release release failure": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "cogvera-labs-next-expo-supabase-agent-harness-5b7d33a22ec8": {
+      "file": "good",
+      "note": "Many tests assert exact gate output and exit codes; negative checks use code 0 with doesNotMatch, which is intended.",
+      "tests": {
+        "name": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #2": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #3": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #4": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #5": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #6": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #7": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #8": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #9": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: a DEAD catalog key reds — copy nothing renders is copy that rots": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: a dynamically-built key resolves by its static PREFIX (no false dead-key)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: an EMPTY catalog fails — the seam cannot be adopted and vacuous at once": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #10": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #11": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: the gate SELF-DISABLES when the locale seam is not adopted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: NO product surface at all — loud local skip, CI fail-closed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: LOCALES unparseable (or index.ts absent) FAILS CLOSED — the closure cannot be checked": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: an installed data-consuming polyfill without locale-data for a catalog language reds": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: polyfill + matching locale-data closes the loop — green": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: locale-data no catalog locale resolves to is dead bundle weight — reds the other way": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: a pseudo-locale (en-XA) resolves through its BASE language — /en data suffices": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: data-free polyfills (getcanonicallocales, intl-locale) need no locale-data": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: a polyfill inlined into app/_layout.tsx is still seen — the closure covers the root layout": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: a clean tree passes and reports what it scanned": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #12": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #13": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #14": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #15": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #16": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #17": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #18": {
+          "yes": [],
+          "unsure": [
+            "integrity/assertions-dropped"
+          ],
+          "reason": {
+            "integrity/assertions-dropped": "Red assertions on the retired regex title-attribute behaviour were replaced by a code-0 check and absence checks. The reversal looks deliberate, but the old positive check is gone."
+          }
+        },
+        "i18n: 2.0.0 — a 1.0.x {\"site\"} entry is malformed on every install, a 1.0.3 vintage included, and names what replaces it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: with the parser ABSENT, checks 1 and 2 are not judged, the output says so, and CI fails closed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "name #19": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: a hardcoded JSX text child reds, naming the string": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: the expo-router app/ tree is scanned too — copy in a screen file reds": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: a hardcoded user-facing ATTRIBUTE reds — the RN a11y names included": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: copy in an OBJECT literal reds — data modules and navigator options hold copy too": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: machine-facing literals are NOT copy (a path, a token, a kebab id)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: TypeScript generics are not JSX — a .ts file with <T> reds nothing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: an arrow function is not a tag — `=>` never opens JSX text": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: Intl / toLocale* / toFixed outside apps/mobile/src/i18n reds": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: .toFixed(2) reds with the reason — it hardcodes the decimal mark": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: the reviewed allowlist mutes findings by content KEY (copy AND boundary); malformed FAILS CLOSED": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: a content key stays on its string when a line is inserted above it; a site entry does not": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "i18n: one key mutes a finding whichever scanner reports it — the regular expressions alone included": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Deleted test muted an attribute finding by key; no replacement tests attribute-key muting. Retiring the regex scanner may explain the deletion, which the code alone cannot confirm."
+          }
+        },
+        "i18n: with the parser ABSENT the regular expressions still judge and the output says the walk did not run; CI fails closed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "decdn-sdk-typescript-1e28f9fd2141": {
+      "file": "good",
+      "note": "Strong exact assertions throughout. The diff replaces the token model with a capability model; several removed tests are renames of surviving ones.",
+      "tests": {
+        "DecdnClient.open > picks the context from the gateway URL": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DecdnClient.open > opens a loopback client on %s": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DecdnClient.open > normalises an IPv6 loopback spelling to [::1]": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DecdnClient.open > opens a public client on %s": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DecdnClient.open > refuses no gateway outside a site page, and a URL that does not parse": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > streams a blob from the bare host and verifies it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fails a tampered blob with HASH_MISMATCH, as a stream error and on bytes()": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > still hashes a whole-body request the gateway answers with a window": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fails a body the gateway cuts with TRUNCATED": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fetches an entry through its site and verifies it against the manifest": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fetches a page or a stylesheet by its entry hash, unrewritten": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > reads the manifest with the URI's namespace hint": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > reads a directory's index.html by the directory's path, as its site does": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > cuts the window from a whole body the gateway answers a range with": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > refuses a window past the end of a whole body, as the gateway's 416": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > answers a range of an empty whole body empty": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fails a whole body that ends before its window with TRUNCATED": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > drops a manifest read every caller gave up on": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > starts a fresh manifest read after an abort, and keeps the old one for its waiters": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > keeps a settled manifest cached when a later caller aborts": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > leaves a newer read of a key alone when an evicted one is abandoned": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > sends nothing for a caller that has already given up": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > takes a body shorter than its Content-Length when it was decoded on the way": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > still bounds an encoded entry by its manifest size": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > checks and normalises a URI given as an object": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fails a tampered entry with HASH_MISMATCH": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > skips the manifest when verification is off": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > answers a range with 206 and no verification": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > refuses a range on a blob before any request": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > keeps one caller's abort out of another's manifest read": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > maps a range past the end to RANGE_NOT_SATISFIABLE with the size": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > maps a public gateway nothing can pay for to PAYMENT_REQUIRED with the fallback URI": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > maps a 503 that names no fallback URI, and a 401, to HTTP": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > pays with a namespace-scoped capability only on its pointer's host, for the pointer's bundle": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > serves a blob its cache holds whole when nothing can pay": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > maps a pool that cannot pay to PAYMENT_REQUIRED": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > retries once after Retry-After when asked": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > does not wait out Retry-After once the caller has aborted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fails a body aborted mid-stream with the signal's reason": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fails a window that runs past its declared length with TRUNCATED": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fails a whole entry that runs past its manifest size with TRUNCATED": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > takes a body longer than its Content-Length, as one decoded on the way": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fetches an entry by its hash when its site serves it as %s": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > fetches by hash without waiting on a page whose clone is kept unread": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > takes a rewritten type as served when verification is off": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > retries the fetch by hash after Retry-After when asked": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > knows an entry the manifest lacks is not found without asking for it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > caches a manifest by hash": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > keeps a manifest read again after an evicted read of it fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > refuses a blob that is not a manifest": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > resolves an entry to its hash and URLs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > builds site and namespace URLs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > reads an entry's size and hash from HEAD": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > reads a raw blob's size and hash from HEAD": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > maps a raw blob's HEAD refusals as its GET's": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > pays a raw blob's proof once, under a site's /_decdn/ too": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > redirects HEAD of bundle content under a site's /_decdn/ to its site, a directory to the directory, with no pull": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > keeps the query on a site directory's redirect, and answers 404 for a directory with no index.html under /_decdn/": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > redirects a navigation of bundle content under a site's /_decdn/ to its site, with no pull": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > answers the empty blob with no proof and nothing that pays": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > serves a bundle as its site index, unverified": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > maps a failed fetch to NETWORK": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > rejects a bad URI before any request": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > sends no credential and verifies a blob": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > refuses a page on another site or origin, and a browser that sends no Sec-Fetch-Site": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > spends on a site origin only for its own pages, the user, and a top-level navigation": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > does not read a directory's index.html by the directory's path, as the bare host does not": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > fetches an entry on the bare host, byte-exact, and verifies it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > maps no usable capability to PAYMENT_REQUIRED": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > answers HEAD from the manifest, since a loopback gateway refuses HEAD": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > does not refetch by hash, where the bare host serves entries unrewritten": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > builds site URLs under localhost on the gateway's port": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > is detected on a site origin and reads its own entries same-origin": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > reads a directory of its own bundle by the directory's path": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > reads its own bundle under its host's namespace, whatever the call": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > leaves a URI object it is given unchanged": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > reads other content through /_decdn/": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > is detected on a namespace host under the configured gateway, where the manifest is unknown": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > keeps the page's query on its own entries and leaves the namespace to the host": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > fetches its own entry by hash through /_decdn/ when the site serves it as a rewritten type": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > opens the site on a loopback site page, whatever gateway URL it names": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > opens a loopback gateway named by URL on a page that is not a site": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > opens the site without a gateway URL": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > does not take an arbitrary numeric subdomain for a namespace host": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DecdnClient.open > picks the context from the gateway URL and token": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DecdnClient.open > refuses a token without a host, and no gateway outside a site page": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > maps a spent allowance to PAYMENT_REQUIRED with the fallback URI": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > maps a pool that cannot pay to POOL_UNFUNDED": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > answers the empty blob with no proof": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "public context > admits a window of a raw blob by its chunk-group span": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Deleted test charged a range window on a raw blob by chunk-group span under the old allowance model; no test checks the new accounting for range windows."
+          }
+        },
+        "loopback context > sends the token and host and verifies a blob": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loopback context > refuses content without the token, before any request": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Client-side token gate (refuse before any request) removed with the token model; the capability model has no pre-request refusal test, so the intent may be deliberate."
+          }
+        },
+        "loopback context > maps a wrong token to UNAUTHORIZED and an uncovered host to PAYMENT_REQUIRED": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "site context > opens a loopback gateway named by URL, for its delegate API": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "unsure": [],
+          "reason": {
+            "integrity/test-removed": "delegate() success path and its request log are no longer asserted anywhere; only the CONFIG refusal on a site page remains."
+          }
+        },
+        "site context > opens the gateway a token names, and the site without a gateway URL": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "dotnet-skills-c1acda4fb74b": {
+      "file": "weak",
+      "note": "Intentionally weak assertion-quality fixture; tests 0 to 7 each show a weak or tautological check, tests 8 and 9 are strong.",
+      "tests": {
+        "OrderService > creates an order": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "toBeDefined is the only check on the created order."
+          }
+        },
+        "OrderService > creates returns truthy": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "toBeTruthy is the only check on the created order."
+          }
+        },
+        "OrderService > creates returns not null": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "not.toBeNull is the only check on the created order."
+          }
+        },
+        "OrderService > list returns array": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "Array.isArray is a type check; the list contents (the created order) are never checked."
+          }
+        },
+        "OrderService > always true": {
+          "yes": [
+            "oracle/tautological-assertion"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/tautological-assertion": "expect(true).toBe(true) is literal against literal and cannot fail."
+          }
+        },
+        "OrderService > confirms order resolves": {
+          "yes": [
+            "oracle/swallowed-async",
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/swallowed-async": "expect(...).resolves is neither awaited nor returned, so a rejection cannot fail the test.",
+            "oracle/weak-matcher": "toBeDefined is the only check on the resolved value."
+          }
+        },
+        "OrderService > does not equal something irrelevant": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "Checks only that the id is not an arbitrary string; any generated id passes."
+          }
+        },
+        "OrderService > round trip identity": {
+          "yes": [
+            "oracle/tautological-assertion"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/tautological-assertion": "expect(o.id).toBe(o.id) compares a value with itself and cannot fail."
+          }
+        },
+        "OrderService > legitimate equality on returned customer": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "OrderService > legitimate exception assertion": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "frkim-japon2027-13j-5175805aefc3": {
+      "file": "good",
+      "tests": {
+        "markers have unique valid IDs, names, descriptions and Japan coordinates": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "categories and itinerary day references are valid": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "geographic markers match all itinerary stops and their days": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "five separate stays reference existing hotels and allocate every hotel night once": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "flight nights and arrival home are not hotel stays or foreign map markers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "route references geographic markers in order and preserves the Kyoto return": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "gambitnl-aralia-6e43db7b7afc": {
+      "file": "good",
+      "tests": {
+        "MOVE_PLAYER cell-native arrival > lands the EXACT destination cell, resets Locale feet, and stamps the entry anchor": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MOVE_PLAYER cell-native arrival > without destinationCell reads the cell from the cell_<id> location id": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Stage 4 — MOVE_PLAYER cell-native arrival > lands the EXACT destination cell, resets Locale feet, and stamps the entry anchor": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Stage 4 — MOVE_PLAYER cell-native arrival > without destinationCell is unchanged: Stage-2 tile-derived cell + null entry anchor": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "getsentry-sentry-59d4566a5f45": {
+      "file": "good",
+      "tests": {
+        "useCurrentProjectState > should return currentProject=undefined when currentPanel != targetPanel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should return currentProject=undefined when project query parameter is present and currentPanel != targetPanel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should return the currentProject when currentPanel = targetPanel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > uses the project query parameter when no selected projects are loaded": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should return the first project if global selection does not have onboarding": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should return the first onboarding project": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should return the first project if no selection": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should return the first project if no selection and no projects have onboarding": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should override current project if setCurrentProjects is called": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should update when the page filters store changes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should return currentProject=undefined when project url param is present and currentPanel != targetPanel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "useCurrentProjectState > should return the currentProject when project url param is present and currentPanel = targetPanel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "getsentry-sentry-8f76b130aa5a": {
+      "file": "good",
+      "tests": {
+        "SeerProjectTable > blocks coding-agent handoff and warns for a project with a non-GitHub repo": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > blocks handoff when a non-GitHub repo is only on a later page": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > allows coding-agent handoff for a GitHub-only project": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > saves the PR iteration dropdown for a project": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > sets PR iteration for all selected projects": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > updates a PR iteration dropdown that was already changed when the bulk menu is used": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > updates an automation steps dropdown that was already changed when the bulk menu is used": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > marks a row PR iteration dropdown invalid when its save fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > keeps a row PR iteration dropdown in place while its own save is in flight": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > disables the bulk controls while a row is saving": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > disables the bulk controls while a bulk edit is saving": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > disables the row controls while a bulk edit is saving": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > leaves the built-in repos filter out of the selection banner": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SeerProjectTable > disables adding a project without organization write access": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "githubnext-ado-aw-06e5b81353f6": {
+      "file": "good",
+      "tests": {
+        "parseArgs > parses mode and per-repository source/target triples": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseArgs > allows target-worktree entries without a source ref": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseArgs > rejects unknown modes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "prepare-pr-base main > uses ADO metadata to fetch exact shallow source and target ranges": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "prepare-pr-base main > falls back to bounded dual-ref fetch when ADO REST is unavailable": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "prepare-pr-base main > prefers the self resource ref over the triggering repository branch": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "prepare-pr-base main > target-worktree fetches only the target tip at depth one": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "prepare-pr-base main > does not send the ADO bearer to a non-Azure origin": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "prepare-pr-base main > isolates a checkout-directory failure and processes later repos": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "prepare-pr-base main > uses BUILD_SOURCESDIRECTORY and BUILD_SOURCEBRANCH for legacy no-arg calls": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "goosy-benchmark-sentry-graphite-3558d7b474b8": {
+      "file": "weak",
+      "note": "Several it.each suites were merged into single loops. Surviving tests are strong, but per-threshold update coverage (PUT payload and analytics) now checks one threshold, and the admin re-enable step is gone.",
+      "tests": {
+        "projectPerformance > renders the fields": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > updates the field": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > keeps sampling priority forms synchronized after saves": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > shows sampling priority save errors": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > resets threshold settings": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > serializes metric and threshold updates": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > prevents threshold edits from racing with reset": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > renders detector threshold configuration - admin ui": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > disables admin detector settings without project write access": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > renders configured detector thresholds and updates a threshold": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > positions detector sliders at nonstandard configured values": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > resets configurable detector settings": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > allows project admins to disable detectors": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > disables detector thresholds while the detector update is pending": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > serializes detector updates that share the settings resource": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > does not allow non-admins to manage detectors": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "projectPerformance > renders detector thresholds settings for $title issue": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "unsure": [],
+          "reason": {
+            "integrity/test-removed": "Parameterised renders-and-updates suite was merged into one loop. Rendering still covers all 13 thresholds, but the per-threshold PUT payload and analytics checks now cover only consecutive DB."
+          }
+        },
+        "projectPerformance > allows project admins to manage $label": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "unsure": [],
+          "reason": {
+            "integrity/test-removed": "Admin toggle suite was merged into a loop that only disables. The re-enable half of the round trip, with its PUT payload and checked state, is no longer asserted."
+          }
+        },
+        "projectPerformance > does not allow non-admins to manage $label": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "gregmeyer-some-useful-agents-e4382387c1ca": {
+      "file": "good",
+      "tests": {
+        "GET /inbox/:id/events (SSE) > returns 404 when the inbox message does not exist": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /inbox/:id/events (SSE) > requires auth (no cookie → 401)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /inbox/:id/events (SSE) > opens with the SSE content-type and an initial open frame": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /inbox/:id/events (SSE) > replays buffered events newer than Last-Event-ID": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /inbox/events (global SSE) > requires auth (no cookie → 401)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /inbox/events (global SSE) > is not shadowed by /inbox/:id/events (no 404 for the literal \"events\")": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /inbox/events (global SSE) > a resolve mutation fans a coarse event onto the global channel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /inbox/events (global SSE) > receives events published via publishInboxChanged on the global channel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "hitesh2912-arvr-project-54c0042b602e": {
+      "file": "good",
+      "tests": {
+        "Flow Graph Data Nodes > Variable Block": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Flow Graph Data Nodes > Values are cached for the same execution id": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "horusgoul-trizum-0793eb78b2a7": {
+      "file": "good",
+      "tests": {
+        "waits for completed sign-in and the matching provider account before native Premium": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "completes optional account sign-in without opening Premium": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "cancels pending sign-in, ignores late completion, and allows a fresh attempt": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "can sign in to the same account and open Premium on successive attempts": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "does not let a stale paywall completion close a newer request": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "opens browser help without sign-in or native commerce": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "clears a failed request and allows retry": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "ignores callbacks from a cancelled sign-in after starting another attempt": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "hypothetical-money-machine-hype-comms-192d39253d13": {
+      "file": "good",
+      "tests": {
+        "isolates a workflow job from neighboring jobs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "runs public PostgreSQL CI on disposable GitHub-hosted infrastructure": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "runs the display-server-free demo smokes on Ubuntu x64": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "itsomidkarami-kraft-5f727fb34e3a": {
+      "file": "good",
+      "tests": {
+        "theme.css > has 30 neutral blocks and 36 accent blocks": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "theme.css > %s %s %s accent %s clears every floor": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "jarrettmeyer-databricks-mcp-395ce908cdeb": {
+      "file": "good",
+      "tests": {
+        "executeDatabricksCommand > uses 'databricks' by default when DATABRICKS_PATH is not set": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "executeDatabricksCommand > uses DATABRICKS_PATH when set": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "executeDatabricksCommand > strips pipe suffix so only the databricks portion is spawned": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "executeDatabricksCommand > strips redirect suffix so only the databricks portion is spawned": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "executeDatabricksCommand > strips everything after the first pipe in a multi-stage pipeline": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "executeDatabricksCommand > preserves quoted redirect inside a SQL string": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "iblai-os-23a6bf03bf57": {
+      "file": "weak",
+      "note": "Negative checks (button or indicator absent) are wrapped in try/catch around expect(true).toBe(false) or a console.warn, so they cannot fail. Positive checks are real.",
+      "tests": {
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Appears With Bounce Dots During Streaming and Settles After": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Expands to Show Tool Names and Query Detail": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Header Counts Unique Tool Types Not Total Calls": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Web Search Button is NOT Visible When Tool is Disabled on Mentor": {
+          "yes": [],
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "Both button-absence checks are try/catch around expect(true).toBe(false) and cannot fail; the isToolEnabled check is real but covers a different claim."
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Does Not Appear When Web Search is Enabled But Not Activated": {
+          "yes": [],
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "The claim that no tool-call indicator appears is checked only inside try/catch around expect(true).toBe(false), so it cannot fail; other asserts only confirm the chat rendered."
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Renders and Auto-Collapses to Thought After Streaming": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Does Not Appear When Model Does Not Produce Reasoning Tokens": {
+          "yes": [],
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "The claim that no reasoning section appears is only a console.warn inside try/catch; nothing asserts absence."
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator and Reasoning Section Both Render in the Same Message": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Is Hidden When Verbose Reasoning Is Off": {
+          "yes": [],
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "The claim that the indicator stays hidden is checked only inside try/catch around expect(true).toBe(false), so it cannot fail."
+          }
+        }
+      }
+    },
+    "kenastark-provenance-0104572e2a7d": {
+      "file": "good",
+      "tests": {
+        "`${route.name} has no critical accessibility violations (dark)`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "`${route.name} has no critical accessibility violations (light)`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "admin screen (admin role) > has no critical accessibility violations (dark)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "admin screen (admin role) > has no critical accessibility violations (light)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "admin screen (admin role) > a role below admin sees the block stated in words, not a wall of request errors": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "sign-in screen > has no critical accessibility violations (dark)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "sign-in screen > has no critical accessibility violations (light)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "sign-in screen > every role card is reachable with the keyboard and shows a visible focus ring": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "sign-in screen > focus lands on the main landmark once sign-in completes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "keyboard traversal > the skip link is the first tab stop and lands on the content": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "keyboard traversal > every screen is reachable with the keyboard alone": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "keyboard traversal > a station can be opened from the quality table without a mouse": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "keyboard traversal > focus is visible wherever it lands": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "keyboard traversal > the layer toggle that is not ready is disabled and explained": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "reduced motion > is respected": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "kevin-taha-scriptorium-03f12195b790": {
+      "file": "good",
+      "tests": {
+        "the build enforces a strict Content-Security-Policy that reading, notes and focus mode stay within": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "kgoggin-facts-checker-7329f6f9c7f4": {
+      "file": "good",
+      "tests": {
+        "token prints only the refresh token to stdout and progress to stderr, logging in once": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "token --json prints the token set, ISO expiry and shared OAuth/API configuration": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "config prints the shared constants without credentials, prompts or login": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "missing configuration without a TTY uses the existing FACTS_CONFIG error (%j)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "missing credentials on a TTY are prompted for and passed to login without changing env": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a TTY prompts only for missing values and does not retry empty answers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a blank authenticator secret lets a TTY answer authenticator MFA interactively": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "email destination and email code requests use the interactive OTP callback even with a TOTP secret": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "invalid TOTP configuration fails before login": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "FactsError prints only code and message, with no cause or stack, and never retries": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "unexpected failures do not disclose exception messages or stacks": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "cancelled input fails with FACTS_CONFIG before login": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "help (%j) prints usage to stderr without login": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "invalid arguments (%j) print usage to stderr and exit 2": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
     }
   }
 }
