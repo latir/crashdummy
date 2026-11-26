@@ -4629,6 +4629,392 @@
           "reason": {}
         }
       }
+    },
+    "mattbalza-buzz-dd821639a04a": {
+      "file": "good",
+      "tests": {
+        "create channel and verify in sidebar": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "two users see the same channel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "message delivery across users": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "live mentions refetch the home feed without waiting for polling": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "live forum mentions refetch the home feed without waiting for polling": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DM channel appears in sidebar": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "send message to DM": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "forum channel appears in sidebar": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "create channel with description": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "multiple channels independent": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "manage sheet updates channel details through the relay": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "manage sheet archive and unarchive survives a reload through the relay": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "orange-case-joustmania-ac7ee3c04de0": {
+      "file": "good",
+      "tests": {
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 a live real game wins: no shadow game is followed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 no real game live: the newest live shadow game is followed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 a real game in ENDING still holds the stage": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 an ended real game does not hold the view": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 the followed shadow game is kept while live (no flicker)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 an ended followed game hands over to the newest live one": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 nothing live: nothing followed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 live states accept enum names and numbers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/A9 following a shadow game adds its players; other shadow players stay hidden, nothing real is hidden": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 with a real game live, live shadow players are hidden from the grid": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 lobby with experiments running: real lobby controllers are never hidden": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 real game ENDING with a live shadow game: the real controllers stay": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 unknown follow state (coordinator unreachable) shows every tile": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/BR-005 without follow information the newest real game still anchors (stage default)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 the followed shadow game anchors the strip with its backend": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 no real game live and the followed game has no decide yet: newest shadow row": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/BR-005 no real game live, nothing followed: a newer real row beats an older shadow row": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 the decide store applies the follow state": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 follow state across polls > UC-070/BR-005 a transient poll error keeps the followed game": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "UC-070: A9 BR-005 follow state across polls > UC-070/BR-005 a sustained outage resets to unknown, then resumes the same game": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "plow-pbc-tkmx-client-402de6675594": {
+      "file": "good",
+      "tests": {
+        "toIsoDate > converts YYYYMMDD to YYYY-MM-DD": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "toIsoDate > preserves single-digit months and days": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseAgentsviewOutput > tags each breakdown with the given source": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseAgentsviewOutput > computes totalTokens as sum of all token-type fields": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseAgentsviewOutput > preserves the cost field untouched": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseAgentsviewOutput > converts schema v3 microdollars to dollars": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseAgentsviewOutput > rejects invalid schema v3 microdollar costs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseAgentsviewOutput > returns [] for empty daily": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseAgentsviewOutput > returns [] when daily field is missing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseAgentsviewOutput > treats missing token fields as 0 when computing totalTokens": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseAgentsviewOutput > handles a day with no modelBreakdowns array": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "collectAgentsviewUsage WARP_DIR scoping > sets WARP_DIR=/var/empty on the syncing claude call but not the --no-sync codex call": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsview > returns null when no candidate path exists": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsview > returns the first existing executable candidate": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsview > skips non-executable candidates": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsview > skips candidates that are directories, not files": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsview > respects AGENTSVIEW_BIN override": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsview > ignores AGENTSVIEW_BIN override when it points at nothing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsview > falls back to PATH when no hard-coded candidate exists": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsviewWith — Windows branch (host-independent) > finds agentsview.exe in the installer location under USERPROFILE": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsviewWith — Windows branch (host-independent) > resolves agentsview.exe from a ;-separated PATH": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveAgentsviewWith — Windows branch (host-independent) > never resolves a .cmd/.bat shim — execFileSync can't run one on Windows": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "xfuel-lab-chit402-e3e4f36a120d": {
+      "file": "good",
+      "note": "Copy checks were loosened to fit a homepage copy change. The check that the copy names POST /v1/chat/completions was dropped.",
+      "tests": {
+        "homepage meta description describes paid /v1 and does not say unmetered": {
+          "yes": [
+            "integrity/assertions-dropped"
+          ],
+          "unsure": [
+            "integrity/matcher-weakened"
+          ],
+          "reason": {
+            "integrity/assertions-dropped": "The check that the copy names POST /v1/chat/completions was deleted and nothing replaces it.",
+            "integrity/matcher-weakened": "Required copy loosened from '$0.01 USDC' to 'USDC' (case-insensitive); the price was removed from the required copy on purpose."
+          }
+        },
+        "homepage og:description describes paid /v1 and does not say unmetered": {
+          "yes": [
+            "integrity/assertions-dropped"
+          ],
+          "unsure": [
+            "integrity/matcher-weakened"
+          ],
+          "reason": {
+            "integrity/assertions-dropped": "The check that the copy names POST /v1/chat/completions was deleted and nothing replaces it.",
+            "integrity/matcher-weakened": "Required copy loosened from '$0.01 USDC' to 'USDC' (case-insensitive); the price was removed from the required copy on purpose."
+          }
+        },
+        "homepage twitter:description matches the paid /v1 door": {
+          "yes": [
+            "integrity/assertions-dropped"
+          ],
+          "unsure": [
+            "integrity/matcher-weakened"
+          ],
+          "reason": {
+            "integrity/assertions-dropped": "The check that the copy names POST /v1/chat/completions was deleted and nothing replaces it.",
+            "integrity/matcher-weakened": "Required copy loosened from '$0.01 USDC' to 'USDC' (case-insensitive); the price was removed from the required copy on purpose."
+          }
+        },
+        "shared layout and homepage copy do not call paid /v1 unmetered, a free path, or lead with $0.01": {
+          "yes": [],
+          "unsure": [
+            "integrity/matcher-weakened"
+          ],
+          "reason": {
+            "integrity/matcher-weakened": "Required copy loosened from '$0.01 USDC on Base and Solana' to 'USDC on Base (and|or) Solana'; the price requirement was dropped on purpose."
+          }
+        },
+        "homepage title and hero lead with the book, not a router": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "README first paragraph leads with the book": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "prerendered money pages have unique crawler titles (after build)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "shared layout and homepage copy do not call paid /v1 unmetered or a free path": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "yunz93-mozi-cd51f5a99c10": {
+      "file": "good",
+      "tests": {
+        "generateTOC > returns empty string when there are no headings": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "generateTOC > produces anchors that match injected heading ids for ASCII headings": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "generateTOC > preserves CJK headings instead of collapsing them to empty slugs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "generateTOC > disambiguates duplicate headings consistently in TOC and ids": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "generateTOC > does not overwrite an existing id attribute": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
     }
   }
 }
