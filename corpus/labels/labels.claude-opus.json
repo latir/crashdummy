@@ -1,0 +1,185 @@
+{
+ "labeller": "claude-opus",
+ "schema": 1,
+ "cases": {
+  "181192-brasscribe-5a01aa49fb7f": {
+   "file": "weak",
+   "note": "screenshot generator, skipped unless PINK_SHOTS set; only checks the score rendered",
+   "tests": {
+    "`Pink score viewer, ${system}`": {}
+   }
+  },
+  "181192-brasscribe-81400ca06a35": {
+   "file": "good",
+   "tests": {
+    "`more contrast: ${c.choice ?? \"Match system\"} on a ${c.system} system uses ${c.palette} high contrast`": {},
+    "without more contrast the ordinary palettes apply": {},
+    "forced colours still drop the pinned theme": {},
+    "`${choice} on a ${system} system uses pink ${mode}`": {},
+    "`an earlier Pink on a ${system} system becomes ${migrated}`": {},
+    "more contrast wins over the Pink palette and keeps its light or dark": {},
+    "five activations of the lockup unlock Pink light and Pink dark, from the keyboard too": {},
+    "`Pink on a ${system} system uses pink ${system}`": {},
+    "more contrast wins over Pink": {},
+    "five activations of the lockup unlock Pink, from the keyboard too": {}
+   }
+  },
+  "a-novel-kit-workflows-7bb580e2530f": {
+   "file": "good",
+   "tests": {
+    "composite contexts respect expression boundaries, quoting and access syntax": {},
+    "malformed expressions with repeated quotes cannot stall manifest validation": {}
+   }
+  },
+  "a-novel-kit-workflows-a3d30f67a329": {
+   "file": "good",
+   "tests": {
+    "release branch guard treats branch names as data": {},
+    "release bump updates all package formats and quoted filenames, leaving versionless packages alone": {},
+    "invalid release baselines and broken workspace manifests fail before any file changes": {},
+    "release plan stamps only this repository's stable Go requirements and emits nested tags": {},
+    "release pushes are atomic, hotfixes only push tags, and dry runs publish nothing": {},
+    "release train distinguishes read failure, empty history and release types": {},
+    "release receipt replacement preserves prose and literal backslashes": {}
+   }
+  },
+  "acolomba-pi-claude-marketplace-063720f82ffe": {
+   "file": "good",
+   "tests": {
+    "registerClaudePluginCommand > registers the slash command once under its published description (D-04)": {},
+    "registerClaudePluginCommand > hands the argument text and the command context to the subcommand router (D-04)": {},
+    "registerClaudePluginCommand > shares the supplied lifecycle routing owner with registered import execution": {},
+    "registerClaudePluginCommand > resolves argument completions against the working directory the callback runs in (D-04)": {},
+    "registerClaudePluginCommand > keeps supplied lifecycle completion-cache hits isolated between registrations": {},
+    "registerClaudePluginCommand > runs registered bootstrap through the supplied lifecycle cache and both real children": {},
+    "rebuilds completion rows through the cache that owns a successful registered add": {},
+    "rebuilds completion rows through the cache that owns a successful registered remove": {},
+    "rebuilds completion rows through the cache that owns a successful registered update": {},
+    "rebuilds completion rows through the cache that owns a successful registered install": {},
+    "rebuilds completion rows through the cache that owns a successful registered reinstall": {},
+    "rebuilds completion rows through the cache that owns a successful registered uninstall": {},
+    "registerClaudePluginCommand autocomplete wrapper > installs exactly one autocomplete provider when the session starts (TC-7)": {},
+    "registerClaudePluginCommand autocomplete wrapper > returns the underlying provider's suggestions unchanged (TC-7)": {},
+    "registerClaudePluginCommand autocomplete wrapper > collapses the whitespace run a completion left on its own command line (TC-7)": {},
+    "registerClaudePluginCommand autocomplete wrapper > leaves another extension's command line exactly as the underlying provider left it (TC-7)": {},
+    "registerClaudePluginCommand autocomplete wrapper > leaves the result untouched when the cursor names a line the buffer does not hold (TC-7)": {},
+    "registerClaudePluginCommand autocomplete wrapper > defers the file-completion trigger to the underlying provider that answers it (TC-7)": {},
+    "registerClaudePluginCommand autocomplete wrapper > permits the file-completion trigger when the underlying provider does not answer it (TC-7)": {},
+    "registerClaudeMarketplaceTools > registers the two read-only tools in order and nothing else (D-04)": {},
+    "argument rejection cases cover every routed command and alias": {},
+    "`registered ${spelling} rejects ${kind} before reading runtime context`": {},
+    "`registered ${spelling} rejects the empty scope ${emptyValue} before a valid-looking token`": {}
+   }
+  },
+  "acolomba-pi-claude-marketplace-b3e062f52b6c": {
+   "file": "good",
+   "tests": {
+    "parsePluginSource > name": {},
+    "parsePluginSource > name #2": {},
+    "parsePluginSource > re-parsing an already-parsed URL source is idempotent on raw": {},
+    "pathSource > \"rejects \" + JSON.stringify(invalidPath) + \" as an empty path\"": {},
+    "pathSource > returns a complete path source": {},
+    "githubSource > returns a complete GitHub source": {},
+    "githubSource > \"rejects \" + raw + \" as a non-GitHub source\"": {},
+    "samePlannedSource > name": {},
+    "sourceLogical > name": {},
+    "ensureGitSuffix > \"normalizes \" + url + \" for Git transport\"": {},
+    "stripSlashAndFragment > name": {},
+    "stripGitSuffix > name": {}
+   }
+  },
+  "actions-marketplace-validations-github-gh-aw-fir-18748a85eeb2": {
+   "file": "good",
+   "tests": {
+    "readPrivateRoutingJson > parses a bounded private file": {},
+    "readPrivateRoutingJson > rejects a file larger than its bound": {},
+    "readPrivateRoutingJson > refuses to follow a symlink": {},
+    "loadRoutingConversation > loads a conversation under the one MiB bound": {},
+    "loadRoutingConversation > translates a missing file into a routing configuration error": {},
+    "loadRoutingConversation > translates invalid JSON into a routing contract error": {},
+    "loadRoutingConversation > is cancelled by an aborted signal": {},
+    "createProductionRoutingController > returns null when routing is not configured": {},
+    "createProductionRoutingController > rejects a configuration without a Copilot adapter owner": {},
+    "createRoutingObserver > logs failure stages at warn and other stages at info": {},
+    "createProductionRoutingSession > returns null when routing is not configured": {},
+    "createProductionRoutingSession > publishes the selection atomically and completion only after draining": {},
+    "createProductionRoutingSession > reflects the selection the agent must send, and failures without a selection": {},
+    "createProductionRoutingSession > publishes a failure record when the controller fails": {},
+    "createProductionRoutingSession > publishes a bootstrap failure when the controller cannot be built": {},
+    "createProductionRoutingSession > terminates with exit code 78 when a bootstrap failure cannot be published": {},
+    "createProductionRoutingSession > refuses to plan when a stale result already exists": {},
+    "createProductionRoutingSession > publishes a runtime failure raised after the selection": {},
+    "createProductionRoutingSession > terminates with exit code 78 when a runtime failure cannot be published": {}
+   }
+  },
+  "actions-marketplace-validations-github-gh-aw-fir-5dd5ca233047": {
+   "file": "good",
+   "tests": {
+    "createProviderServer > passes the adapter request signer to the HTTP proxy pipeline": {},
+    "createProviderServer > fails closed for WebSocket upgrades when AWS request signing is configured": {},
+    "createProviderServer > shutdownConnections closes tracked upgraded sockets": {},
+    "createProviderServer routing enforcement > observes a routed request without rejecting it": {},
+    "createProviderServer routing enforcement > composes the observe-only routing transform with the adapter transform": {},
+    "createProviderServer routing enforcement > proxies an upgrade while routing is active": {},
+    "createProviderServer routing enforcement > screens an inference request before revealing adapter configuration": {},
+    "createProviderServer routing enforcement > uses the enforcement body transform for an admitted routed request": {},
+    "createProviderServer routing enforcement > rejects an upgrade while routing is active": {}
+   }
+  },
+  "aelmanaa-hardhat-kms-0ea6aca93503": {
+   "file": "good",
+   "tests": {
+    "AWS KMS adapter > returns the key's public key and KMS's DER signature of the digest, unchanged": {},
+    "AWS KMS adapter > signs digests with the key ARN from GetPublicKey, never the alias, and MessageType DIGEST": {},
+    "AWS KMS adapter > looks the ARN up first if asked to sign before the public key": {},
+    "AWS KMS adapter > uses the region of a key ARN over the key's, and passes profile and endpoint": {},
+    "AWS KMS adapter > describes the key by its display values, and closes the client": {},
+    "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on GetPublicKey: ${name}`": {},
+    "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on Sign: ${name}`": {},
+    "AWS KMS adapter > works with multi-region keys, whose ARNs use mrk- ids": {},
+    "AWS KMS adapter > says when no region is configured, instead of a bare error class": {},
+    "AWS KMS adapter > passes other SDK errors on unchanged": {},
+    "AWS KMS adapter > does not keep the ARN from a call that was abandoned": {},
+    "AWS KMS adapter > signs exactly like Hardhat's local accounts, even from high-S DER signatures": {},
+    "AWS KMS adapter > uses the region from a key ARN, the key or the defaults, and passes profile and endpoint": {},
+    "AWS KMS adapter > describes the key without its values, and closes the client": {},
+    "AWS KMS adapter > rejects a Sign response whose key id differs, even only in case": {},
+    "AWS KMS adapter > rejects an SDK module that does not look like @aws-sdk/client-kms": {
+     "unsure": [
+      "integrity/test-removed"
+     ],
+     "reason": {
+      "integrity/test-removed": "SDK-shape check deleted with no replacement here; may have moved with the loader to another package"
+     }
+    },
+    "AWS KMS adapter > refuses keys of other providers": {
+     "unsure": [
+      "integrity/test-removed"
+     ],
+     "reason": {
+      "integrity/test-removed": "other-provider refusal deleted; adapter API no longer takes generic keys, check may live elsewhere"
+     }
+    }
+   }
+  },
+  "anco91-mbongo-69dd3de662d5": {
+   "file": "good",
+   "tests": {
+    "checkTransferLegs > accepts a completed cross-currency transfer whose legs match": {},
+    "checkTransferLegs > accepts a completed same-currency transfer (rate 1, no fee)": {},
+    "checkTransferLegs > accepts an estimated transfer with only its SOURCE leg": {},
+    "checkTransferLegs > flags a SOURCE leg that is not -amountSent": {},
+    "checkTransferLegs > flags a TARGET leg that is not +amountReceived": {},
+    "checkTransferLegs > flags a missing SOURCE or TARGET leg on a completed transfer": {},
+    "checkTransferLegs > flags a TARGET leg on a transfer not yet received": {},
+    "checkTransferLegs > flags a leg on the wrong account": {},
+    "checkTransferLegs > flags duplicated legs": {},
+    "checkTransferLegs > flags fees that do not explain estimated minus received": {},
+    "checkTransferLegs > tolerates rounding of one cent in the fee gap": {},
+    "checkTransferLegs > flags a CLOSED transfer whose TARGET leg is missing": {},
+    "checkTransferLegs > flags a COMPLETED transfer whose amountReceived is null": {},
+    "checkTransferLegs > does not require amountReceived on ESTIMATED or CLOSED-unreceived transfers": {}
+   }
+  }
+ }
+}
