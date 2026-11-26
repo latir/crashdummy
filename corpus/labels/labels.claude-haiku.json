@@ -1,0 +1,408 @@
+{
+  "labeller": "claude-haiku",
+  "schema": 1,
+  "cases": {
+    "181192-brasscribe-5a01aa49fb7f": {
+      "file": "weak",
+      "note": "Screenshot generator: skipped unless PINK_SHOTS is set. Its only check is the render flag, so a theme regression would not fail it.",
+      "tests": {
+        "`Pink score viewer, ${system}`": {}
+      }
+    },
+    "181192-brasscribe-81400ca06a35": {
+      "file": "good",
+      "tests": {
+        "`more contrast: ${c.choice ?? \"Match system\"} on a ${c.system} system uses ${c.palette} high contrast`": {},
+        "without more contrast the ordinary palettes apply": {},
+        "forced colours still drop the pinned theme": {},
+        "`${choice} on a ${system} system uses pink ${mode}`": {},
+        "`an earlier Pink on a ${system} system becomes ${migrated}`": {},
+        "more contrast wins over the Pink palette and keeps its light or dark": {},
+        "five activations of the lockup unlock Pink light and Pink dark, from the keyboard too": {},
+        "`Pink on a ${system} system uses pink ${system}`": {},
+        "more contrast wins over Pink": {},
+        "five activations of the lockup unlock Pink, from the keyboard too": {}
+      }
+    },
+    "a-novel-kit-workflows-7bb580e2530f": {
+      "file": "good",
+      "tests": {
+        "composite contexts respect expression boundaries, quoting and access syntax": {},
+        "malformed expressions with repeated quotes cannot stall manifest validation": {}
+      }
+    },
+    "a-novel-kit-workflows-a3d30f67a329": {
+      "file": "good",
+      "tests": {
+        "release branch guard treats branch names as data": {},
+        "release bump updates all package formats and quoted filenames, leaving versionless packages alone": {},
+        "invalid release baselines and broken workspace manifests fail before any file changes": {},
+        "release plan stamps only this repository's stable Go requirements and emits nested tags": {},
+        "release pushes are atomic, hotfixes only push tags, and dry runs publish nothing": {},
+        "release train distinguishes read failure, empty history and release types": {},
+        "release receipt replacement preserves prose and literal backslashes": {}
+      }
+    },
+    "acolomba-pi-claude-marketplace-063720f82ffe": {
+      "file": "good",
+      "tests": {
+        "registerClaudePluginCommand > registers the slash command once under its published description (D-04)": {},
+        "registerClaudePluginCommand > hands the argument text and the command context to the subcommand router (D-04)": {},
+        "registerClaudePluginCommand > shares the supplied lifecycle routing owner with registered import execution": {},
+        "registerClaudePluginCommand > resolves argument completions against the working directory the callback runs in (D-04)": {},
+        "registerClaudePluginCommand > keeps supplied lifecycle completion-cache hits isolated between registrations": {},
+        "registerClaudePluginCommand > runs registered bootstrap through the supplied lifecycle cache and both real children": {},
+        "rebuilds completion rows through the cache that owns a successful registered add": {},
+        "rebuilds completion rows through the cache that owns a successful registered remove": {},
+        "rebuilds completion rows through the cache that owns a successful registered update": {},
+        "rebuilds completion rows through the cache that owns a successful registered install": {},
+        "rebuilds completion rows through the cache that owns a successful registered reinstall": {},
+        "rebuilds completion rows through the cache that owns a successful registered uninstall": {},
+        "registerClaudePluginCommand autocomplete wrapper > installs exactly one autocomplete provider when the session starts (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > returns the underlying provider's suggestions unchanged (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > collapses the whitespace run a completion left on its own command line (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > leaves another extension's command line exactly as the underlying provider left it (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > leaves the result untouched when the cursor names a line the buffer does not hold (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > defers the file-completion trigger to the underlying provider that answers it (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > permits the file-completion trigger when the underlying provider does not answer it (TC-7)": {},
+        "registerClaudeMarketplaceTools > registers the two read-only tools in order and nothing else (D-04)": {},
+        "argument rejection cases cover every routed command and alias": {},
+        "`registered ${spelling} rejects ${kind} before reading runtime context`": {},
+        "`registered ${spelling} rejects the empty scope ${emptyValue} before a valid-looking token`": {}
+      }
+    },
+    "acolomba-pi-claude-marketplace-b3e062f52b6c": {
+      "file": "good",
+      "tests": {
+        "parsePluginSource > name": {},
+        "parsePluginSource > name #2": {},
+        "parsePluginSource > re-parsing an already-parsed URL source is idempotent on raw": {},
+        "pathSource > \"rejects \" + JSON.stringify(invalidPath) + \" as an empty path\"": {},
+        "pathSource > returns a complete path source": {},
+        "githubSource > returns a complete GitHub source": {},
+        "githubSource > \"rejects \" + raw + \" as a non-GitHub source\"": {},
+        "samePlannedSource > name": {},
+        "sourceLogical > name": {},
+        "ensureGitSuffix > \"normalizes \" + url + \" for Git transport\"": {},
+        "stripSlashAndFragment > name": {},
+        "stripGitSuffix > name": {}
+      }
+    },
+    "actions-marketplace-validations-github-gh-aw-fir-18748a85eeb2": {
+      "file": "good",
+      "tests": {
+        "readPrivateRoutingJson > parses a bounded private file": {},
+        "readPrivateRoutingJson > rejects a file larger than its bound": {},
+        "readPrivateRoutingJson > refuses to follow a symlink": {},
+        "loadRoutingConversation > loads a conversation under the one MiB bound": {},
+        "loadRoutingConversation > translates a missing file into a routing configuration error": {},
+        "loadRoutingConversation > translates invalid JSON into a routing contract error": {},
+        "loadRoutingConversation > is cancelled by an aborted signal": {},
+        "createProductionRoutingController > returns null when routing is not configured": {},
+        "createProductionRoutingController > rejects a configuration without a Copilot adapter owner": {},
+        "createRoutingObserver > logs failure stages at warn and other stages at info": {},
+        "createProductionRoutingSession > returns null when routing is not configured": {},
+        "createProductionRoutingSession > publishes the selection atomically and completion only after draining": {},
+        "createProductionRoutingSession > reflects the selection the agent must send, and failures without a selection": {},
+        "createProductionRoutingSession > publishes a failure record when the controller fails": {},
+        "createProductionRoutingSession > publishes a bootstrap failure when the controller cannot be built": {},
+        "createProductionRoutingSession > terminates with exit code 78 when a bootstrap failure cannot be published": {},
+        "createProductionRoutingSession > refuses to plan when a stale result already exists": {},
+        "createProductionRoutingSession > publishes a runtime failure raised after the selection": {},
+        "createProductionRoutingSession > terminates with exit code 78 when a runtime failure cannot be published": {}
+      }
+    },
+    "actions-marketplace-validations-github-gh-aw-fir-5dd5ca233047": {
+      "file": "weak",
+      "note": "Routing enforcement tests (screening, enforcement body transform, rejecting upgrades) were removed and the routing path is now observe-only; no surviving test covers the removed behaviour. Remaining routing tests mostly check forwarding of mocked adapter values.",
+      "tests": {
+        "createProviderServer > passes the adapter request signer to the HTTP proxy pipeline": {
+          "unsure": [
+            "oracle/tautological-mock"
+          ],
+          "reason": {
+            "oracle/tautological-mock": "thin wrapper: adapter signer and host are forwarded unchanged to proxyRequest; unsure whether forwarding is the behaviour"
+          }
+        },
+        "createProviderServer > fails closed for WebSocket upgrades when AWS request signing is configured": {},
+        "createProviderServer > shutdownConnections closes tracked upgraded sockets": {},
+        "createProviderServer routing enforcement > observes a routed request without rejecting it": {
+          "unsure": [
+            "oracle/tautological-mock"
+          ],
+          "reason": {
+            "oracle/tautological-mock": "thin wrapper: adapter body transform and host are forwarded unchanged to proxyRequest; unsure whether forwarding is the behaviour"
+          }
+        },
+        "createProviderServer routing enforcement > composes the observe-only routing transform with the adapter transform": {},
+        "createProviderServer routing enforcement > proxies an upgrade while routing is active": {},
+        "createProviderServer routing enforcement > screens an inference request before revealing adapter configuration": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "screening of unconfigured adapters removed; no equivalent test remains"
+          }
+        },
+        "createProviderServer routing enforcement > uses the enforcement body transform for an admitted routed request": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "enforcement body transform removed; replaced by an observe-only composition test, not equivalent"
+          }
+        },
+        "createProviderServer routing enforcement > rejects an upgrade while routing is active": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "rejecting upgrades while routing is active removed; the replacement asserts the reverse (proxied)"
+          }
+        }
+      }
+    },
+    "aelmanaa-hardhat-kms-0ea6aca93503": {
+      "file": "good",
+      "note": "Removed Hardhat signer-compatibility, SDK-shape and other-provider tests may be covered by suites not visible in this case.",
+      "tests": {
+        "AWS KMS adapter > returns the key's public key and KMS's DER signature of the digest, unchanged": {},
+        "AWS KMS adapter > signs digests with the key ARN from GetPublicKey, never the alias, and MessageType DIGEST": {
+          "yes": [
+            "oracle/interaction-only"
+          ],
+          "reason": {
+            "oracle/interaction-only": "asserts only KMS call arguments; the returned signature is discarded and never checked"
+          }
+        },
+        "AWS KMS adapter > looks the ARN up first if asked to sign before the public key": {
+          "yes": [
+            "oracle/interaction-only"
+          ],
+          "reason": {
+            "oracle/interaction-only": "asserts only the order of SDK calls; the signature result is never checked"
+          }
+        },
+        "AWS KMS adapter > uses the region of a key ARN over the key's, and passes profile and endpoint": {},
+        "AWS KMS adapter > describes the key by its display values, and closes the client": {},
+        "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on GetPublicKey: ${name}`": {},
+        "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on Sign: ${name}`": {},
+        "AWS KMS adapter > works with multi-region keys, whose ARNs use mrk- ids": {
+          "yes": [
+            "oracle/interaction-only"
+          ],
+          "reason": {
+            "oracle/interaction-only": "asserts only the KeyId sent to Sign; the signature result is discarded"
+          }
+        },
+        "AWS KMS adapter > says when no region is configured, instead of a bare error class": {},
+        "AWS KMS adapter > passes other SDK errors on unchanged": {},
+        "AWS KMS adapter > does not keep the ARN from a call that was abandoned": {},
+        "AWS KMS adapter > signs exactly like Hardhat's local accounts, even from high-S DER signatures": {
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Hardhat signer vectors (address, personal message) no longer tested here; may be covered in a signer suite not visible"
+          }
+        },
+        "AWS KMS adapter > uses the region from a key ARN, the key or the defaults, and passes profile and endpoint": {},
+        "AWS KMS adapter > describes the key without its values, and closes the client": {},
+        "AWS KMS adapter > rejects a Sign response whose key id differs, even only in case": {},
+        "AWS KMS adapter > rejects an SDK module that does not look like @aws-sdk/client-kms": {
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "SDK module shape check removed; may be covered elsewhere, not visible"
+          }
+        },
+        "AWS KMS adapter > refuses keys of other providers": {
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "other-provider key rejection removed; may be covered by config resolution tests, not visible"
+          }
+        }
+      }
+    },
+    "anco91-mbongo-69dd3de662d5": {
+      "file": "good",
+      "tests": {
+        "checkTransferLegs > accepts a completed cross-currency transfer whose legs match": {},
+        "checkTransferLegs > accepts a completed same-currency transfer (rate 1, no fee)": {},
+        "checkTransferLegs > accepts an estimated transfer with only its SOURCE leg": {},
+        "checkTransferLegs > flags a SOURCE leg that is not -amountSent": {},
+        "checkTransferLegs > flags a TARGET leg that is not +amountReceived": {},
+        "checkTransferLegs > flags a missing SOURCE or TARGET leg on a completed transfer": {},
+        "checkTransferLegs > flags a TARGET leg on a transfer not yet received": {},
+        "checkTransferLegs > flags a leg on the wrong account": {},
+        "checkTransferLegs > flags duplicated legs": {},
+        "checkTransferLegs > flags fees that do not explain estimated minus received": {},
+        "checkTransferLegs > tolerates rounding of one cent in the fee gap": {},
+        "checkTransferLegs > flags a CLOSED transfer whose TARGET leg is missing": {},
+        "checkTransferLegs > flags a COMPLETED transfer whose amountReceived is null": {},
+        "checkTransferLegs > does not require amountReceived on ESTIMATED or CLOSED-unreceived transfers": {}
+      }
+    },
+    "andreisavu-ambion-15d37b11b140": {
+      "file": "good",
+      "tests": {
+        "$name > retains a sensor manifest and restores its referenced file through the object backend": {}
+      }
+    },
+    "andreisavu-ambion-20cac635bb5d": {
+      "file": "good",
+      "tests": {
+        "keeps the exported package name in step with the manifest": {},
+        "builds every entry the manifest names": {},
+        "exports exactly what an application needs to build a room, and nothing a host needs beyond it": {},
+        "exports exactly the wire and the hosting escape hatch, and nothing an application already has": {},
+        "exports exactly the conformance suite, its shared parts, and its in-process executor": {},
+        "names the ports, the reads, and the visit by their final names": {},
+        "names no model library: the manifest lists none, and no source file imports one": {},
+        "exports exactly the conformance suite and its in-process executor": {}
+      }
+    },
+    "ant1off-gram-a6a9a43a56e0": {
+      "file": "good",
+      "tests": {
+        "holdStill > keeps a clamped correction from landing on the update a press causes": {}
+      }
+    },
+    "autonome-research-hephaestus-19cc1bbfb82c": {
+      "file": "good",
+      "note": "The first envelope test's comment says set equality, but it asserts containment of each key; values are not checked.",
+      "tests": {
+        "the context envelope > draws every member from the closed set and invents none": {},
+        "the context envelope > carries the explode PARAMETER and has nowhere to put a displacement": {},
+        "the context envelope > reports the hidden toggles, sorted, and never a visible count": {},
+        "the context envelope > submits the selection ids and never describes the selection": {},
+        "the context envelope > sends the pin mode only with the ref it qualifies": {},
+        "the context envelope > is null for the blank canvas, whatever the tabs say": {},
+        "the context envelope > honours a dropped member — every member is opt-out": {},
+        "the context envelope > drops the whole envelope when every reference is dropped": {},
+        "the context envelope > lets an explicit Add current view make the view a reference": {},
+        "the chip row > offers a chip for every reference the state names, in a fixed order": {},
+        "the chip row > renders the hidden set as a COUNT of toggles, not a value": {},
+        "the chip row > offers no chip for pin_mode, which is not independently droppable": {},
+        "the read-refresh boundary > names exactly the keys §7A.11 enumerates for a selected part": {},
+        "the read-refresh boundary > still refreshes the project keys on the blank canvas": {},
+        "the DOM contract > carries the closed state vocabulary and the session it is bound to": {},
+        "the DOM contract > says no_session rather than rendering nothing": {},
+        "the DOM contract > names agent_unavailable, its cause, and the path the server checked": {},
+        "the DOM contract > keeps every disabled reason inside the closed vocabulary": {},
+        "the DOM contract > renders cancel as unavailable-with-a-reason, never as a dead button": {},
+        "the DOM contract > puts no data-source on any context chip": {},
+        "the DOM contract > keeps the existing composer selectors when chrome is present": {},
+        "session chrome from GET /providers > uses the provider's own model id as the identifier, never a house name": {},
+        "session chrome from GET /providers > names no models when the configuration file does not exist": {},
+        "session chrome from GET /providers > hides the model projection when the runtime is missing": {},
+        "session chrome from GET /providers > renders the declared model id as a projection, not a picker, when a runtime is attached": {},
+        "session chrome from GET /providers > offers effort levels only when the selected model declared reasoning": {},
+        "the idle composer does not host DFM chrome > still knows when the inspector may show the two §6.4 controls": {},
+        "the idle composer does not host DFM chrome > does not put auto_run or Run DFM on the idle composer": {},
+        "the idle composer does not host DFM chrome > does not grow DFM chrome on the agent_unavailable refusal": {},
+        "context chips do not force a 2400px stream > keeps the full artifact ref on the chip and shortens only the glyphs": {},
+        "the DFM chip is the engine equivalent, not a per-message flag > shows the two §6.4 controls only when a part's DFM document is in hand": {},
+        "the DFM chip is the engine equivalent, not a per-message flag > names the absence when no part is selected and does not fake DFM chrome": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "named DFM absence marker test removed; the replacement asserts the marker is absent, so the behaviour is not covered"
+          }
+        },
+        "the DFM chip is the engine equivalent, not a per-message flag > hides DFM chrome on the agent_unavailable refusal": {}
+      }
+    },
+    "autonome-research-hephaestus-5e335253b2e1": {
+      "file": "weak",
+      "note": "Most assertions regex-match CSS and source text rather than rendered layout, so a layout regression that keeps the strings would pass. The removed bare-effort test was renamed; its replacement inverts the DFM expectations as part of the design change.",
+      "tests": {
+        "stream column — composer is a pinned footer, not overflow > pins the composer as the last auto row under a shrinking main": {},
+        "stream column — composer is a pinned footer, not overflow > keeps the stream column from growing the 800px shell": {},
+        "stream column — composer is a pinned footer, not overflow > keeps Send inside the composer, which is the panel's last child in source": {},
+        "empty-session create — one sentence, two actions, no tutorial > renders the two create buttons and no explainer paragraphs": {},
+        "empty-session create — one sentence, two actions, no tutorial > keeps the honest selected-part sentence and does not grow a tutorial": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > keeps the rail a height-bounded scroll host": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > fails if a rail descendant can force wider than --rail-width": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > does not mount the configuration table or allowlist until expanded": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > still offers Sign-in and discovery in the compact row": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > keeps acknowledged egress hosts in the compact DOM (G10C)": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > keeps the zero-config empty action when there is no provider row": {},
+        "artifact pin — chip width that fits the 1280 header > shortens the visible pin below the width that ate Token": {},
+        "composer chrome — talking surface, not a Plan/DFM toolbar > does not render a bare effort off in the strip": {},
+        "composer chrome — talking surface, not a Plan/DFM toolbar > defaults the idle prompt to one row so Send stays on-screen": {},
+        "rail project sections — listed, empty-honest, collapsed > keeps the closed inventory and does not expand empty bodies by default": {},
+        "header git identity — no invented branch, no HEAD without a sha > treats porcelain (detached) as no branch and still shows an oid head": {},
+        "header git identity — no invented branch, no HEAD without a sha > omits both fields when GET /git/status has not answered": {},
+        "header git identity — no invented branch, no HEAD without a sha > does not print the label HEAD when head is not an oid": {},
+        "composer chrome — no unlabelled off toggles > does not render a bare effort off in the strip": {}
+      }
+    },
+    "awsomefox-campfire-822f7f297aab": {
+      "file": "weak",
+      "note": "Single coverage-style test. The title claims defaults and readiness, but defaults are only checked with toBeDefined and readiness only echoes campaignId.",
+      "tests": {
+        "AiDmService unit coverage tests > manages AI DM seat configuration, defaults, and readiness": {
+          "unsure": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "defaults are only checked with toBeDefined; other checks in the test are real, so unclear whether the defaults claim is meant"
+          }
+        }
+      }
+    },
+    "awsomefox-campfire-8d7da00e07e6": {
+      "file": "weak",
+      "note": "Coverage-style smoke test on an empty campaign: checks only empty results, a dry-run flag and a non-negative size.",
+      "tests": {
+        "AttachmentsService unit coverage tests > manages attachment storage stats and listing": {
+          "unsure": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "storage totalBytes is only checked with >= 0; other checks are real, so unclear whether the size claim is meant"
+          }
+        }
+      }
+    },
+    "bamr87-zer0-mistakes-229c2fcb2dd3": {
+      "file": "good",
+      "tests": {
+        "Feature registry provenance (/features/) > reference table has a Provenance column": {},
+        "Feature registry provenance (/features/) > a known feature exposes a PR link with the correct GitHub href": {},
+        "Feature registry provenance (/features/) > commit links point at the repo commit endpoint": {},
+        "Feature registry provenance (/features/) > feature cards render a provenance line": {}
+      }
+    },
+    "braian-io-braian-14af8aa389d3": {
+      "file": "good",
+      "tests": {
+        "Products create dialog": {},
+        "Articles create dialog": {},
+        "Suppliers create dialog": {},
+        "From type select stays readable in dark theme": {},
+        "Object types create dialog": {},
+        "Link types create dialog": {},
+        "Value lists create dialog": {},
+        "List values create dialog": {},
+        "Units create dialog": {},
+        "Attribute definitions create dialog": {},
+        "Type attributes create dialog": {},
+        "Structures create dialog": {}
+      }
+    },
+    "braian-io-braian-42116ca27b25": {
+      "file": "good",
+      "tests": {
+        "pairs with links two cheeses from the keyboard and the link type can be deleted": {},
+        "removing a link with values opens a plain confirm with no text input": {},
+        "removing a link updates the peer list at once and Undo brings the row back": {}
+      }
+    }
+  }
+}
