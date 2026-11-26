@@ -26,6 +26,21 @@ A helper imported from another file cannot be followed, so `oracle/no-assertion`
 
 Local helpers in the same file are followed one level deep without any configuration.
 
+## What counts as an assertion
+
+Besides `expect(...)`, `assert.*` and `t.assert.*`:
+
+- `expect` taken from the test context, as in vitest's `it('x', ({ expect }) => { ... })`.
+- `expectTypeOf(...)` type assertions (`toEqualTypeOf`, `toMatchTypeOf` and the rest).
+
+## What `oracle/weak-matcher` leaves alone
+
+It reports a test only when none of its assertions checks what a value is. One real check anywhere in the test, such as `toBe(3)`, makes the existence checks guards, so it stays quiet. It also stays quiet for a truthiness check on a value that is already a yes or no (`assert.ok(list.includes(x))`, `assert(result.success)`), and for `toHaveBeenCalledWith(expect.anything(), 'a', 'b')`, where the other arguments are pinned.
+
+## What `oracle/interaction-only` leaves alone
+
+A test that asserts `not.toHaveBeenCalled()` is checking that nothing was sent. That is the behaviour, so it is not reported.
+
 ## What it does not do
 
 - Tests marked `skip`, `todo` or `fixme` are not judged. Turning a test off is the integrity layer's concern.

@@ -82,6 +82,8 @@ export const interactionOnly: OracleRule = {
         for (const test of ctx.facts()) {
           if (isDisabled(test.modifier) || test.assertions.length === 0) continue;
           if (!test.assertions.every((a) => INTERACTION.test(a.matcher))) continue;
+          // `not.toHaveBeenCalled()` says nothing was sent: the absence is the behaviour
+          if (test.assertions.some((a) => a.negated)) continue;
           if (!test.body || !capturesResult(test.body, mocks)) continue;
           findings.push(
             oracleFinding(interactionOnly, ctx.file, {
