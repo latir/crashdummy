@@ -1081,6 +1081,334 @@
         "projectPerformance > allows project admins to manage $label": {},
         "projectPerformance > does not allow non-admins to manage $label": {}
       }
+    },
+    "gregmeyer-some-useful-agents-e4382387c1ca": {
+      "file": "good",
+      "tests": {
+        "GET /inbox/:id/events (SSE) > returns 404 when the inbox message does not exist": {},
+        "GET /inbox/:id/events (SSE) > requires auth (no cookie → 401)": {},
+        "GET /inbox/:id/events (SSE) > opens with the SSE content-type and an initial open frame": {},
+        "GET /inbox/:id/events (SSE) > replays buffered events newer than Last-Event-ID": {},
+        "GET /inbox/events (global SSE) > requires auth (no cookie → 401)": {},
+        "GET /inbox/events (global SSE) > is not shadowed by /inbox/:id/events (no 404 for the literal \"events\")": {},
+        "GET /inbox/events (global SSE) > a resolve mutation fans a coarse event onto the global channel": {},
+        "GET /inbox/events (global SSE) > receives events published via publishInboxChanged on the global channel": {}
+      }
+    },
+    "hitesh2912-arvr-project-54c0042b602e": {
+      "file": "good",
+      "tests": {
+        "Flow Graph Data Nodes > Variable Block": {},
+        "Flow Graph Data Nodes > Values are cached for the same execution id": {}
+      }
+    },
+    "horusgoul-trizum-0793eb78b2a7": {
+      "file": "good",
+      "tests": {
+        "waits for completed sign-in and the matching provider account before native Premium": {},
+        "completes optional account sign-in without opening Premium": {},
+        "cancels pending sign-in, ignores late completion, and allows a fresh attempt": {},
+        "can sign in to the same account and open Premium on successive attempts": {},
+        "does not let a stale paywall completion close a newer request": {},
+        "opens browser help without sign-in or native commerce": {},
+        "clears a failed request and allows retry": {},
+        "ignores callbacks from a cancelled sign-in after starting another attempt": {}
+      }
+    },
+    "hypothetical-money-machine-hype-comms-192d39253d13": {
+      "file": "good",
+      "note": "Regex checks on CI workflow text. They guard configuration, not behaviour, so a change that keeps the strings but breaks the job would pass.",
+      "tests": {
+        "isolates a workflow job from neighboring jobs": {},
+        "runs public PostgreSQL CI on disposable GitHub-hosted infrastructure": {},
+        "runs the display-server-free demo smokes on Ubuntu x64": {}
+      }
+    },
+    "itsomidkarami-kraft-5f727fb34e3a": {
+      "file": "good",
+      "tests": {
+        "theme.css > has 30 neutral blocks and 36 accent blocks": {},
+        "theme.css > %s %s %s accent %s clears every floor": {}
+      }
+    },
+    "jarrettmeyer-databricks-mcp-395ce908cdeb": {
+      "file": "good",
+      "tests": {
+        "executeDatabricksCommand > uses 'databricks' by default when DATABRICKS_PATH is not set": {},
+        "executeDatabricksCommand > uses DATABRICKS_PATH when set": {},
+        "executeDatabricksCommand > strips pipe suffix so only the databricks portion is spawned": {},
+        "executeDatabricksCommand > strips redirect suffix so only the databricks portion is spawned": {},
+        "executeDatabricksCommand > strips everything after the first pipe in a multi-stage pipeline": {},
+        "executeDatabricksCommand > preserves quoted redirect inside a SQL string": {}
+      }
+    },
+    "jeanlorencini-herdr-web-ui-40bc62e2774c": {
+      "file": "good",
+      "tests": {
+        "parseMarkdown > renders inline and display math while leaving fenced code untouched": {},
+        "parseMarkdown > parses level one through three headings": {},
+        "parseMarkdown > parses unordered, ordered, and one-level nested lists": {},
+        "parseMarkdown > keeps fenced code and its language": {},
+        "parseMarkdown > recognizes display math without parsing its contents as markdown": {},
+        "parseMarkdown > keeps later markdown and code intact after an unclosed display formula": {},
+        "parseMarkdown > parses a GFM table": {},
+        "inline markdown > parses links and rejects unsafe protocols": {},
+        "inline markdown > keeps a link to a local file as that file, not only its label": {},
+        "inline markdown > links an address written without its scheme, and leaves files and non-addresses alone": {},
+        "inline markdown > parses inline code, bold, italic, and strikethrough": {},
+        "inline markdown > renders inline math in prose but not in code spans": {},
+        "inline markdown > preserves underscores in identifiers while retaining standalone emphasis": {},
+        "autolinks > links a bare http(s) URL and keeps the text around it": {},
+        "autolinks > leaves the sentence's punctuation out, and keeps parentheses the URL opened": {},
+        "autolinks > links an <angle> URL, and nothing inside code, a markdown link, or another scheme": {},
+        "autolinks > links inside emphasis": {},
+        "foldCode > shows blocks up to the limit whole": {},
+        "foldCode > folds a longer block to its first lines and counts all of them": {},
+        "numbered lists as agents write them > keeps one list across blank lines between its items": {},
+        "numbered lists as agents write them > goes on from its own number after a code block or other break, and starts where it says": {},
+        "numbered lists as agents write them > reads an item's indented lines as its own text, and an indented fence as code": {},
+        "numbered lists as agents write them > shows a table indented under an item as a table in that item, not as the item's text": {},
+        "numbered lists as agents write them > goes on counting after a table in an item, the way agents number every item 1.": {},
+        "numbered lists as agents write them > keeps a table and a nested list under one item in the order they were written": {},
+        "numbered lists as agents write them > keeps an item's text after its table below the table": {},
+        "numbered lists as agents write them > ends the list at a quote after an item's table, as before tables nested": {},
+        "numbered lists as agents write them > ends an item's table at the next item or a line outside the item": {},
+        "numbered lists as agents write them > keeps both of two nested lists under one item": {},
+        "numbered lists as agents write them > escapes markup in a table cell inside a list item": {},
+        "numbered lists as agents write them > shows a table indented under an item as a table, not as the item's text": {}
+      }
+    },
+    "iblai-os-23a6bf03bf57": {
+      "file": "weak",
+      "note": "Several absence checks are wrapped in try/catch, so a visible element never fails the test (tests 3, 4, 8). Test 6 only logs a warning when reasoning appears, and test 5's auto-collapse wait is also swallowed.",
+      "tests": {
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Appears With Bounce Dots During Streaming and Settles After": {},
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Expands to Show Tool Names and Query Detail": {},
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Header Counts Unique Tool Types Not Total Calls": {},
+        "Journey 52: Tool Call Indicator and Reasoning Section > Web Search Button is NOT Visible When Tool is Disabled on Mentor": {
+          "yes": [
+            "oracle/swallowed-async"
+          ],
+          "reason": {
+            "oracle/swallowed-async": "expect(true).toBe(false) sits inside try and catch swallows it, so the web search button check cannot fail"
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Does Not Appear When Web Search is Enabled But Not Activated": {
+          "yes": [
+            "oracle/swallowed-async"
+          ],
+          "reason": {
+            "oracle/swallowed-async": "the no-tool-call-indicator check is expect(true).toBe(false) inside try/catch and can never fail"
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Renders and Auto-Collapses to Thought After Streaming": {
+          "yes": [
+            "oracle/swallowed-async"
+          ],
+          "reason": {
+            "oracle/swallowed-async": "the auto-collapse wait and the visibility expect are inside try/catch, so a timeout or failure is ignored"
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Does Not Appear When Model Does Not Produce Reasoning Tokens": {
+          "yes": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "the reasoning-absence check only logs a warning when reasoning appears, so nothing can fail"
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator and Reasoning Section Both Render in the Same Message": {},
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Is Hidden When Verbose Reasoning Is Off": {
+          "yes": [
+            "oracle/swallowed-async"
+          ],
+          "reason": {
+            "oracle/swallowed-async": "the hidden-indicator check is expect(true).toBe(false) inside try/catch and can never fail"
+          }
+        }
+      }
+    },
+    "jkalasas-lightdash-02ccbbc41001": {
+      "file": "good",
+      "tests": {
+        "AppGenerateService.getAppCode > returns a DataAppCode with manifest and extracted source files for the latest ready version": {},
+        "AppGenerateService.getAppCode > emits spaceSlug as a content-as-code path for an in-space app": {},
+        "AppGenerateService.getAppCode > resolves the app via the uuid-or-slug lookup when given a slug": {},
+        "AppGenerateService.getAppCode > uses the resolved app_id — never the raw uuid-or-slug ref — for the S3 source key": {},
+        "AppGenerateService.getAppCode > includes the version viz schema in the manifest for a data app viz": {},
+        "AppGenerateService.getAppCode > omits vizSchema from the manifest when the version has no schema": {},
+        "AppGenerateService.getAppCode > emits app external-connection links as {alias, connectionSlug} in the manifest": {},
+        "AppGenerateService.getAppCode > uses the provided version number instead of latest ready": {},
+        "AppGenerateService.getAppCode > throws NotFoundError when no ready version exists and version is omitted": {},
+        "AppGenerateService.getAppCode > throws NotFoundError when the source.tar object does not exist in S3": {},
+        "AppGenerateService.getAppCode > throws ForbiddenError when the user cannot view the app": {},
+        "AppGenerateService.getAppCode > resolves with manifest and files intact when semanticLayer fetch fails (degraded context)": {},
+        "AppGenerateService.getAppCode > passes limit: 100 to getAppWithVersions when assembling prompt history": {},
+        "AppGenerateService.getAppCode > assembles context: semantic layer, null parameters (empty), prompt history, and empty theme": {},
+        "AppGenerateService.getDataAppAuthoringContext > returns project context with empty prompt history for a new local app": {},
+        "AppGenerateService.getDataAppAuthoringContext > rejects a slug already reserved in the project": {},
+        "AppGenerateService.getDataAppAuthoringContext > rejects an invalid local app slug": {}
+      }
+    },
+    "kenastark-provenance-0104572e2a7d": {
+      "file": "good",
+      "note": "The no-violation checks depend on the imported expectNoCriticalA11yViolations, which is not visible here; unsure on the four tests that rely only on it.",
+      "tests": {
+        "`${route.name} has no critical accessibility violations (dark)`": {
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "no expect in the body; relies entirely on imported expectNoCriticalA11yViolations from ./support, not visible"
+          }
+        },
+        "`${route.name} has no critical accessibility violations (light)`": {
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "no expect in the body; relies entirely on imported expectNoCriticalA11yViolations from ./support, not visible"
+          }
+        },
+        "admin screen (admin role) > has no critical accessibility violations (dark)": {
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "no expect in the body; relies entirely on imported expectNoCriticalA11yViolations from ./support, not visible"
+          }
+        },
+        "admin screen (admin role) > has no critical accessibility violations (light)": {
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "no expect in the body; relies entirely on imported expectNoCriticalA11yViolations from ./support, not visible"
+          }
+        },
+        "admin screen (admin role) > a role below admin sees the block stated in words, not a wall of request errors": {},
+        "sign-in screen > has no critical accessibility violations (dark)": {},
+        "sign-in screen > has no critical accessibility violations (light)": {},
+        "sign-in screen > every role card is reachable with the keyboard and shows a visible focus ring": {},
+        "sign-in screen > focus lands on the main landmark once sign-in completes": {},
+        "keyboard traversal > the skip link is the first tab stop and lands on the content": {},
+        "keyboard traversal > every screen is reachable with the keyboard alone": {},
+        "keyboard traversal > a station can be opened from the quality table without a mouse": {},
+        "keyboard traversal > focus is visible wherever it lands": {},
+        "keyboard traversal > the layer toggle that is not ready is disabled and explained": {},
+        "reduced motion > is respected": {}
+      }
+    },
+    "kevin-taha-scriptorium-03f12195b790": {
+      "file": "good",
+      "tests": {
+        "the build enforces a strict Content-Security-Policy that reading, notes and focus mode stay within": {}
+      }
+    },
+    "kgoggin-facts-checker-7329f6f9c7f4": {
+      "file": "good",
+      "tests": {
+        "token prints only the refresh token to stdout and progress to stderr, logging in once": {},
+        "token --json prints the token set, ISO expiry and shared OAuth/API configuration": {},
+        "config prints the shared constants without credentials, prompts or login": {},
+        "missing configuration without a TTY uses the existing FACTS_CONFIG error (%j)": {},
+        "missing credentials on a TTY are prompted for and passed to login without changing env": {},
+        "a TTY prompts only for missing values and does not retry empty answers": {},
+        "a blank authenticator secret lets a TTY answer authenticator MFA interactively": {},
+        "email destination and email code requests use the interactive OTP callback even with a TOTP secret": {},
+        "invalid TOTP configuration fails before login": {},
+        "FactsError prints only code and message, with no cause or stack, and never retries": {},
+        "unexpected failures do not disclose exception messages or stacks": {},
+        "cancelled input fails with FACTS_CONFIG before login": {},
+        "help (%j) prints usage to stderr without login": {},
+        "invalid arguments (%j) print usage to stderr and exit 2": {}
+      }
+    },
+    "kingithegreat-sadie-2e6ffe236302": {
+      "file": "good",
+      "tests": {
+        "rejects a same-prefix sibling via %s path before indexing": {},
+        "indexes and retrieves a real document inside home using the Documents shortcut": {},
+        "uses the Windows profile boundary when HOME differs": {},
+        "a filesystem-root profile (D:\\ on Windows, / on POSIX) still indexes a document under it": {}
+      }
+    },
+    "learn-ukrainian-learn-ukrainian-github-io-434e9d71904c": {
+      "file": "good",
+      "tests": {
+        "dateSeed > uses the local calendar date": {},
+        "pickDaily > is deterministic for a fixed pool, seed, and count": {},
+        "pickDaily > caps the count at the pool length": {},
+        "deckSeed > is deterministic and varies by deck id": {},
+        "deckSeed > combined with dateSeed, draws different sets for different decks on the same day": {},
+        "deckSeed > combined with dateSeed, is stable for the same deck and day but rotates across days": {},
+        "reRollSeed > is zero for the default (un-re-rolled) draw": {},
+        "reRollSeed > #6132: re-rolling draws a different set without changing the day": {},
+        "reRollSeed > is deterministic for a given count, so the same re-roll replays identically": {}
+      }
+    },
+    "learn-ukrainian-learn-ukrainian-github-io-902e29730ad0": {
+      "file": "good",
+      "tests": {
+        "lexicon SRS facade > parses legacy no-separator card keys as flashcards": {},
+        "lexicon SRS facade > parses known card-key modes and schedules backed wave-1 drills": {},
+        "lexicon SRS facade > emits heritage candidates from published items in mixed and focus modes": {},
+        "lexicon SRS facade > classify rotates outcome sets while keeping one SRS card key": {},
+        "lexicon SRS facade > quarantines explicit unknown card-key modes without rewriting stored state": {},
+        "lexicon SRS facade > stability counters and selector debt skip quarantined unknown-mode cards": {},
+        "lexicon SRS facade > practice mode set is coupled to the deck-version sentinel": {},
+        "lexicon SRS facade > schedules deterministically with FSRS defaults": {},
+        "lexicon SRS facade > keys cards by lemmaId and mode": {},
+        "lexicon SRS facade > migrates legacy storage into flashcard card keys and writes backup": {},
+        "lexicon SRS facade > backs up existing raw state before save overwrites": {},
+        "lexicon SRS facade > writes the primary state before the best-effort backup": {},
+        "lexicon SRS facade > keeps a successful primary state when the backup write fails": {},
+        "lexicon SRS facade > recovers a rating by dropping the backup when it is the quota blocker": {},
+        "lexicon SRS facade > keeps the rating in memory and exposes a storage-full state after exhausted recovery": {},
+        "lexicon SRS facade > migrates and compacts oversized review history without changing card schedules": {},
+        "lexicon SRS facade > bounds persisted review-state size across simulated long-term sessions": {},
+        "lexicon SRS facade > keeps corrupt storage and surfaces fallback flag": {},
+        "lexicon SRS facade > detects clock jumps beyond seven days": {},
+        "lexicon SRS facade > due queue includes new cards and excludes future reviews per mode": {},
+        "lexicon SRS facade > counts mastered cards for the requested mode": {},
+        "lexicon SRS facade > selector keeps lapsed cards ahead of hard variety drops": {},
+        "lexicon SRS facade > selector applies soft variety across realistic due-time spread": {},
+        "lexicon SRS facade > soft variety never overtakes a genuinely more-due card (no penalty leak across urgency buckets)": {},
+        "lexicon SRS facade > selector never borrows not-due cards while overdue cards exist": {},
+        "lexicon SRS facade > selector widens the due window before borrowing farther not-due cards": {},
+        "lexicon SRS facade > selector mode debt surfaces a starved due mode": {},
+        "lexicon SRS facade > selector uses the session seed only as a stable tied-new-card tiebreak": {},
+        "lexicon SRS facade > selector returns immutable snapshots of cached candidates": {},
+        "lexicon SRS facade > due and lapsed cards beat tied new cards regardless of seed": {},
+        "lexicon SRS facade > B1 decks introduce B1 new cards before same-urgency lower-level cards": {},
+        "lexicon SRS facade > B1 sessions prefer B1 due reviews over same-urgency lower-level reviews": {},
+        "lexicon SRS facade > A2 sessions prefer A2 due reviews over same-urgency A1 reviews": {},
+        "lexicon SRS facade > urgency still beats level bias for lower-level overdue cards": {},
+        "lexicon SRS facade > seeded answer placement varies correct-answer positions across a session": {},
+        "lexicon SRS facade > selector handles a warmed 18k-candidate transition under the perf budget": {},
+        "lexicon SRS facade > explicit cloze mode reaches authored cloze before recognition mastery": {},
+        "lexicon SRS facade > cloze soft cap yields to lapsed cloze pressure": {},
+        "lexicon SRS facade > cloze soft cap exempts overdue non-lapsed cloze": {},
+        "lexicon SRS facade > validates cloze option sets and Ukrainian plural forms": {},
+        "recentSessionHistory (#6132 cross-session anti-repeat) > seeds from the same-day tail of the persisted review log": {},
+        "recentSessionHistory (#6132 cross-session anti-repeat) > drops reviews from a different local calendar day": {},
+        "recentSessionHistory (#6132 cross-session anti-repeat) > caps to the most recent `limit` entries, keeping chronological order": {},
+        "recentSessionHistory (#6132 cross-session anti-repeat) > an empty review log seeds an empty history (first-ever session)": {},
+        "daily practice deck (K3 chunk 1) > daily deck size is 12 for viewport density (#5502)": {},
+        "daily practice deck (K3 chunk 1) > selects exactly DAILY_PRACTICE_DECK_SIZE unique lemmas when enough data exists": {},
+        "daily practice deck (K3 chunk 1) > orders due before new and applies deterministic tie-breakers": {},
+        "daily practice deck (K3 chunk 1) > multiple due modes for one lemma consume one daily slot": {},
+        "daily practice deck (K3 chunk 1) > reviewed-but-not-due lemmas do not displace due or new candidates": {},
+        "daily practice deck (K3 chunk 1) > uses the actual eligible count as denominator when fewer than daily size lemmas exist": {},
+        "daily practice deck (K3 chunk 1) > published levels stay A1 through C1 and C2 is not added": {},
+        "daily practice deck (K3 chunk 1) > a valid snapshot is stable after SRS mutations and page reload": {},
+        "daily practice deck (K3 chunk 1) > invalidates snapshot on date, level, or deckVersion mismatch": {},
+        "daily practice deck (K3 chunk 1) > corrupt JSON falls back to null without blocking": {},
+        "daily practice deck (K3 chunk 1) > refill drops missing IDs and deterministically replaces them": {},
+        "daily practice deck (K3 chunk 1) > refill reuses valid IDs when deck version changes": {},
+        "daily practice deck (K3 chunk 1) > again moves a completed lemma back to pending due; success moves it back to done": {},
+        "daily practice deck (K3 chunk 1) > deriveDailyPracticeRows groups done rows after pending due and pending new": {}
+      }
     }
   }
 }
