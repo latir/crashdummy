@@ -5370,6 +5370,2124 @@
           "reason": {}
         }
       }
+    },
+    "learn-ukrainian-learn-ukrainian-github-io-902e29730ad0": {
+      "file": "good",
+      "tests": {
+        "lexicon SRS facade > parses legacy no-separator card keys as flashcards": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > parses known card-key modes and schedules backed wave-1 drills": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > emits heritage candidates from published items in mixed and focus modes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > classify rotates outcome sets while keeping one SRS card key": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > quarantines explicit unknown card-key modes without rewriting stored state": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > stability counters and selector debt skip quarantined unknown-mode cards": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > practice mode set is coupled to the deck-version sentinel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > schedules deterministically with FSRS defaults": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > keys cards by lemmaId and mode": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > migrates legacy storage into flashcard card keys and writes backup": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > backs up existing raw state before save overwrites": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > writes the primary state before the best-effort backup": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > keeps a successful primary state when the backup write fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > recovers a rating by dropping the backup when it is the quota blocker": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > keeps the rating in memory and exposes a storage-full state after exhausted recovery": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > migrates and compacts oversized review history without changing card schedules": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > bounds persisted review-state size across simulated long-term sessions": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > keeps corrupt storage and surfaces fallback flag": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > detects clock jumps beyond seven days": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > due queue includes new cards and excludes future reviews per mode": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > counts mastered cards for the requested mode": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > selector keeps lapsed cards ahead of hard variety drops": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > selector applies soft variety across realistic due-time spread": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > soft variety never overtakes a genuinely more-due card (no penalty leak across urgency buckets)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > selector never borrows not-due cards while overdue cards exist": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > selector widens the due window before borrowing farther not-due cards": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > selector mode debt surfaces a starved due mode": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > selector uses the session seed only as a stable tied-new-card tiebreak": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > selector returns immutable snapshots of cached candidates": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > due and lapsed cards beat tied new cards regardless of seed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > B1 decks introduce B1 new cards before same-urgency lower-level cards": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > B1 sessions prefer B1 due reviews over same-urgency lower-level reviews": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > A2 sessions prefer A2 due reviews over same-urgency A1 reviews": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > urgency still beats level bias for lower-level overdue cards": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > seeded answer placement varies correct-answer positions across a session": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > selector handles a warmed 18k-candidate transition under the perf budget": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > explicit cloze mode reaches authored cloze before recognition mastery": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > cloze soft cap yields to lapsed cloze pressure": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > cloze soft cap exempts overdue non-lapsed cloze": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lexicon SRS facade > validates cloze option sets and Ukrainian plural forms": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "recentSessionHistory (#6132 cross-session anti-repeat) > seeds from the same-day tail of the persisted review log": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "recentSessionHistory (#6132 cross-session anti-repeat) > drops reviews from a different local calendar day": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "recentSessionHistory (#6132 cross-session anti-repeat) > caps to the most recent `limit` entries, keeping chronological order": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "recentSessionHistory (#6132 cross-session anti-repeat) > an empty review log seeds an empty history (first-ever session)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > daily deck size is 12 for viewport density (#5502)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > selects exactly DAILY_PRACTICE_DECK_SIZE unique lemmas when enough data exists": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > orders due before new and applies deterministic tie-breakers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > multiple due modes for one lemma consume one daily slot": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > reviewed-but-not-due lemmas do not displace due or new candidates": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > uses the actual eligible count as denominator when fewer than daily size lemmas exist": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > published levels stay A1 through C1 and C2 is not added": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > a valid snapshot is stable after SRS mutations and page reload": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > invalidates snapshot on date, level, or deckVersion mismatch": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > corrupt JSON falls back to null without blocking": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > refill drops missing IDs and deterministically replaces them": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > refill reuses valid IDs when deck version changes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > again moves a completed lemma back to pending due; success moves it back to done": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daily practice deck (K3 chunk 1) > deriveDailyPracticeRows groups done rows after pending due and pending new": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "leozhengliu-pixel-flow-8833ea3282e8": {
+      "file": "good",
+      "tests": {
+        "mobile cycles timeline > `cycle cards, cooldown, chart and navigation at ${width}px`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile cycle detail > `grouped estimate rows match the phone chrome at ${width}px`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile initiative overview > `closed details preserve the overview and latest update at ${width}px`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile initiatives list > `All initiatives keeps its phone header and on-track row at ${width}px`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile projects list > phone All projects rows show the icon, name, milestone, health and progress": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile project overview > phone project overview shows the header tabs, property pills and sections": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile project properties panel > phone project details panel sits at the right edge over the overview with split date rows": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile project activity > phone project activity shows the comment composer, a month heading and the framed comment card": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile project update composer > phone project updates show the changed properties and post-update footer": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile project issues empty state > phone issues tab shows the centred empty state, shortcut keycaps and the display dot": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile project milestones section > phone overview scrolls to the description goals and milestone card": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mobile project milestones section > `phone descriptions keep wrapped, ordered and nested list text unclipped at ${width}px`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "linuxfoundation-lfx-self-serve-edf59d04c79d": {
+      "file": "good",
+      "tests": {
+        "WG Weekly Brief card — feature-flag gating > card is NOT rendered when wg-weekly-brief flag is OFF": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "WG Weekly Brief card — feature-flag gating > card IS rendered for the same fixture when LaunchDarkly is reachable": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "WG Weekly Brief card — empty state (flag ON) > renders empty state with Generate enabled and the \"No brief yet\" copy": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "WG Weekly Brief card — empty state (flag ON) > Generate is disabled once the weekly generate quota is exhausted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "WG Weekly Brief card — generated state (flag ON) > renders brief text, week label, throttle badge, and primary actions": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "WG Weekly Brief card — Edit → Save round-trip > PUT request carries the modified brief text, and UI re-renders with the \"Edited\" badge": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "WG Weekly Brief card — Generate from empty > clicking Generate fires POST, polls until terminal, and the UI re-renders to the generated state": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "WG Weekly Brief card — loads directly into the generating state > a page load landing on an already-generating brief polls to terminal on its own, without a Generate click": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "WG Weekly Brief card — read failure (flag ON) > shows a retryable unavailable state when GET current fails, then recovers on retry": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "lopes-felipe-f5-cef748444718": {
+      "file": "good",
+      "tests": {
+        "Antigravity native tools > locates native replacement hunks and never presents unknown snippets as whole files": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > decodes the short Target/Replacement argument names on the snippet path": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > diffs the full before/after texts current releases send on completion": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > diffs only the completed update, never a cached preview": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > keeps snippet-shaped texts off the full-file path": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > shares one patch budget across the entries of an update": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > whole-file writes against the pre-write snapshot > diffs a new file against /dev/null and an existing one against its old text": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > whole-file writes against the pre-write snapshot > keeps the path when the snapshot is unknown, already matches, or names another file": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > whole-file writes against the pre-write snapshot > snapshots once per call, again after a failure, and evicts beyond 32 calls": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > shows a new-file write as an addition and an overwrite as a path-only change": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > uses Antigravity's tool summary as the command description": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Antigravity native tools > shows writes into the brain directory as artifacts, not file changes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "lucent-financial-group-zeta-3bb878cde226": {
+      "file": "good",
+      "tests": {
+        "package.json wiring > keeps the package wiring pointed at the enforcing inventory guard": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > accepts the retained shell allowlist": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > flags new post-install shell files as drift": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > flags repo-wide shell files outside the allowlist as drift": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > flags missing retained shell scripts": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > flags duplicate allowlist entries before classifying repo shell drift": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > flags unsorted allowlist entries before classifying repo shell drift": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > flags category metadata entries that are no longer retained": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > flags retained allowlist entries without category metadata": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > summarizes retained shell files by explicit category": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > matches the current tracked repo shell inventory": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildInventoryReport > enumerates tracked shell-family files while excluding Lean vendor scripts": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "renderReport > renders an OK summary for a matching inventory": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "renderReport > renders drift sections": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "renderReport > renders allowlist integrity errors before drift sections": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "renderReport > renders out-of-order allowlist entries as allowlist integrity errors": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "renderReport > renders stale category map entries as allowlist integrity errors": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "renderReport > renders uncategorized allowlist entries as allowlist integrity errors": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "maheidem-openstyle-0501f5438d4d": {
+      "file": "good",
+      "tests": {
+        "buildChoices > ranks people by word overlap with the question": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildChoices > lists open items first, then done items marked [done], with the item key as id": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildChoices > an unfiled meeting has open items in scope all": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildChoices > ranks meetings by title and by date words": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildChoices > uses earlier questions of the thread to rank": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildChoices > respects the scope": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildChoices > lists the folders": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildChoices > caps the lists": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "buildChoices > gold choice is listed: %s": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "nativeToolDefs > builds OpenAI function tools with closed labels and no date field": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "nativeToolDefs > shows at most 8 tools": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "nativeToolDefs > leaves out a tool whose closed list is empty": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > maps a label to the meeting id and parses with the zod schema": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > rejects an unknown label and does not repair it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > rejects a raw meeting id that is not a label": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > rejects a tool outside the plan and an unknown tool": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > ignores a model date and uses the date of the question": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > sets no date when the question has none": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > uses the question for an empty query and cuts a long one": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > a meeting outside the scope is an error": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > maps a person id and rejects an unknown person": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > builds write proposals from labels": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "validateNativeCall > retag without a meeting uses the meetings in the date range of the question": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "mgrin-scani-oss-4239d4f32525": {
+      "file": "good",
+      "tests": {
+        "IDOR — payments router > update refuses to modify another user's payment": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "IDOR — payments router > settleOccurrence refuses to settle another user's occurrence": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "IDOR — vendors router > create derives the owner from ctx.userId, never from a client-supplied field": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "IDOR — vendors router > addAlias refuses to attach an alias to another user's vendor": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "IDOR — vendors router > addAlias lets the owner through — the control that makes the refusal above a decision": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "IDOR — vendors router > merge passes ctx.userId to the enforcement boundary, never a client field": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "IDOR — vendors router > merge lets the owner through — the control that makes the refusal above a decision": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "IDOR — documents router > acceptExtraction refuses to accept another user's extraction and leaves review_state untouched": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "modelcontextprotocol-inspector-02c8c865e1d1": {
+      "file": "good",
+      "tests": {
+        "daemon coverage > handle() covers invalid connect / connections/use / unknown op": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > rejects a second daemon while a live one holds the lock": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > reclaims a lock left by a dead pid": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > does not delete a lock it no longer owns on stop": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > restores a live lock created between the dead-pid read and the rename": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > treats a young pidless lock as held instead of stealing it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > reclaims a pidless lock older than the write grace period": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > restores a young pidless lock renamed aside mid-reclaim": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > stop() force-destroys sockets whose shutdown flush never drains": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > removes a stale socket before binding": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > daemon/stop responds then shuts down": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > accepts malformed NDJSON lines without crashing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > resolves the daemon.token directory without deriving it from pipe paths": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon rejects immediately on a pre-aborted signal instead of hanging": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon maps error responses and unreachable sockets": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon reassembles a multi-byte UTF-8 character split across chunks": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon with an already-aborted signal rejects without dialing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon rejects malformed response JSON": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon ignores mismatched response ids then accepts a match": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon skips blank lines and defaults missing exitCode": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > stop() without start and with missing lock files is safe": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > repeated stop() returns the same in-flight cleanup promise": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > rejects new ops while stopping but keeps status ops answerable": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > stop() quiesces in-flight ops before disconnecting connections": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon times out a hung server": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon with timeoutMs 0 arms no local deadline; daemon close still fails it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > connections/use and reconnect replace an existing connection": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > idle handler fires after last disconnect when idleMs > 0": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > covers touch/auth/oauth-setup/disconnect-swallow/reconnect-before-idle": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > ensureDaemon reuses a running daemon and resolveDaemonScriptPath finds build": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > ensureDaemon auto-spawns when no daemon is present": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > ping and daemon/status report stopping during shutdown": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > waitForDaemonExit resolves for a dead pid and times out on a live one": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > waitForDaemonExit falls back to socket reachability without a pid": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > ensureDaemon waits out a stopping daemon and spawns a fresh one": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > start-timeout error quotes the daemon's stderr log": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > start-timeout error stays clean when the daemon logged nothing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > readLogTail returns the last lines and empty string when unreadable": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > ensureDaemon fails loudly when a live listener rejects ping (no takeover)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > ensureDaemon fails loudly on daemon_auth_failed (wrong token is not a stale socket)": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "pong is checked only with toBeDefined; callDaemon already throws on an error envelope, so the value itself is never inspected"
+          }
+        },
+        "daemon coverage > connection-less start arms idle and self-reaps": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > connect failure for a dead stdio command is surfaced and re-arms idle": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > re-arms idle when createConnectionClient fails before client.connect": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > callDaemon fails immediately when the peer closes without a response": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "daemon coverage > connections/use via handle and blank IPC lines": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "protocolVersion is checked only with toBeTruthy inside an if (shown.ok) guard"
+          }
+        },
+        "mcp connection coverage > covers connections/use, daemon status, @connection connect, and stop no-op": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mcp connection coverage > rejects connect with no target and invalid --format": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mcp connection coverage > connects an ad-hoc stdio target": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mcp connection coverage > treats a URL positional as ad-hoc": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "mcp connection coverage > requires explicit connection in non-interactive mode without opt-in": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "rovaracli-rovara-234646e7cc82": {
+      "file": "good",
+      "tests": {
+        "auditPullRequestId > is one opaque id for one pull request however the repository is spelled, and differs between pull requests": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "tryAuditEvent > builds nothing on an install with no ledger": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "tryAuditEvent > returns the built event, from a builder or a lookup": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "tryAuditEvent > logs a builder that throws as audit.record_invalid with the error's name only, and lets the action go on": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a publication callback records pull_request.opened > commits the event with the pull request record, then sends it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a publication callback records pull_request.opened > keeps the repository's name out of everything but the details": {
+          "yes": [],
+          "unsure": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "details is checked only with toBeDefined; the test claims the repo name belongs there but never asserts what details contains"
+          }
+        },
+        "a publication callback records pull_request.opened > commits the record and the pending item together or not at all": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a publication callback records pull_request.opened > R1-1: with SQS failing, the same callback twice succeeds both times and leaves exactly one pending item": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a publication callback records pull_request.opened > records a replacement's opening in the same transaction as both pull request records": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a publication callback records pull_request.opened > answers as today when the intake queue never answers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a publication callback records pull_request.opened > opens the pull request without an event when the workspace's org cannot be found, and says so without a value": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a publication callback records pull_request.opened > opens the pull request without an event when the audit's own read of the earlier record fails, and logs the error's name only": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a merge the webhook finds records pull_request.merged > commits the event with the task's move to MERGED, once, however often the merge is delivered": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a merge the webhook finds records pull_request.merged > records the opening and the merge of one pull request under one target id": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a merge the webhook finds records pull_request.merged > records the same event when the merge is found by the bounded merge polling": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a merge the webhook finds records pull_request.merged > records nothing for a pull request that is still open": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a merge the webhook finds records pull_request.merged > commits the task update and the pending item together or not at all, and the retry records one event": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a merge the webhook finds records pull_request.merged > with SQS failing, leaves the event as a pending item and still completes the task": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a merge the webhook finds records pull_request.merged > completes the task as today when the intake queue never answers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a task with several pull requests records each merge once > records the merge of each pull request when it happens, and never again for one already merged": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a save that records landed fix pushes and merges together > commits the fix pushes, the task update and the merge events in one transaction within the item limit": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a save that records landed fix pushes and merges together > commits them together or not at all: a cancelled transaction leaves no event, and the retry records each merge once": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > records a change of the org's limit from 500 to 800 with the old and new figures in cents": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > reads the cloud install's placeholder limits as the old figures of an org that never set any": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > leaves out the figure of a limit that was or becomes unset": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > records one event for each limit that changed, a member's included, and none for one that did not": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > records nothing when nothing changed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > commits the settings and the pending items in one transaction": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > classifies a lost settings condition as a reloadable revision conflict": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > keeps the revision and actor transaction on an install with no ledger": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > answers as today when the intake queue never answers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > records no event for a member limit set to, or put back to, the default figure": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > commits a change of exactly 96 events with all of them": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > counts events and not overrides: an org limit and 95 overrides are 96 events": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > refuses 97 events with CONFIG_INVALID, writing and recording nothing, and names no value": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > lets a change of any size through on an install with no ledger": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > refuses in changeBudgets before the settings are written or the proxy is told": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the budget routes record the change > PUT /v1/dev/org/budget by an admin records budget.changed from 500 to 800 with the admin as actor": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the budget routes record the change > refuses a member before any event is made": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the budget routes record the change > PUT /v1/admin/org/budget by an operator records the change under the operator's pseudonymous id, never their subject": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the budget routes record the change > answers the admin route as today when the intake queue never answers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "sev7n4-pi-lnk-6bbcfdfac975": {
+      "file": "good",
+      "tests": {
+        "POST /sessions 幂等契约 > 首次 201 status=created；同键再次 200 status=resumed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions 幂等契约 > 缺 sessionId 时生成并回显（不回显 undefined）": {
+          "yes": [],
+          "unsure": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "the echoed sessionId is checked only for typeof string and non-empty; the generated value is never compared to anything"
+          }
+        },
+        "POST /sessions 幂等契约 > 空串 sessionId → 400（客户端错误，不该伪装成 503 下游故障）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions 幂等契约 > 不同 userId 同键 → 409（不泄漏 provider/model）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions 幂等契约 > 旧 Nest 兼容：attachments / mentionedKeys / refOrder / focusNodeId 仍写入首轮 toolContext": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions 幂等契约 > canvasSessionId 透传：toolContext.sessionId = 画布会话 id，而非 pi 会话键": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions 幂等契约 > 旧 Nest 兼容：不传 canvasSessionId 时回落 pi 会话键（行为不新增失败形态）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions 幂等契约 > 畸形 llm → 400（不静默兜底）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions/:key/prompt 契约 > turnContext 透传生效并返回 202": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions/:key/prompt 契约 > 旧 Nest 请求（无 turnContext）仍可用": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions/:key/prompt 契约 > 会话不存在 → 404": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions/:key/prompt 契约 > run 进行中 → 409 session busy": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "既有端点保持 > /healthz、/readyz、/metrics、/skills 可用": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "既有端点保持 > GET /sessions/:key/events 未知键 → 404；DELETE 未知键 → 404": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "既有端点保持 > DELETE /sessions/:key 删除后 204，再删 404": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "既有端点保持 > GET /sessions/:key/events?from=now 未知键 → 404（live 路径同样 fail-closed）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveEventsSubscribeMode 订阅起点裁决（P0-A 跨轮重放回归锁） > lastEventId（合法非负整数）最高优先 → 增量续传（P0-③ 不变）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveEventsSubscribeMode 订阅起点裁决（P0-A 跨轮重放回归锁） > 无 lastEventId 且 from=now → live（不重放缓冲）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveEventsSubscribeMode 订阅起点裁决（P0-A 跨轮重放回归锁） > 无参 / 畸形参数 → 全量重放（旧客户端兼容，行为不变）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 正常 resolve → 200 {ok:true,deduped:false}，阻塞中的 waitForUser 以 answered 交还": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 未知 callId（已超时清理 / 从未注册）→ 仍 200 {ok:true,deduped:true}，业务路径不 404/500": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 会话不存在 → 仍 200 deduped:true（getCanvasSessionId 回落键本身，registry 查不到无副作用）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 缺 callId 或 answers 非对象 → 400（客户端错误）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > registry 未装配 → 503（配置缺失，非业务路径）": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /sessions/:key/pending > 有 pending → {pending:{callId,toolName}}；resolve 后 → {pending:null}": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /sessions/:key/pending > 会话不存在 → {pending:null}（不给探测面）；registry 未装配 → 同样 {pending:null}": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "tamirarnesty-ploutizo-bcad87b3e0c0": {
+      "file": "good",
+      "tests": {
+        "import service > returns credit-card target accounts without owner enrichment": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > persists a normalized draft and every parsed row in one transaction": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > derives row status on GET without persisting recomputation": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > resumes the active draft for an account without inserting a new batch": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > returns the raced draft when concurrent uploads hit the unique draft index": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > derives ready status when category is patched onto a needs_review row": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > derives needs_review when core review fields are patched onto an invalid row": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > derives invalidReason when an invalid row stays invalid after partial correction": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > derives invalid status when a row loses required review fields": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > persists row field updates without writing derived status columns": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > updates row selection in batch for a draft and returns derived rows": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > derives needs_review when sibling refunds make cumulative total exceed target": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > persists settlement funding and refund-link review values": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > rejects reviewCounterpartAccountId not in org (two-org isolation)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > rejects reviewRefundOf not in org (two-org isolation)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > recomputes row status to ready when category is patched onto a needs_review row": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > recomputes invalid row to needs_review when core review fields are patched": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > refreshes invalidReason when an invalid row stays invalid after partial correction": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > adjusts draft counts when a valid row becomes invalid": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "removed test asserted draft-count adjustment on valid-to-invalid; adjustImportDraftRowCounts is dropped in the diff, which suggests deliberate retirement, and no retained test asserts counts after invalidation"
+          }
+        },
+        "import service > persists row selection updates": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "import service > updates row selection in batch for a draft": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "threahq-threa-060483878a8c": {
+      "file": "good",
+      "tests": {
+        "CompanionHandler > dispatches persona agent for messages in a thread whose root is a scratchpad with companion on": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > ignores the message a slash command was persisted as": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > dispatches for deeply nested threads under a scratchpad (thread of thread of scratchpad)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > does not dispatch for threads whose root is a channel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > does not dispatch for messages on end-to-end encrypted streams": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > should not dispatch when the message is in a shared copy": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > carries personaDraftId when the message lands in a bound test scratchpad": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > falls back to the built-in default (never the user/workspace default) for a legacy NULL pointer": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > falls back to the built-in default for an unpinned nested thread via its root scratchpad": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > uses the pinned persona directly when the scratchpad has an active explicit pick": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > does not dispatch for threads under a scratchpad whose companion mode is off": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > wakes the run's persona in a subagent thread under a channel, which has no companion mode": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > stops waking a subagent thread once the run is terminal": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "CompanionHandler > skips the run lookup entirely for a non-thread stream": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "threahq-threa-aadee30b5de2": {
+      "file": "good",
+      "tests": {
+        "AnalyticsOutboxHandler > should capture message_sent with the workspace group when the author granted consent": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should not capture when consent is %s": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should not capture a persona-authored message": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should not capture anything for an E2E stream": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should not capture anything when the stream is a shared copy": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should capture reaction_added with the expected object": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should capture stream_created with streamType": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should capture the created thread's own id when stream:created routes to the parent stream": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should capture stream_joined with the expected object": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should ignore an unrelated event type and still mark it processed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should reuse one E2E lookup for candidates across workspaces": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should give a replayed outbox row the uuid it had the first time": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should read consent once per batch with the distinct workspace and actor pairs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AnalyticsOutboxHandler > should capture only in the workspace where the user granted consent when one user id appears in two": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "timstewartj-copilot-bridge-45bd62257e58": {
+      "file": "good",
+      "tests": {
+        "copilot-cli-loader installed-package contract > resolves at least one installed @github/copilot app bundle": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader installed-package contract > patches the installed bundle at %s": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader installed-package contract > keeps pending interaction listing runtime-owned at %s": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > patches the current simple GitHub MCP config method shape": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > keeps the replaceable-tool exclusion from the older GitHub MCP config method shape": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > patches call sites when the minified options variable is renamed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > patches call sites that use different minified session variables": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > patches the 1.0.68 method shape whose resolver is minified with a $ identifier": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > patches call sites whose minified variables contain $ identifiers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > patches the 1.0.70 helper-based GitHub MCP config call sites": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > patches the 1.0.71 Fides-aware GitHub MCP config shape": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > rejects single-helper-based and mixed legacy/helper config call sites": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > rejects SDK drift that removes the runtime pending getters": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > rejects SDK drift that removes the runtime elicitation capability probe": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > asserts the native pending interaction runtime without rewriting it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > rejects a pending interaction runtime that reverts to JS-owned state": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "copilot-cli-loader > patches the pending interaction snapshot facade independently": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "removed pending-interaction facade test; its PENDING_INTERACTION_PERMISSIONS_FACADE fixture is dropped, which suggests deliberate retirement of that surface"
+          }
+        }
+      }
+    },
+    "tjorim-worktime-1a626e1f906a": {
+      "file": "good",
+      "tests": {
+        "SettingsPage Account Section > renders only the sign in button when not authenticated": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > shows sync benefits description when not authenticated": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > calls signinRedirect when Sign In is clicked": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > calls signoutRedirect when Sign Out is clicked (authenticated state)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > loads profile details and sync stats for authenticated users": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > shows the authenticated privacy notice with a link to the privacy policy": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > renders a self-service account deletion danger zone": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > does not delete the account when the confirmation dialog is cancelled": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > deletes the account and signs out after confirmation": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > shows an inline error when self-service account deletion fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > saves profile changes for authenticated users": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > renders account section title regardless of auth state": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > shows sync benefits (backup and cross-device icons) when not authenticated": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > shows signed-out sync messaging when unauthenticated": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > renders sync status alongside the account profile and calls pull action when enabled": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > disables pull action button while sync is in progress": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage API Tokens Section > shows an empty state when there are no tokens": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage API Tokens Section > generates a token, reveals it once, and copies it to the clipboard": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage API Tokens Section > revokes a token after confirmation": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage API Tokens Section > shows an error message when loading tokens fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Admin Section > does not fetch admin users or render user management for non-admin accounts": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Admin Section > renders the user management list for admin accounts": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Admin Section > deletes another user from the admin user management table after confirmation": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Admin Section > shows an inline error when deleting a managed user fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Admin Section > disables self-delete for the current admin in the user management table": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Data Section > opens reset confirmation, toggles clear options, and confirms side effects": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage General Section > handles schedule selection clicks and shows team selection for multi-team schedules": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Time Tracking Section > renders the labels and templates panels": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Features Section > toggles features and shows cross-border setup when enabled": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > renders connect account and sign in buttons when not authenticated": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SettingsPage Account Section > calls signinRedirect when Connect Account is clicked": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "removed Connect Account test; the button itself is removed (apps#168, no self-service registration), so retirement is deliberate"
+          }
+        }
+      }
+    },
+    "tjorim-worktime-4efbd56fc18f": {
+      "file": "good",
+      "tests": {
+        "AuthContext > initial state > shows validating state when OIDC is loading": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > is not authenticated when OIDC returns no user": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > is authenticated when OIDC returns a user": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > handles missing name in profile and falls back to preferred_username": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > returns null displayName when no name or preferred_username in profile": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > shows a toast when OIDC reports an authentication error": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > does not show duplicate toasts for the same OIDC error object": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > shows a toast again when the same OIDC error object recurs after being cleared": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > stays silent while a token is merely approaching expiry": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > warns with a sign-in action once the access token has expired": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > warns when silent token renewal fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > unsubscribes from OIDC session lifecycle events on unmount": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > triggerLogin > calls signinRedirect when triggerLogin is invoked": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > triggerSignup > calls signinRedirect when triggerSignup is invoked": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > logout > calls signoutRedirect when logout is invoked": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > renewSession > resolves true when signinSilent returns a renewed user": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > renewSession > resolves false when the IdP session is gone": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > renewSession > resolves false when signinSilent throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > useAuth outside provider > throws when used outside AuthProvider": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AuthContext > initial state > warns when the access token is about to expire": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "removed warning on approaching expiry; the diff makes it deliberately silent (with a rationale comment) and adds a stays-silent test in its place"
+          }
+        },
+        "AuthContext > initial state > shows an error when silent token renewal fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "todd866-guns-only-5eb3ca902a3d": {
+      "file": "good",
+      "note": "Tests 23-24 are source-text regex checks on app.js (import version string); read as a style choice, not a rule violation.",
+      "tests": {
+        "handoff presentation fails closed before the first simulation snapshot": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "medevac handoff debrief uses custody and coordination evidence, never combat copy": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "medevac terminal dispositions preserve capsule custody and never invent a fight": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "carrier water loss teaches from the recorded physical cause": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deck and carrier-structure losses remain physically distinct": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "carrier qualification makes trap evidence authoritative instead of combat victory copy": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "carrier qualification reports a bolter even when the generic outcome token is draw": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "an explicit opponent destruction event retains the combat-loss diagnosis": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a numerical terminal guard is not mislabeled as physical settlement": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "unknown defeat cause fails honest instead of inventing combat": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "maintenance score copy preserves recovered and incomplete outcomes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "drone raid debrief distinguishes containment, penetration, and ownship loss": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "sorties without G-LOC preserve their established copy exactly": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "G-LOC teaching decorates combat, carrier, maintenance, and drone results once": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "sub-threshold push-pull state stays out of the concise G-LOC lesson": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "sorties without an Auto-GCAS fly-up preserve established copy exactly": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "an Auto-GCAS intervention teaches the procedural response without guessing cause": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "G-LOC and Auto-GCAS lessons coexist exactly once": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Rapier exceedance evidence queues review without inventing damage or cost": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a clean or unfinished lifecycle record adds no debrief clutter": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "combat handoff presentation preserves every authoritative phase flag": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "recovered handoff debrief keeps player and relief kills separate": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "handoff does not hide a subsequent ownship loss or invent reserve evidence": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "app consumes the pure evidence-based debrief module": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "carrier debrief keeps physical outcome, full-pass trend, and touchdown facts distinct": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
     }
   }
 }
