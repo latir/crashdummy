@@ -403,6 +403,684 @@
         "removing a link with values opens a plain confirm with no text input": {},
         "removing a link updates the peer list at once and Undo brings the row back": {}
       }
+    },
+    "brendadeeznuts1111-project-r-score-b2c7e90feaa1": {
+      "file": "good",
+      "note": "Data and route checks are concrete and the projection tool is run for real. The UI tests are string-presence checks on the HTML and JS source, so they catch removed hooks but not behaviour.",
+      "tests": {
+        "domain glossary portal > registry projection is integral, bounded, and color-normalized": {},
+        "domain glossary portal > portal vocabulary separates concept kind, semantic type, and UI role": {},
+        "domain glossary portal > board uses URLPattern.hash deep links and shared portal chrome": {},
+        "domain glossary portal > shared glossary UX keeps DOM, fragments, focus, and telemetry bounded": {},
+        "domain glossary portal > route, chrome, and weave make the glossary discoverable": {},
+        "domain glossary portal > registered limits sections and rendered concept references stay aligned": {},
+        "domain glossary portal > committed projection stays aligned with the canonical dump": {}
+      }
+    },
+    "broomva-genesis-4a39a355b7a9": {
+      "file": "good",
+      "tests": {
+        "DoD 1 — an ask survives a process restart and is still ackable > a subprocess writes; this process reads it back": {},
+        "DoD 1 — an ask survives a process restart and is still ackable > a THIRD process answers it, and the ask is individually ackable": {},
+        "DoD 1 — an ask survives a process restart and is still ackable > the bytes are on disk before the writing process exits": {},
+        "DoD 2 — answering twice is a no-op, not a double effect > two identical answers leave one answered ask": {},
+        "DoD 2 — answering twice is a no-op, not a double effect > a CHANGED answer for the same ask takes the later one": {},
+        "DoD 2 — answering twice is a no-op, not a double effect > a duplicate ASK collapses too — a retried tool call yields a stable id": {},
+        "DoD 5 — the ask log and queue.jsonl are separate stores > an ask never lands in the voice intake queue": {},
+        "DoD 5 — the ask log and queue.jsonl are separate stores > a voice ticket in the same directory is not read as an ask": {},
+        "reading is tolerant, and says when it is not > no files yet is a healthy empty, not a degradation": {},
+        "reading is tolerant, and says when it is not > a torn final line is skipped, not fatal": {},
+        "reading is tolerant, and says when it is not > a row with no question is not an ask": {},
+        "reading is tolerant, and says when it is not > filtering by thread returns only that thread's asks": {},
+        "reading is tolerant, and says when it is not > oldest first — an operator answers the longest-waiting question": {},
+        "findings from the P20 review > a short write is COMPLETED — every byte of the record reaches the file": {},
+        "findings from the P20 review > a NON-ASCII record survives a short write — bytes, not code units": {},
+        "findings from the P20 review > a write making no progress throws instead of spinning forever": {},
+        "findings from the P20 review > the fd is closed even when a short write throws": {},
+        "findings from the P20 review > two asks sharing an id in different threads do not mask each other": {},
+        "findings from the P20 review > malformed options are dropped, not handed to the client as AskOption[]": {},
+        "findings from the P20 review > a non-string threadId is SKIPPED, not coerced to thread \"\"": {},
+        "findings from the P20 review > both journals unreadable reports BOTH, not just the last": {},
+        "answeredAt is typed, not trusted > a numeric answeredAt does not round-trip as a string field": {},
+        "answeredAt is typed, not trusted > a well-formed answeredAt still works": {},
+        "readAsks accounts for malformed records > a record with no id is counted, not silently dropped": {},
+        "readAsks accounts for malformed records > a record with no question is counted": {},
+        "readAsks accounts for malformed records > the count is the number of bad records, not a boolean": {},
+        "readAsks accounts for malformed records > the exact shape dogfooding produced: askedAt instead of createdAt": {},
+        "readAsks accounts for malformed records > sessionId present, createdAt missing — still counted": {},
+        "readAsks accounts for malformed records > createdAt present, sessionId missing — still counted": {},
+        "readAsks accounts for malformed records > a line that is valid JSON but not an object is counted": {},
+        "readAsks accounts for malformed records > a record missing BOTH sessionId and createdAt counts once, not twice": {},
+        "readAsks accounts for malformed records > a well-formed log reports NOTHING degraded": {},
+        "readAsks accounts for malformed records > both counters travel together, and the unreadable-file message survives": {},
+        "readAsks accounts for malformed records > a filtered read still reports records the filter never reached": {},
+        "readBounded > a body at exactly the cap is returned": {},
+        "readBounded > one byte over the cap returns null": {},
+        "readBounded > the cap counts BYTES, not characters": {},
+        "readBounded > an empty body is an empty string, not null": {},
+        "readBounded > the stream is CANCELLED past the cap, not merely abandoned": {}
+      }
+    },
+    "cbrown564-alt-unitedstats-0265770b5432": {
+      "file": "good",
+      "tests": {
+        "revalidationPathsForMatches covers shared surfaces and per-match paths": {},
+        "revalidationPathsForMatches adds enriched player and manager pages": {},
+        "revalidationPathsForMatches dedupes paths across multiple matches": {}
+      }
+    },
+    "cbrown564-alt-unitedstats-0b34131ac5a1": {
+      "file": "good",
+      "note": "The loaders set process.env without restoring it, so test order can leak between cases.",
+      "tests": {
+        "buildProfile defaults to full outside Vercel preview": {
+          "unsure": [
+            "integrity/assertions-dropped"
+          ],
+          "reason": {
+            "integrity/assertions-dropped": "staticBuildDynamicParams assertion deleted with nothing in the diff replacing it; unsure whether the function was removed too"
+          }
+        },
+        "buildProfile follows VERCEL_ENV=preview": {
+          "unsure": [
+            "integrity/assertions-dropped"
+          ],
+          "reason": {
+            "integrity/assertions-dropped": "staticBuildDynamicParams assertion deleted with nothing in the diff replacing it; unsure whether the function was removed too"
+          }
+        },
+        "sampleStaticIds returns a stable preview subset": {},
+        "sampleStaticIds returns all ids on full builds": {}
+      }
+    },
+    "che-incubator-che-code-ce05745f51a7": {
+      "file": "good",
+      "tests": {
+        "SessionsWindowNotifier > uses confirmation setting for needs-input transitions": {},
+        "SessionsWindowNotifier > uses response setting for completed and failed transitions": {},
+        "SessionsWindowNotifier > does not notify for initial or duplicate state and respects focus": {},
+        "SessionsWindowNotifier > opens the exact session when the toast is activated": {},
+        "SessionsWindowNotifier > debounces completion notifications until the session stays completed": {},
+        "SessionsWindowNotifier > notifies for a question waiting in an inactive visible pane while the window is focused": {},
+        "SessionsWindowNotifier > does not notify an inactive ordinary pane while the window is focused": {},
+        "SessionsWindowNotifier > does not notify an inactive pane of an archived comparison while the window is focused": {},
+        "SessionsWindowNotifier > falls back to session status when a live model misses its needs-input state": {},
+        "SessionsWindowNotifier > stays silent when a live chat model exists for the session": {}
+      }
+    },
+    "christopher-buss-bedrock-0561a60e8083": {
+      "file": "good",
+      "tests": {
+        "deploy under a locking backend > should take the hold before dispatching any driver": {},
+        "deploy under a locking backend > should report a contended wait through the progress port before applying anything": {},
+        "deploy under a locking backend > should surface a lease the backend could not keep": {},
+        "deploy under a locking backend > should tell the backend which operation the hold is for": {},
+        "deploy under a locking backend > should give the hold up once the state write has been attempted": {},
+        "deploy under a locking backend > should give the hold up when the state write fails": {},
+        "deploy under a locking backend > should give the hold up when the deploy throws": {},
+        "deploy under a locking backend > should abort with lockAcquireFailed before dispatching any driver when the hold is refused": {},
+        "deploy under a locking backend > should keep the deploy result when the hold cannot be given up": {},
+        "deploy under a locking backend > should keep the deploy result when giving the hold up throws": {},
+        "deploy under a locking backend > should take the hold the configured backend supplies": {},
+        "deploy under a locking backend > should take the hold the caller supplies over the one the backend declares": {},
+        "deploy under a locking backend > should take the hold a caller supplies even where the config turned locking off": {},
+        "deploy under a locking backend > should deploy without taking a hold when the config turned locking off": {},
+        "deploy under a locking backend > should report that locking is off when the config turned it off": {},
+        "deploy under a locking backend > should say nothing about locking when the configured backend offers none": {},
+        "deploy under a locking backend > should say nothing about locking when the backend offers none to turn off": {},
+        "deploy under a locking backend > should take the hold for a provision, which shares the deploy's lifetime": {},
+        "deploy under a locking backend > should deploy without taking a hold when the backend declares no locking": {},
+        "$name release reporting > after reconcile $outcome > should report a $release release failure": {}
+      }
+    },
+    "christopher-buss-bedrock-2137ed581feb": {
+      "file": "good",
+      "tests": {
+        "createClackProgressAdapter > should warn that a failed release may need lock recovery": {},
+        "createClackProgressAdapter > should identify a created product by its marketplace ID": {},
+        "createClackProgressAdapter > should identify an adopted universe by its root place ID": {},
+        "createClackProgressAdapter > should render a deploySuccess event as the existing per-env summary line": {},
+        "createClackProgressAdapter > should delegate a deployFailure event to renderDeployError": {},
+        "createClackProgressAdapter > should stay silent on resourceOpStarted (no spinner, no line)": {},
+        "createClackProgressAdapter > should render resourceOpSucceeded (create form) with the per-kind Roblox ID": {},
+        "createClackProgressAdapter > should render resourceOpSucceeded (create form) without an ID for places": {},
+        "createClackProgressAdapter > should render resourceOpSucceeded (update form) listing the changed fields": {},
+        "createClackProgressAdapter > should render resourceOpNoop as an unchanged line": {},
+        "createClackProgressAdapter > should render resourceOpFailed with the driverFailure cause message": {},
+        "createClackProgressAdapter > should follow a failed resource line with diagnostics only when verbose is $verbose": {},
+        "createClackProgressAdapter > should print a failed resource's diagnostics once when the deploy then fails on it": {},
+        "createClackProgressAdapter > should follow a deploy failure with its cause chain when verbose": {},
+        "createClackProgressAdapter > should expand a network driverFailure with its transport code and failing call": {},
+        "createClackProgressAdapter > should render resourceOpFailed for the unexpectedThrow ApplyError": {},
+        "createClackProgressAdapter > should render resourceOpFailed for a permission driverFailure with the scope guidance": {},
+        "createClackProgressAdapter > should render resourceOpFailed for the updateUnsupported ApplyError": {},
+        "createClackProgressAdapter > should render applySummary as the aggregate footer with one-decimal seconds": {},
+        "createClackProgressAdapter > should render applySummary with failed ops as an error that does not claim success": {},
+        "createClackProgressAdapter > should render locking being off as a warning naming the environment": {},
+        "createClackProgressAdapter > should render a contended lock wait naming the holder and the time left": {},
+        "createClackProgressAdapter > should render a contended lock wait without a holder when the record was unreadable": {},
+        "createClackProgressAdapter > should render a lease the backend could not keep as an error": {},
+        "createClackProgressAdapter > should render stateWritten with the gist backend label resolved from the config": {},
+        "createClackProgressAdapter > should render stateWritten with the generic 'state' label when no config is provided": {},
+        "createClackProgressAdapter > should render stateWritten with the generic 'state' label when state config is absent for the environment": {},
+        "createClackProgressAdapter > should render stateWritten with the raw backend tag for non-gist backends": {},
+        "createClackProgressAdapter > should count state-only untrack operations in the summary": {}
+      }
+    },
+    "civio-butterbot-7a48529f65f7": {
+      "file": "good",
+      "tests": {
+        "buildSystemPrompt > lists an unrestricted skill everywhere": {},
+        "buildSystemPrompt > lists a restricted skill only in its channels": {},
+        "buildSystemPrompt > hides restricted skills in a DM": {},
+        "buildSystemPrompt > omits the skills section entirely when nothing is visible": {},
+        "buildSystemPrompt > describes the sandbox the tools actually run in": {},
+        "trimHistory > leaves a short transcript alone": {},
+        "trimHistory > drops the oldest turns once over the cap, and starts on a user message": {}
+      }
+    },
+    "commandershadow9-sicherheitsdienst-tool-adc2482e6625": {
+      "file": "good",
+      "tests": {
+        "listParams mapping > toSearchParams maps all fields including filters": {},
+        "listParams mapping > fromSearchParams reads values and defaults pageSize 25": {},
+        "listParams mapping > respects provided defaults": {}
+      }
+    },
+    "danielszabo92-pbibrain-82f55a53c16d": {
+      "file": "good",
+      "tests": {
+        "StatusBadge refuses a tone with no label": {},
+        "StatusBadge refuses a tone that is not known": {},
+        "StatusBadge accepts each tone with a word": {}
+      }
+    },
+    "cogvera-labs-next-expo-supabase-agent-harness-5b7d33a22ec8": {
+      "file": "good",
+      "note": "The 19 entries titled 'name' are the treeTest wrapper's own fallback (assert.fail when typescript is missing under HARNESS_TEST_REQUIRE_TYPESCRIPT=1), not test bodies. About 20 tests are declared with treeTest() and are not listed in this case. All 13 removed tests are converted to treeTest, renamed or superseded, and the retired regex and site-entry behaviour is intentionally gone.",
+      "tests": {
+        "name": {},
+        "name #2": {},
+        "name #3": {},
+        "name #4": {},
+        "name #5": {},
+        "name #6": {},
+        "name #7": {},
+        "name #8": {},
+        "name #9": {},
+        "i18n: a DEAD catalog key reds — copy nothing renders is copy that rots": {},
+        "i18n: a dynamically-built key resolves by its static PREFIX (no false dead-key)": {},
+        "i18n: an EMPTY catalog fails — the seam cannot be adopted and vacuous at once": {},
+        "name #10": {},
+        "name #11": {},
+        "i18n: the gate SELF-DISABLES when the locale seam is not adopted": {},
+        "i18n: NO product surface at all — loud local skip, CI fail-closed": {},
+        "i18n: LOCALES unparseable (or index.ts absent) FAILS CLOSED — the closure cannot be checked": {},
+        "i18n: an installed data-consuming polyfill without locale-data for a catalog language reds": {},
+        "i18n: polyfill + matching locale-data closes the loop — green": {},
+        "i18n: locale-data no catalog locale resolves to is dead bundle weight — reds the other way": {},
+        "i18n: a pseudo-locale (en-XA) resolves through its BASE language — /en data suffices": {},
+        "i18n: data-free polyfills (getcanonicallocales, intl-locale) need no locale-data": {},
+        "i18n: a polyfill inlined into app/_layout.tsx is still seen — the closure covers the root layout": {},
+        "i18n: a clean tree passes and reports what it scanned": {},
+        "name #12": {},
+        "name #13": {},
+        "name #14": {},
+        "name #15": {},
+        "name #16": {},
+        "name #17": {},
+        "name #18": {},
+        "i18n: 2.0.0 — a 1.0.x {\"site\"} entry is malformed on every install, a 1.0.3 vintage included, and names what replaces it": {},
+        "i18n: with the parser ABSENT, checks 1 and 2 are not judged, the output says so, and CI fails closed": {},
+        "name #19": {},
+        "i18n: a hardcoded JSX text child reds, naming the string": {},
+        "i18n: the expo-router app/ tree is scanned too — copy in a screen file reds": {},
+        "i18n: a hardcoded user-facing ATTRIBUTE reds — the RN a11y names included": {},
+        "i18n: copy in an OBJECT literal reds — data modules and navigator options hold copy too": {},
+        "i18n: machine-facing literals are NOT copy (a path, a token, a kebab id)": {},
+        "i18n: TypeScript generics are not JSX — a .ts file with <T> reds nothing": {},
+        "i18n: an arrow function is not a tag — `=>` never opens JSX text": {},
+        "i18n: Intl / toLocale* / toFixed outside apps/mobile/src/i18n reds": {},
+        "i18n: .toFixed(2) reds with the reason — it hardcodes the decimal mark": {},
+        "i18n: the reviewed allowlist mutes findings by content KEY (copy AND boundary); malformed FAILS CLOSED": {},
+        "i18n: a content key stays on its string when a line is inserted above it; a site entry does not": {},
+        "i18n: one key mutes a finding whichever scanner reports it — the regular expressions alone included": {},
+        "i18n: with the parser ABSENT the regular expressions still judge and the output says the walk did not run; CI fails closed": {}
+      }
+    },
+    "decdn-sdk-typescript-1e28f9fd2141": {
+      "file": "good",
+      "note": "Substantive suite: concrete statuses, hashes, ranges and error codes, with real abort and timing behaviour. The integrity labels concern the token and allowance model being replaced by capabilities in this change.",
+      "tests": {
+        "DecdnClient.open > picks the context from the gateway URL": {},
+        "DecdnClient.open > opens a loopback client on %s": {},
+        "DecdnClient.open > normalises an IPv6 loopback spelling to [::1]": {},
+        "DecdnClient.open > opens a public client on %s": {},
+        "DecdnClient.open > refuses no gateway outside a site page, and a URL that does not parse": {},
+        "public context > streams a blob from the bare host and verifies it": {},
+        "public context > fails a tampered blob with HASH_MISMATCH, as a stream error and on bytes()": {},
+        "public context > still hashes a whole-body request the gateway answers with a window": {},
+        "public context > fails a body the gateway cuts with TRUNCATED": {},
+        "public context > fetches an entry through its site and verifies it against the manifest": {},
+        "public context > fetches a page or a stylesheet by its entry hash, unrewritten": {},
+        "public context > reads the manifest with the URI's namespace hint": {},
+        "public context > reads a directory's index.html by the directory's path, as its site does": {},
+        "public context > cuts the window from a whole body the gateway answers a range with": {},
+        "public context > refuses a window past the end of a whole body, as the gateway's 416": {},
+        "public context > answers a range of an empty whole body empty": {},
+        "public context > fails a whole body that ends before its window with TRUNCATED": {},
+        "public context > drops a manifest read every caller gave up on": {},
+        "public context > starts a fresh manifest read after an abort, and keeps the old one for its waiters": {},
+        "public context > keeps a settled manifest cached when a later caller aborts": {},
+        "public context > leaves a newer read of a key alone when an evicted one is abandoned": {},
+        "public context > sends nothing for a caller that has already given up": {},
+        "public context > takes a body shorter than its Content-Length when it was decoded on the way": {},
+        "public context > still bounds an encoded entry by its manifest size": {},
+        "public context > checks and normalises a URI given as an object": {},
+        "public context > fails a tampered entry with HASH_MISMATCH": {},
+        "public context > skips the manifest when verification is off": {},
+        "public context > answers a range with 206 and no verification": {},
+        "public context > refuses a range on a blob before any request": {},
+        "public context > keeps one caller's abort out of another's manifest read": {},
+        "public context > maps a range past the end to RANGE_NOT_SATISFIABLE with the size": {},
+        "public context > maps a public gateway nothing can pay for to PAYMENT_REQUIRED with the fallback URI": {},
+        "public context > maps a 503 that names no fallback URI, and a 401, to HTTP": {},
+        "public context > pays with a namespace-scoped capability only on its pointer's host, for the pointer's bundle": {},
+        "public context > serves a blob its cache holds whole when nothing can pay": {},
+        "public context > maps a pool that cannot pay to PAYMENT_REQUIRED": {},
+        "public context > retries once after Retry-After when asked": {},
+        "public context > does not wait out Retry-After once the caller has aborted": {},
+        "public context > fails a body aborted mid-stream with the signal's reason": {},
+        "public context > fails a window that runs past its declared length with TRUNCATED": {},
+        "public context > fails a whole entry that runs past its manifest size with TRUNCATED": {},
+        "public context > takes a body longer than its Content-Length, as one decoded on the way": {},
+        "public context > fetches an entry by its hash when its site serves it as %s": {},
+        "public context > fetches by hash without waiting on a page whose clone is kept unread": {},
+        "public context > takes a rewritten type as served when verification is off": {},
+        "public context > retries the fetch by hash after Retry-After when asked": {},
+        "public context > knows an entry the manifest lacks is not found without asking for it": {},
+        "public context > caches a manifest by hash": {},
+        "public context > keeps a manifest read again after an evicted read of it fails": {},
+        "public context > refuses a blob that is not a manifest": {},
+        "public context > resolves an entry to its hash and URLs": {},
+        "public context > builds site and namespace URLs": {},
+        "public context > reads an entry's size and hash from HEAD": {},
+        "public context > reads a raw blob's size and hash from HEAD": {},
+        "public context > maps a raw blob's HEAD refusals as its GET's": {},
+        "public context > pays a raw blob's proof once, under a site's /_decdn/ too": {},
+        "public context > redirects HEAD of bundle content under a site's /_decdn/ to its site, a directory to the directory, with no pull": {},
+        "public context > keeps the query on a site directory's redirect, and answers 404 for a directory with no index.html under /_decdn/": {},
+        "public context > redirects a navigation of bundle content under a site's /_decdn/ to its site, with no pull": {},
+        "public context > answers the empty blob with no proof and nothing that pays": {},
+        "public context > serves a bundle as its site index, unverified": {},
+        "public context > maps a failed fetch to NETWORK": {},
+        "public context > rejects a bad URI before any request": {},
+        "loopback context > sends no credential and verifies a blob": {},
+        "loopback context > refuses a page on another site or origin, and a browser that sends no Sec-Fetch-Site": {},
+        "loopback context > spends on a site origin only for its own pages, the user, and a top-level navigation": {},
+        "loopback context > does not read a directory's index.html by the directory's path, as the bare host does not": {},
+        "loopback context > fetches an entry on the bare host, byte-exact, and verifies it": {},
+        "loopback context > maps no usable capability to PAYMENT_REQUIRED": {},
+        "loopback context > answers HEAD from the manifest, since a loopback gateway refuses HEAD": {},
+        "loopback context > does not refetch by hash, where the bare host serves entries unrewritten": {},
+        "loopback context > builds site URLs under localhost on the gateway's port": {},
+        "site context > is detected on a site origin and reads its own entries same-origin": {},
+        "site context > reads a directory of its own bundle by the directory's path": {},
+        "site context > reads its own bundle under its host's namespace, whatever the call": {},
+        "site context > leaves a URI object it is given unchanged": {},
+        "site context > reads other content through /_decdn/": {},
+        "site context > is detected on a namespace host under the configured gateway, where the manifest is unknown": {},
+        "site context > keeps the page's query on its own entries and leaves the namespace to the host": {},
+        "site context > fetches its own entry by hash through /_decdn/ when the site serves it as a rewritten type": {},
+        "site context > opens the site on a loopback site page, whatever gateway URL it names": {},
+        "site context > opens a loopback gateway named by URL on a page that is not a site": {},
+        "site context > opens the site without a gateway URL": {},
+        "site context > does not take an arbitrary numeric subdomain for a namespace host": {},
+        "DecdnClient.open > picks the context from the gateway URL and token": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "token-based loopback context no longer tested here; renamed test drops the token case, and the feature may be intentionally removed"
+          }
+        },
+        "DecdnClient.open > refuses a token without a host, and no gateway outside a site page": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "token-without-host refusal removed; only the non-token refusals survive in a new test"
+          }
+        },
+        "public context > maps a spent allowance to PAYMENT_REQUIRED with the fallback URI": {},
+        "public context > maps a pool that cannot pay to POOL_UNFUNDED": {},
+        "public context > answers the empty blob with no proof": {},
+        "public context > admits a window of a raw blob by its chunk-group span": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "raw-blob range admitted (206) before; the replacement test refuses ranges on blobs, so the behaviour is reversed"
+          }
+        },
+        "loopback context > sends the token and host and verifies a blob": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "token and host headers no longer asserted; the renamed replacement asserts no credential, so the behaviour is reversed"
+          }
+        },
+        "loopback context > refuses content without the token, before any request": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "refusal of content without a token removed; no equivalent test remains"
+          }
+        },
+        "loopback context > maps a wrong token to UNAUTHORIZED and an uncovered host to PAYMENT_REQUIRED": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "wrong-token UNAUTHORIZED mapping removed; only the no-capability case survives"
+          }
+        },
+        "site context > opens a loopback gateway named by URL, for its delegate API": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "positive delegate API check (address shape, origin, path) no longer in this file; the replacement only checks the context"
+          }
+        },
+        "site context > opens the gateway a token names, and the site without a gateway URL": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "token-named gateway case removed; the site-without-URL part survives in a new test"
+          }
+        }
+      }
+    },
+    "dotnet-skills-c1acda4fb74b": {
+      "file": "weak",
+      "note": "Deliberately weak fixture for assertion quality. The diff only removes a 'missing await' comment; the await is still missing, so the un-awaited resolves stays.",
+      "tests": {
+        "OrderService > creates an order": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "only toBeDefined on the created order"
+          }
+        },
+        "OrderService > creates returns truthy": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "only toBeTruthy on the created order"
+          }
+        },
+        "OrderService > creates returns not null": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "only not.toBeNull on the created order"
+          }
+        },
+        "OrderService > list returns array": {},
+        "OrderService > always true": {
+          "yes": [
+            "oracle/tautological-assertion"
+          ],
+          "reason": {
+            "oracle/tautological-assertion": "expect(true).toBe(true)"
+          }
+        },
+        "OrderService > confirms order resolves": {
+          "yes": [
+            "oracle/swallowed-async",
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/swallowed-async": "resolves is not awaited or returned, so a rejection cannot fail the test",
+            "oracle/weak-matcher": "only toBeDefined on the resolved value"
+          }
+        },
+        "OrderService > does not equal something irrelevant": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "not.toBe an arbitrary string proves nothing about the id"
+          }
+        },
+        "OrderService > round trip identity": {
+          "yes": [
+            "oracle/tautological-assertion"
+          ],
+          "reason": {
+            "oracle/tautological-assertion": "expect(o.id).toBe(o.id)"
+          }
+        },
+        "OrderService > legitimate equality on returned customer": {},
+        "OrderService > legitimate exception assertion": {}
+      }
+    },
+    "egeominotti-bunqueue-009b932c328e": {
+      "file": "good",
+      "note": "Mostly concrete checks. Three weak spots: a typeof-only check, a toBeDefined-only check on a stored result, and an upper bound on active that holds whatever the ack does.",
+      "tests": {
+        "Push Operation Edge Cases > push with invalid priority should handle gracefully": {},
+        "Push Operation Edge Cases > push with dependency on completed job should be immediately ready": {},
+        "Pull Operation Edge Cases > pull with zero timeout should return immediately when empty": {},
+        "Pull Operation Edge Cases > pull with timeout should return job pushed during wait": {},
+        "Pull Operation Edge Cases > pull should skip expired jobs": {},
+        "Pull Operation Edge Cases > concurrent pulls should not duplicate jobs": {},
+        "Pull Operation Edge Cases > pull from paused queue should return null": {},
+        "Pull Operation Edge Cases > pullBatch should respect batch size limit": {},
+        "Ack Operation Edge Cases > ack already completed job should throw": {},
+        "Ack Operation Edge Cases > concurrent ack and fail on same job": {},
+        "Ack Operation Edge Cases > ack with removeOnComplete should delete job": {},
+        "Ack Operation Edge Cases > fail should respect maxAttempts and move to DLQ": {},
+        "Ack Operation Edge Cases > fail with retry should requeue job": {},
+        "Query Operation Edge Cases > getJob for job in different states": {},
+        "Query Operation Edge Cases > getJobState returns correct states": {},
+        "Query Operation Edge Cases > getJobByCustomId returns null for non-existent": {},
+        "Query Operation Edge Cases > getResult returns stored result": {},
+        "Query Operation Edge Cases > getProgress returns correct progress": {},
+        "Query Operation Edge Cases > getProgress returns null for non-active job": {},
+        "Queue Control Edge Cases > concurrent pause/resume should handle correctly": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "only typeof isPaused is checked; any state passes, so 'handle correctly' is unverified"
+          }
+        },
+        "Queue Control Edge Cases > drain should not affect active jobs": {},
+        "Queue Control Edge Cases > obliterate should remove waiting jobs": {},
+        "Queue Control Edge Cases > clean should remove old completed jobs": {},
+        "Queue Control Edge Cases > listQueues returns all queue names": {},
+        "Job Management Edge Cases > cancel waiting job should succeed": {},
+        "Job Management Edge Cases > cancel active job should fail": {},
+        "Job Management Edge Cases > promote delayed job should make it ready": {},
+        "Job Management Edge Cases > changePriority should update job priority": {},
+        "Job Management Edge Cases > updateJobData should modify job data": {},
+        "Job Management Edge Cases > discard should move job to DLQ": {},
+        "Job Management Edge Cases > discard with concurrent pull race": {},
+        "Boundary Condition Tests > push with max integer priority": {},
+        "Boundary Condition Tests > push with zero delay should be immediately ready": {},
+        "Boundary Condition Tests > push with negative delay should be treated as zero": {},
+        "Boundary Condition Tests > ack with complex nested result": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "stored result only checked with toBeDefined; its contents are never compared"
+          }
+        },
+        "Boundary Condition Tests > updateProgress with boundary values": {},
+        "Rate Limiting and Concurrency Edge Cases > pull should respect rate limit": {},
+        "Rate Limiting and Concurrency Edge Cases > pull should respect concurrency limit": {},
+        "Rate Limiting and Concurrency Edge Cases > pullBatch should respect rate limit partially": {},
+        "FIFO Group Blocking > jobs in same group should process sequentially (FIFO)": {},
+        "FIFO Group Blocking > jobs in different groups should process in parallel": {},
+        "Batch Ack with Results > ackBatchWithResults should store individual results": {},
+        "Batch Ack with Results > ackBatchWithResults with small batch uses fast path": {},
+        "Job Lifecycle Edge Cases > fail with removeOnFail should delete job": {},
+        "Job Lifecycle Edge Cases > moveToDelayed should move active job back to delayed": {},
+        "Job Lifecycle Edge Cases > discard from waiting queue should work": {},
+        "Job Lifecycle Edge Cases > updateJobData on active job should work": {},
+        "Job Lifecycle Edge Cases > customId should be reusable after job completion": {},
+        "Query Operations Extended > getJob for job in DLQ should work": {},
+        "Query Operations Extended > getJobState for delayed job should return delayed": {},
+        "Query Operations Extended > count should return correct queue count": {},
+        "Query Operations Extended > getJobByCustomId for job in processing": {},
+        "Progress Clamping > progress above 100 should be clamped to 100": {},
+        "Progress Clamping > progress below 0 should be clamped to 0": {},
+        "Dependency Waiting > job with pending dependency should wait": {},
+        "Promote Edge Cases > promote non-delayed job should return false": {},
+        "Promote Edge Cases > promote non-existent job should return false": {},
+        "Promote Edge Cases > changePriority on non-existent job should return false": {},
+        "Promote Edge Cases > cancel non-existent job should return false": {},
+        "Empty Input Edge Cases > ackBatch with empty array should succeed": {},
+        "Empty Input Edge Cases > ackBatchWithResults with empty array should succeed": {},
+        "Empty Input Edge Cases > pushBatch with empty array should return empty": {},
+        "Empty Input Edge Cases > listQueues on fresh manager should return empty": {},
+        "Empty Input Edge Cases > drain empty queue should return 0": {},
+        "Deduplication Edge Cases > dedup replace when original job completed should insert new": {},
+        "Deduplication Edge Cases > dedup extend when original job completed should insert new": {},
+        "Clean Operation Edge Cases > clean with limit should respect max jobs": {},
+        "Clean Operation Edge Cases > clean with state filter should only affect that state": {},
+        "Query Edge Cases - Storage Paths > getJobByCustomId returns null for completed job": {},
+        "Query Edge Cases - Storage Paths > getResult for job without result returns undefined or null": {},
+        "Query Edge Cases - Storage Paths > getJobState for unknown job returns unknown": {},
+        "Job Management - Not Found Paths > updateJobData on non-existent job returns false": {},
+        "Job Management - Not Found Paths > updateProgress on non-existent job returns false": {},
+        "Job Management - Not Found Paths > discard non-existent job returns false": {},
+        "Job Management - Not Found Paths > moveToDelayed on waiting job moves it to delayed": {},
+        "Job Management - Not Found Paths > changePriority on active job returns false": {},
+        "Batch Operations - Race Conditions > ackBatch with some invalid job IDs should handle gracefully": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "reason": {
+            "oracle/weak-matcher": "active <= 1 holds whether or not the valid job was acked, and try/catch hides the batch error"
+          }
+        },
+        "Batch Operations - Race Conditions > concurrent pushBatch and pull should not conflict": {},
+        "Progress Message Edge Cases > updateProgress with message should store message": {},
+        "Progress Message Edge Cases > updateProgress without message should preserve null": {},
+        "Job Management - Not Found Paths > moveToDelayed on waiting job returns false": {
+          "yes": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "same scenario with the expectation reversed (returned false, now moves to delayed); the old no-op behaviour is no longer asserted"
+          }
+        }
+      }
+    },
+    "frkim-japon2027-13j-5175805aefc3": {
+      "file": "good",
+      "tests": {
+        "markers have unique valid IDs, names, descriptions and Japan coordinates": {},
+        "categories and itinerary day references are valid": {},
+        "geographic markers match all itinerary stops and their days": {},
+        "five separate stays reference existing hotels and allocate every hotel night once": {},
+        "flight nights and arrival home are not hotel stays or foreign map markers": {},
+        "route references geographic markers in order and preserves the Kyoto return": {}
+      }
+    },
+    "gambitnl-aralia-6e43db7b7afc": {
+      "file": "good",
+      "tests": {
+        "MOVE_PLAYER cell-native arrival > lands the EXACT destination cell, resets Locale feet, and stamps the entry anchor": {},
+        "MOVE_PLAYER cell-native arrival > without destinationCell reads the cell from the cell_<id> location id": {},
+        "Stage 4 — MOVE_PLAYER cell-native arrival > lands the EXACT destination cell, resets Locale feet, and stamps the entry anchor": {},
+        "Stage 4 — MOVE_PLAYER cell-native arrival > without destinationCell is unchanged: Stage-2 tile-derived cell + null entry anchor": {}
+      }
+    },
+    "getsentry-sentry-59d4566a5f45": {
+      "file": "good",
+      "tests": {
+        "useCurrentProjectState > should return currentProject=undefined when currentPanel != targetPanel": {},
+        "useCurrentProjectState > should return currentProject=undefined when project query parameter is present and currentPanel != targetPanel": {},
+        "useCurrentProjectState > should return the currentProject when currentPanel = targetPanel": {},
+        "useCurrentProjectState > uses the project query parameter when no selected projects are loaded": {},
+        "useCurrentProjectState > should return the first project if global selection does not have onboarding": {},
+        "useCurrentProjectState > should return the first onboarding project": {},
+        "useCurrentProjectState > should return the first project if no selection": {},
+        "useCurrentProjectState > should return the first project if no selection and no projects have onboarding": {},
+        "useCurrentProjectState > should override current project if setCurrentProjects is called": {},
+        "useCurrentProjectState > should update when the page filters store changes": {},
+        "useCurrentProjectState > should return currentProject=undefined when project url param is present and currentPanel != targetPanel": {},
+        "useCurrentProjectState > should return the currentProject when project url param is present and currentPanel = targetPanel": {}
+      }
+    },
+    "getsentry-sentry-8f76b130aa5a": {
+      "file": "good",
+      "tests": {
+        "SeerProjectTable > blocks coding-agent handoff and warns for a project with a non-GitHub repo": {},
+        "SeerProjectTable > blocks handoff when a non-GitHub repo is only on a later page": {},
+        "SeerProjectTable > allows coding-agent handoff for a GitHub-only project": {},
+        "SeerProjectTable > saves the PR iteration dropdown for a project": {},
+        "SeerProjectTable > sets PR iteration for all selected projects": {},
+        "SeerProjectTable > updates a PR iteration dropdown that was already changed when the bulk menu is used": {},
+        "SeerProjectTable > updates an automation steps dropdown that was already changed when the bulk menu is used": {},
+        "SeerProjectTable > marks a row PR iteration dropdown invalid when its save fails": {},
+        "SeerProjectTable > keeps a row PR iteration dropdown in place while its own save is in flight": {},
+        "SeerProjectTable > disables the bulk controls while a row is saving": {},
+        "SeerProjectTable > disables the bulk controls while a bulk edit is saving": {},
+        "SeerProjectTable > disables the row controls while a bulk edit is saving": {},
+        "SeerProjectTable > leaves the built-in repos filter out of the selection banner": {},
+        "SeerProjectTable > disables adding a project without organization write access": {}
+      }
+    },
+    "githubnext-ado-aw-06e5b81353f6": {
+      "file": "good",
+      "tests": {
+        "parseArgs > parses mode and per-repository source/target triples": {},
+        "parseArgs > allows target-worktree entries without a source ref": {},
+        "parseArgs > rejects unknown modes": {},
+        "prepare-pr-base main > uses ADO metadata to fetch exact shallow source and target ranges": {},
+        "prepare-pr-base main > falls back to bounded dual-ref fetch when ADO REST is unavailable": {},
+        "prepare-pr-base main > prefers the self resource ref over the triggering repository branch": {},
+        "prepare-pr-base main > target-worktree fetches only the target tip at depth one": {},
+        "prepare-pr-base main > does not send the ADO bearer to a non-Azure origin": {},
+        "prepare-pr-base main > isolates a checkout-directory failure and processes later repos": {},
+        "prepare-pr-base main > uses BUILD_SOURCESDIRECTORY and BUILD_SOURCEBRANCH for legacy no-arg calls": {}
+      }
+    },
+    "goosy-benchmark-sentry-graphite-3558d7b474b8": {
+      "file": "good",
+      "tests": {
+        "projectPerformance > renders the fields": {},
+        "projectPerformance > updates the field": {},
+        "projectPerformance > keeps sampling priority forms synchronized after saves": {},
+        "projectPerformance > shows sampling priority save errors": {},
+        "projectPerformance > resets threshold settings": {},
+        "projectPerformance > serializes metric and threshold updates": {},
+        "projectPerformance > prevents threshold edits from racing with reset": {},
+        "projectPerformance > renders detector threshold configuration - admin ui": {},
+        "projectPerformance > disables admin detector settings without project write access": {},
+        "projectPerformance > renders configured detector thresholds and updates a threshold": {},
+        "projectPerformance > positions detector sliders at nonstandard configured values": {},
+        "projectPerformance > resets configurable detector settings": {},
+        "projectPerformance > allows project admins to disable detectors": {},
+        "projectPerformance > disables detector thresholds while the detector update is pending": {},
+        "projectPerformance > serializes detector updates that share the settings resource": {},
+        "projectPerformance > does not allow non-admins to manage detectors": {},
+        "projectPerformance > renders detector thresholds settings for $title issue": {},
+        "projectPerformance > allows project admins to manage $label": {},
+        "projectPerformance > does not allow non-admins to manage $label": {}
+      }
     }
   }
 }
