@@ -1636,6 +1636,243 @@
     "SearchPage > highlights matching query terms in titles and snippets without rendering HTML": {},
     "SearchPage > renders all indexed resource labels and caps the visible list at 30 results": {}
    }
+  },
+  "orange-case-joustmania-ac7ee3c04de0": {
+   "file": "good",
+   "tests": {
+    "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 a live real game wins: no shadow game is followed": {},
+    "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 no real game live: the newest live shadow game is followed": {},
+    "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 a real game in ENDING still holds the stage": {},
+    "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 an ended real game does not hold the view": {},
+    "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 the followed shadow game is kept while live (no flicker)": {},
+    "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 an ended followed game hands over to the newest live one": {},
+    "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 nothing live: nothing followed": {},
+    "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 live states accept enum names and numbers": {},
+    "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/A9 following a shadow game adds its players; other shadow players stay hidden, nothing real is hidden": {},
+    "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 with a real game live, live shadow players are hidden from the grid": {},
+    "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 lobby with experiments running: real lobby controllers are never hidden": {},
+    "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 real game ENDING with a live shadow game: the real controllers stay": {},
+    "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 unknown follow state (coordinator unreachable) shows every tile": {},
+    "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/BR-005 without follow information the newest real game still anchors (stage default)": {},
+    "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 the followed shadow game anchors the strip with its backend": {},
+    "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 no real game live and the followed game has no decide yet: newest shadow row": {},
+    "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/BR-005 no real game live, nothing followed: a newer real row beats an older shadow row": {},
+    "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 the decide store applies the follow state": {},
+    "UC-070: A9 BR-005 follow state across polls > UC-070/BR-005 a transient poll error keeps the followed game": {},
+    "UC-070: A9 BR-005 follow state across polls > UC-070/BR-005 a sustained outage resets to unknown, then resumes the same game": {}
+   }
+  },
+  "plow-pbc-tkmx-client-402de6675594": {
+   "file": "good",
+   "tests": {
+    "toIsoDate > converts YYYYMMDD to YYYY-MM-DD": {},
+    "toIsoDate > preserves single-digit months and days": {},
+    "parseAgentsviewOutput > tags each breakdown with the given source": {},
+    "parseAgentsviewOutput > computes totalTokens as sum of all token-type fields": {},
+    "parseAgentsviewOutput > preserves the cost field untouched": {},
+    "parseAgentsviewOutput > converts schema v3 microdollars to dollars": {},
+    "parseAgentsviewOutput > rejects invalid schema v3 microdollar costs": {},
+    "parseAgentsviewOutput > returns [] for empty daily": {},
+    "parseAgentsviewOutput > returns [] when daily field is missing": {},
+    "parseAgentsviewOutput > treats missing token fields as 0 when computing totalTokens": {},
+    "parseAgentsviewOutput > handles a day with no modelBreakdowns array": {},
+    "collectAgentsviewUsage WARP_DIR scoping > sets WARP_DIR=/var/empty on the syncing claude call but not the --no-sync codex call": {},
+    "resolveAgentsview > returns null when no candidate path exists": {},
+    "resolveAgentsview > returns the first existing executable candidate": {},
+    "resolveAgentsview > skips non-executable candidates": {},
+    "resolveAgentsview > skips candidates that are directories, not files": {},
+    "resolveAgentsview > respects AGENTSVIEW_BIN override": {},
+    "resolveAgentsview > ignores AGENTSVIEW_BIN override when it points at nothing": {},
+    "resolveAgentsview > falls back to PATH when no hard-coded candidate exists": {},
+    "resolveAgentsviewWith — Windows branch (host-independent) > finds agentsview.exe in the installer location under USERPROFILE": {},
+    "resolveAgentsviewWith — Windows branch (host-independent) > resolves agentsview.exe from a ;-separated PATH": {},
+    "resolveAgentsviewWith — Windows branch (host-independent) > never resolves a .cmd/.bat shim — execFileSync can't run one on Windows": {}
+   }
+  },
+  "rovaracli-rovara-234646e7cc82": {
+   "file": "good",
+   "tests": {
+    "auditPullRequestId > is one opaque id for one pull request however the repository is spelled, and differs between pull requests": {},
+    "tryAuditEvent > builds nothing on an install with no ledger": {},
+    "tryAuditEvent > returns the built event, from a builder or a lookup": {},
+    "tryAuditEvent > logs a builder that throws as audit.record_invalid with the error's name only, and lets the action go on": {},
+    "a publication callback records pull_request.opened > commits the event with the pull request record, then sends it": {},
+    "a publication callback records pull_request.opened > keeps the repository's name out of everything but the details": {},
+    "a publication callback records pull_request.opened > commits the record and the pending item together or not at all": {},
+    "a publication callback records pull_request.opened > R1-1: with SQS failing, the same callback twice succeeds both times and leaves exactly one pending item": {},
+    "a publication callback records pull_request.opened > records a replacement's opening in the same transaction as both pull request records": {},
+    "a publication callback records pull_request.opened > answers as today when the intake queue never answers": {},
+    "a publication callback records pull_request.opened > opens the pull request without an event when the workspace's org cannot be found, and says so without a value": {},
+    "a publication callback records pull_request.opened > opens the pull request without an event when the audit's own read of the earlier record fails, and logs the error's name only": {},
+    "a merge the webhook finds records pull_request.merged > commits the event with the task's move to MERGED, once, however often the merge is delivered": {},
+    "a merge the webhook finds records pull_request.merged > records the opening and the merge of one pull request under one target id": {},
+    "a merge the webhook finds records pull_request.merged > records the same event when the merge is found by the bounded merge polling": {},
+    "a merge the webhook finds records pull_request.merged > records nothing for a pull request that is still open": {},
+    "a merge the webhook finds records pull_request.merged > commits the task update and the pending item together or not at all, and the retry records one event": {},
+    "a merge the webhook finds records pull_request.merged > with SQS failing, leaves the event as a pending item and still completes the task": {},
+    "a merge the webhook finds records pull_request.merged > completes the task as today when the intake queue never answers": {},
+    "a task with several pull requests records each merge once > records the merge of each pull request when it happens, and never again for one already merged": {},
+    "a save that records landed fix pushes and merges together > commits the fix pushes, the task update and the merge events in one transaction within the item limit": {},
+    "a save that records landed fix pushes and merges together > commits them together or not at all: a cancelled transaction leaves no event, and the retry records each merge once": {},
+    "a budget change records budget.changed in writeBudgets' transaction > records a change of the org's limit from 500 to 800 with the old and new figures in cents": {},
+    "a budget change records budget.changed in writeBudgets' transaction > reads the cloud install's placeholder limits as the old figures of an org that never set any": {},
+    "a budget change records budget.changed in writeBudgets' transaction > leaves out the figure of a limit that was or becomes unset": {},
+    "a budget change records budget.changed in writeBudgets' transaction > records one event for each limit that changed, a member's included, and none for one that did not": {},
+    "a budget change records budget.changed in writeBudgets' transaction > records nothing when nothing changed": {},
+    "a budget change records budget.changed in writeBudgets' transaction > commits the settings and the pending items in one transaction": {},
+    "a budget change records budget.changed in writeBudgets' transaction > classifies a lost settings condition as a reloadable revision conflict": {},
+    "a budget change records budget.changed in writeBudgets' transaction > keeps the revision and actor transaction on an install with no ledger": {},
+    "a budget change records budget.changed in writeBudgets' transaction > answers as today when the intake queue never answers": {},
+    "a budget change records budget.changed in writeBudgets' transaction > records no event for a member limit set to, or put back to, the default figure": {},
+    "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > commits a change of exactly 96 events with all of them": {},
+    "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > counts events and not overrides: an org limit and 95 overrides are 96 events": {},
+    "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > refuses 97 events with CONFIG_INVALID, writing and recording nothing, and names no value": {},
+    "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > lets a change of any size through on an install with no ledger": {},
+    "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > refuses in changeBudgets before the settings are written or the proxy is told": {},
+    "the budget routes record the change > PUT /v1/dev/org/budget by an admin records budget.changed from 500 to 800 with the admin as actor": {},
+    "the budget routes record the change > refuses a member before any event is made": {},
+    "the budget routes record the change > PUT /v1/admin/org/budget by an operator records the change under the operator's pseudonymous id, never their subject": {},
+    "the budget routes record the change > answers the admin route as today when the intake queue never answers": {}
+   }
+  },
+  "sanity-io-react-rx-bb87463c9d1c": {
+   "file": "good",
+   "tests": {
+    "hidden Activity pre-render starts the source subscription without effects": {},
+    "promise that resolves while hidden appears without fallback on reveal": {},
+    "visible Activity hide/show preserves fulfilled value across toggles": {},
+    "entry evicted while hidden: reveal shows the cached value without fallback or refetch": {},
+    "long-lived source: share retention keeps the connection during ttl, so hidden emissions update the cache": {}
+   }
+  },
+  "sev7n4-pi-lnk-6bbcfdfac975": {
+   "file": "good",
+   "tests": {
+    "POST /sessions 幂等契约 > 首次 201 status=created；同键再次 200 status=resumed": {},
+    "POST /sessions 幂等契约 > 缺 sessionId 时生成并回显（不回显 undefined）": {},
+    "POST /sessions 幂等契约 > 空串 sessionId → 400（客户端错误，不该伪装成 503 下游故障）": {},
+    "POST /sessions 幂等契约 > 不同 userId 同键 → 409（不泄漏 provider/model）": {},
+    "POST /sessions 幂等契约 > 旧 Nest 兼容：attachments / mentionedKeys / refOrder / focusNodeId 仍写入首轮 toolContext": {},
+    "POST /sessions 幂等契约 > canvasSessionId 透传：toolContext.sessionId = 画布会话 id，而非 pi 会话键": {},
+    "POST /sessions 幂等契约 > 旧 Nest 兼容：不传 canvasSessionId 时回落 pi 会话键（行为不新增失败形态）": {},
+    "POST /sessions 幂等契约 > 畸形 llm → 400（不静默兜底）": {},
+    "POST /sessions/:key/prompt 契约 > turnContext 透传生效并返回 202": {},
+    "POST /sessions/:key/prompt 契约 > 旧 Nest 请求（无 turnContext）仍可用": {},
+    "POST /sessions/:key/prompt 契约 > 会话不存在 → 404": {},
+    "POST /sessions/:key/prompt 契约 > run 进行中 → 409 session busy": {},
+    "既有端点保持 > /healthz、/readyz、/metrics、/skills 可用": {},
+    "既有端点保持 > GET /sessions/:key/events 未知键 → 404；DELETE 未知键 → 404": {},
+    "既有端点保持 > DELETE /sessions/:key 删除后 204，再删 404": {},
+    "既有端点保持 > GET /sessions/:key/events?from=now 未知键 → 404（live 路径同样 fail-closed）": {},
+    "resolveEventsSubscribeMode 订阅起点裁决（P0-A 跨轮重放回归锁） > lastEventId（合法非负整数）最高优先 → 增量续传（P0-③ 不变）": {},
+    "resolveEventsSubscribeMode 订阅起点裁决（P0-A 跨轮重放回归锁） > 无 lastEventId 且 from=now → live（不重放缓冲）": {},
+    "resolveEventsSubscribeMode 订阅起点裁决（P0-A 跨轮重放回归锁） > 无参 / 畸形参数 → 全量重放（旧客户端兼容，行为不变）": {},
+    "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 正常 resolve → 200 {ok:true,deduped:false}，阻塞中的 waitForUser 以 answered 交还": {},
+    "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 未知 callId（已超时清理 / 从未注册）→ 仍 200 {ok:true,deduped:true}，业务路径不 404/500": {},
+    "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 会话不存在 → 仍 200 deduped:true（getCanvasSessionId 回落键本身，registry 查不到无副作用）": {},
+    "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 缺 callId 或 answers 非对象 → 400（客户端错误）": {},
+    "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > registry 未装配 → 503（配置缺失，非业务路径）": {},
+    "GET /sessions/:key/pending > 有 pending → {pending:{callId,toolName}}；resolve 后 → {pending:null}": {},
+    "GET /sessions/:key/pending > 会话不存在 → {pending:null}（不给探测面）；registry 未装配 → 同样 {pending:null}": {}
+   }
+  },
+  "sinmentis-rummycube-6ab519ae3c0f": {
+   "file": "good",
+   "tests": {
+    "saveBugReport writes timestamped JSON with sanitized match/player ids": {},
+    "saveBugReport defaults under FLATFILE_DIR so reports persist with match data volume": {},
+    "enrichBugReport adds boardgame.io state, metadata, log and initialState": {},
+    "enrichBugReport records fetch errors without blocking snapshot save": {}
+   }
+  },
+  "sricharan-technoidentity-kody-2eda7024f897": {
+   "file": "good",
+   "note": "the two removed tests were merged into one test that keeps all their assertions",
+   "tests": {
+    "public form protection defaults closed, rejects honeypots, and verifies Turnstile": {},
+    "signup mode and Turnstile configuration default closed and degrade gracefully": {},
+    "configured Turnstile requires and verifies a token server-side": {}
+   }
+  },
+  "tamirarnesty-ploutizo-bcad87b3e0c0": {
+   "file": "good",
+   "note": "status moved from stored to derived; removed tests were renamed or rewritten for the derived model",
+   "tests": {
+    "import service > returns credit-card target accounts without owner enrichment": {},
+    "import service > persists a normalized draft and every parsed row in one transaction": {},
+    "import service > derives row status on GET without persisting recomputation": {},
+    "import service > resumes the active draft for an account without inserting a new batch": {},
+    "import service > returns the raced draft when concurrent uploads hit the unique draft index": {},
+    "import service > derives ready status when category is patched onto a needs_review row": {},
+    "import service > derives needs_review when core review fields are patched onto an invalid row": {},
+    "import service > derives invalidReason when an invalid row stays invalid after partial correction": {},
+    "import service > derives invalid status when a row loses required review fields": {},
+    "import service > persists row field updates without writing derived status columns": {},
+    "import service > updates row selection in batch for a draft and returns derived rows": {},
+    "import service > derives needs_review when sibling refunds make cumulative total exceed target": {},
+    "import service > persists settlement funding and refund-link review values": {},
+    "import service > rejects reviewCounterpartAccountId not in org (two-org isolation)": {},
+    "import service > rejects reviewRefundOf not in org (two-org isolation)": {},
+    "import service > recomputes row status to ready when category is patched onto a needs_review row": {},
+    "import service > recomputes invalid row to needs_review when core review fields are patched": {},
+    "import service > refreshes invalidReason when an invalid row stays invalid after partial correction": {},
+    "import service > adjusts draft counts when a valid row becomes invalid": {},
+    "import service > persists row selection updates": {},
+    "import service > updates row selection in batch for a draft": {}
+   }
+  },
+  "thefixer3x-vortexcore-bc900a1fa22f": {
+   "file": "weak",
+   "note": "the diff removed the vi.mock of AuthContext, so mockAuthContext is no longer connected to LoginForm: T3 (signIn called), T4 (isLoading) and T5 (rejected signIn) configure or assert an object the component never sees. No rule covers it.",
+   "tests": {
+    "LoginForm > renders login form correctly": {},
+    "LoginForm > displays validation errors for empty fields": {},
+    "LoginForm > displays validation error for invalid email format": {},
+    "LoginForm > calls signIn with correct credentials on form submission": {},
+    "LoginForm > shows loading state during authentication": {},
+    "LoginForm > handles authentication error gracefully": {},
+    "LoginForm > provides option to switch to sign up": {},
+    "LoginForm > provides forgot password option": {}
+   }
+  },
+  "threahq-threa-060483878a8c": {
+   "file": "good",
+   "note": "interaction assertions on jobQueue.send are the handler effect (fire-and-forget dispatch)",
+   "tests": {
+    "CompanionHandler > dispatches persona agent for messages in a thread whose root is a scratchpad with companion on": {},
+    "CompanionHandler > ignores the message a slash command was persisted as": {},
+    "CompanionHandler > dispatches for deeply nested threads under a scratchpad (thread of thread of scratchpad)": {},
+    "CompanionHandler > does not dispatch for threads whose root is a channel": {},
+    "CompanionHandler > does not dispatch for messages on end-to-end encrypted streams": {},
+    "CompanionHandler > should not dispatch when the message is in a shared copy": {},
+    "CompanionHandler > carries personaDraftId when the message lands in a bound test scratchpad": {},
+    "CompanionHandler > falls back to the built-in default (never the user/workspace default) for a legacy NULL pointer": {},
+    "CompanionHandler > falls back to the built-in default for an unpinned nested thread via its root scratchpad": {},
+    "CompanionHandler > uses the pinned persona directly when the scratchpad has an active explicit pick": {},
+    "CompanionHandler > does not dispatch for threads under a scratchpad whose companion mode is off": {},
+    "CompanionHandler > wakes the run's persona in a subagent thread under a channel, which has no companion mode": {},
+    "CompanionHandler > stops waking a subagent thread once the run is terminal": {},
+    "CompanionHandler > skips the run lookup entirely for a non-thread stream": {}
+   }
+  },
+  "threahq-threa-aadee30b5de2": {
+   "file": "good",
+   "tests": {
+    "AnalyticsOutboxHandler > should capture message_sent with the workspace group when the author granted consent": {},
+    "AnalyticsOutboxHandler > should not capture when consent is %s": {},
+    "AnalyticsOutboxHandler > should not capture a persona-authored message": {},
+    "AnalyticsOutboxHandler > should not capture anything for an E2E stream": {},
+    "AnalyticsOutboxHandler > should not capture anything when the stream is a shared copy": {},
+    "AnalyticsOutboxHandler > should capture reaction_added with the expected object": {},
+    "AnalyticsOutboxHandler > should capture stream_created with streamType": {},
+    "AnalyticsOutboxHandler > should capture the created thread's own id when stream:created routes to the parent stream": {},
+    "AnalyticsOutboxHandler > should capture stream_joined with the expected object": {},
+    "AnalyticsOutboxHandler > should ignore an unrelated event type and still mark it processed": {},
+    "AnalyticsOutboxHandler > should reuse one E2E lookup for candidates across workspaces": {},
+    "AnalyticsOutboxHandler > should give a replayed outbox row the uuid it had the first time": {},
+    "AnalyticsOutboxHandler > should read consent once per batch with the distinct workspace and actor pairs": {},
+    "AnalyticsOutboxHandler > should capture only in the workspace where the user granted consent when one user id appears in two": {}
+   }
   }
  }
 }
