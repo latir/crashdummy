@@ -1429,6 +1429,213 @@
     "validateNativeCall > builds write proposals from labels": {},
     "validateNativeCall > retag without a meeting uses the meetings in the date range of the question": {}
    }
+  },
+  "martinez-media-meal-planner-6b1069b56c6a": {
+   "file": "good",
+   "note": "success-path tests titled with X (201s with the created meal, 200s with the meal) check only the status code, never the body",
+   "tests": {
+    "GET /:familyId/meals (list) > 200s and forwards the optional search filter": {},
+    "GET /:familyId/meals (list) > forwards the recent-scheduling fields in the response body": {
+     "unsure": [
+      "oracle/tautological-mock"
+     ],
+     "reason": {
+      "oracle/tautological-mock": "service mocked to return the fields and the test checks the route forwards them unchanged; forwarding is the stated behaviour, so this is the thin-wrapper case"
+     }
+    },
+    "GET /:familyId/meals (list) > 500s when the service throws": {},
+    "POST /:familyId/meals (create) > 201s with the created meal": {},
+    "POST /:familyId/meals (create) > 400s on Zod failure (missing name)": {},
+    "POST /:familyId/meals (create) > 400s on an invalid difficulty enum": {},
+    "POST /:familyId/meals (create) > 500s when the service throws": {},
+    "POST /:familyId/meals/import (bulk) > 200s with the import result": {},
+    "POST /:familyId/meals/import (bulk) > 400s on Zod failure (empty meals array)": {},
+    "POST /:familyId/meals/import (bulk) > 500s when the service throws": {},
+    "GET /:familyId/meals/:mealId (detail) > 200s with the meal": {},
+    "GET /:familyId/meals/:mealId (detail) > 404s when the meal is not found": {},
+    "GET /:familyId/meals/:mealId (detail) > 500s when the service throws": {},
+    "PUT /:familyId/meals/:mealId (update) > 200s with the updated meal": {},
+    "PUT /:familyId/meals/:mealId (update) > 400s on Zod failure (empty name)": {},
+    "PUT /:familyId/meals/:mealId (update) > 404s when the service reports the meal is missing": {},
+    "PUT /:familyId/meals/:mealId (update) > 500s on an unexpected error": {},
+    "DELETE /:familyId/meals/:mealId (parents only) > 204s on success": {},
+    "DELETE /:familyId/meals/:mealId (parents only) > 404s when the meal is missing": {},
+    "DELETE /:familyId/meals/:mealId (parents only) > 409s when the meal still has approved suggestions": {},
+    "DELETE /:familyId/meals/:mealId (parents only) > 500s on an unexpected error": {}
+   }
+  },
+  "matidegli-oversight-b22064cdedeb": {
+   "file": "good",
+   "tests": {
+    "retains the last count as a prop across cone card unmount and remount, without another event": {}
+   }
+  },
+  "mattbalza-buzz-dd821639a04a": {
+   "file": "good",
+   "tests": {
+    "create channel and verify in sidebar": {},
+    "two users see the same channel": {},
+    "message delivery across users": {},
+    "live mentions refetch the home feed without waiting for polling": {},
+    "live forum mentions refetch the home feed without waiting for polling": {},
+    "DM channel appears in sidebar": {},
+    "send message to DM": {},
+    "forum channel appears in sidebar": {},
+    "create channel with description": {},
+    "multiple channels independent": {},
+    "manage sheet updates channel details through the relay": {},
+    "manage sheet archive and unarchive survives a reload through the relay": {}
+   }
+  },
+  "mgrin-scani-oss-4239d4f32525": {
+   "file": "good",
+   "tests": {
+    "IDOR — payments router > update refuses to modify another user's payment": {},
+    "IDOR — payments router > settleOccurrence refuses to settle another user's occurrence": {},
+    "IDOR — vendors router > create derives the owner from ctx.userId, never from a client-supplied field": {},
+    "IDOR — vendors router > addAlias refuses to attach an alias to another user's vendor": {},
+    "IDOR — vendors router > addAlias lets the owner through — the control that makes the refusal above a decision": {},
+    "IDOR — vendors router > merge passes ctx.userId to the enforcement boundary, never a client field": {},
+    "IDOR — vendors router > merge lets the owner through — the control that makes the refusal above a decision": {},
+    "IDOR — documents router > acceptExtraction refuses to accept another user's extraction and leaves review_state untouched": {}
+   }
+  },
+  "modelcontextprotocol-inspector-02c8c865e1d1": {
+   "file": "good",
+   "note": "T48 only checks that the CLI failed for any reason; the comment claims the ad-hoc path ran but nothing shows it",
+   "tests": {
+    "daemon coverage > handle() covers invalid connect / connections/use / unknown op": {},
+    "daemon coverage > rejects a second daemon while a live one holds the lock": {},
+    "daemon coverage > reclaims a lock left by a dead pid": {},
+    "daemon coverage > does not delete a lock it no longer owns on stop": {},
+    "daemon coverage > restores a live lock created between the dead-pid read and the rename": {},
+    "daemon coverage > treats a young pidless lock as held instead of stealing it": {},
+    "daemon coverage > reclaims a pidless lock older than the write grace period": {},
+    "daemon coverage > restores a young pidless lock renamed aside mid-reclaim": {},
+    "daemon coverage > stop() force-destroys sockets whose shutdown flush never drains": {},
+    "daemon coverage > removes a stale socket before binding": {},
+    "daemon coverage > daemon/stop responds then shuts down": {},
+    "daemon coverage > accepts malformed NDJSON lines without crashing": {},
+    "daemon coverage > resolves the daemon.token directory without deriving it from pipe paths": {},
+    "daemon coverage > callDaemon rejects immediately on a pre-aborted signal instead of hanging": {},
+    "daemon coverage > callDaemon maps error responses and unreachable sockets": {},
+    "daemon coverage > callDaemon reassembles a multi-byte UTF-8 character split across chunks": {},
+    "daemon coverage > callDaemon with an already-aborted signal rejects without dialing": {},
+    "daemon coverage > callDaemon rejects malformed response JSON": {},
+    "daemon coverage > callDaemon ignores mismatched response ids then accepts a match": {},
+    "daemon coverage > callDaemon skips blank lines and defaults missing exitCode": {},
+    "daemon coverage > stop() without start and with missing lock files is safe": {},
+    "daemon coverage > repeated stop() returns the same in-flight cleanup promise": {},
+    "daemon coverage > rejects new ops while stopping but keeps status ops answerable": {},
+    "daemon coverage > stop() quiesces in-flight ops before disconnecting connections": {},
+    "daemon coverage > callDaemon times out a hung server": {},
+    "daemon coverage > callDaemon with timeoutMs 0 arms no local deadline; daemon close still fails it": {},
+    "daemon coverage > connections/use and reconnect replace an existing connection": {},
+    "daemon coverage > idle handler fires after last disconnect when idleMs > 0": {},
+    "daemon coverage > covers touch/auth/oauth-setup/disconnect-swallow/reconnect-before-idle": {},
+    "daemon coverage > ensureDaemon reuses a running daemon and resolveDaemonScriptPath finds build": {},
+    "daemon coverage > ensureDaemon auto-spawns when no daemon is present": {},
+    "daemon coverage > ping and daemon/status report stopping during shutdown": {},
+    "daemon coverage > waitForDaemonExit resolves for a dead pid and times out on a live one": {},
+    "daemon coverage > waitForDaemonExit falls back to socket reachability without a pid": {
+     "unsure": [
+      "oracle/no-assertion"
+     ],
+     "reason": {
+      "oracle/no-assertion": "only awaits waitForDaemonExit; resolving instead of timing out is the implicit check, but the title does not frame it as does-not-throw"
+     }
+    },
+    "daemon coverage > ensureDaemon waits out a stopping daemon and spawns a fresh one": {},
+    "daemon coverage > start-timeout error quotes the daemon's stderr log": {},
+    "daemon coverage > start-timeout error stays clean when the daemon logged nothing": {},
+    "daemon coverage > readLogTail returns the last lines and empty string when unreadable": {},
+    "daemon coverage > ensureDaemon fails loudly when a live listener rejects ping (no takeover)": {},
+    "daemon coverage > ensureDaemon fails loudly on daemon_auth_failed (wrong token is not a stale socket)": {},
+    "daemon coverage > connection-less start arms idle and self-reaps": {},
+    "daemon coverage > connect failure for a dead stdio command is surfaced and re-arms idle": {},
+    "daemon coverage > re-arms idle when createConnectionClient fails before client.connect": {},
+    "daemon coverage > callDaemon fails immediately when the peer closes without a response": {},
+    "daemon coverage > connections/use via handle and blank IPC lines": {},
+    "mcp connection coverage > covers connections/use, daemon status, @connection connect, and stop no-op": {},
+    "mcp connection coverage > rejects connect with no target and invalid --format": {},
+    "mcp connection coverage > connects an ad-hoc stdio target": {},
+    "mcp connection coverage > treats a URL positional as ad-hoc": {},
+    "mcp connection coverage > requires explicit connection in non-interactive mode without opt-in": {}
+   }
+  },
+  "nampt102-devflow-912214a6755e": {
+   "file": "good",
+   "tests": {
+    "`typecheck cache restore and save: ${name}`": {},
+    "cache excludes workspace code and executable installs, and preserves full checks": {},
+    "the typecheck pin step is identical to the Runner writer's": {}
+   }
+  },
+  "neokapi-neokapi-ed1c6a19c2c3": {
+   "file": "good",
+   "tests": {
+    "Project Map > opens a new project on the Map with its counts, and Rules from the panel": {}
+   }
+  },
+  "nubbymong-ai-code-conductor-a70cabefd2c3": {
+   "file": "good",
+   "tests": {
+    "decideMultiSpawnIntro — once per upgrade > shows on an upgrade from an earlier build": {},
+    "decideMultiSpawnIntro — once per upgrade > does NOT show on the second start of the same build": {},
+    "decideMultiSpawnIntro — once per upgrade > treats a differently-formatted stamp as the same release": {},
+    "decideMultiSpawnIntro — once per upgrade > NEVER shows on a fresh install — and stamps, so it does not ambush them later on this build": {},
+    "decideMultiSpawnIntro — once per upgrade > no saved configs: stamps SILENTLY rather than showing an empty list": {},
+    "decideMultiSpawnIntro — once per upgrade > shows again after a LATER upgrade — the marker is per-build, not once-ever": {},
+    "decideMultiSpawnIntro — once per upgrade > a build with no version define shows nothing and stamps nothing": {},
+    "decideMultiSpawnIntro — once per upgrade > the stamp records the version RUNNING, never the changelog head (#369)": {},
+    "multiSpawnStartupRowState — where each toggle starts > c.name": {},
+    "multiSpawnStartupRowState — where each toggle starts > counts a resumable remote as a copy, like the migration does": {},
+    "resolveStartupRowSave — what Continue writes > un-ticking an AUTO-ENABLED row stores an explicit false, not undefined": {},
+    "resolveStartupRowSave — what Continue writes > un-ticking a row the migration ALREADY wrote also stores false": {},
+    "resolveStartupRowSave — what Continue writes > leaving an untouched never-chosen row alone keeps it undefined": {},
+    "resolveStartupRowSave — what Continue writes > ticking anything stores true": {},
+    "resolveStartupRowSave — what Continue writes > a standing decline left alone stays a decline": {},
+    "resumingSessionCount > adds restored sessions to registry entries": {},
+    "resumingSessionCount > never double-counts a remote whose session came back live": {},
+    "resumingSessionCount > skips the config-less Ask Conductor session": {},
+    "resumingSessionCount > is zero when nothing is coming back": {},
+    "groupConfigsForStartup — the sidebar's grouping > groups in the sidebar's order with Ungrouped last": {},
+    "groupConfigsForStartup — the sidebar's grouping > a stale groupId counts as loose, exactly as the sidebar treats it": {},
+    "groupConfigsForStartup — the sidebar's grouping > drops an empty group rather than showing a heading over nothing": {},
+    "MultiSpawnStartupPage — the real page > lists every saved config, grouped, with the hero and the safety note": {},
+    "MultiSpawnStartupPage — the real page > no resuming sessions: NO strip, and no counts derived from them": {},
+    "MultiSpawnStartupPage — the real page > sessions resuming: the strip says how many, and it is the number the counts came from": {},
+    "MultiSpawnStartupPage — the real page > singular strip copy for a single resuming session": {},
+    "MultiSpawnStartupPage — the real page > initial toggle states: stored-true on, migration-enable on + chip, undefined off, declined off with NO chip": {},
+    "MultiSpawnStartupPage — the real page > a row the migration enabled BEFORE the page mounted still gets its chip": {},
+    "MultiSpawnStartupPage — the real page > Continue persists the tri-state correctly across all four row kinds": {},
+    "MultiSpawnStartupPage — the real page > Skip persists NOTHING but the seen marker": {},
+    "MultiSpawnStartupPage — the real page > a flip survives a re-render — user decisions outrank the derived state": {},
+    "MultiSpawnStartupPage — the real page > reuses the sidebar's badges so a config is recognisable by eye": {}
+   }
+  },
+  "onyx-dot-app-onyx-7457d8390c95": {
+   "file": "good",
+   "tests": {
+    "shows nothing for a chat without requests, agents or files": {},
+    "a waiting approval leads the trigger and its row scrolls to the card": {},
+    "a request this client already decided leaves the card at once": {},
+    "an agent that a streaming reply starts shows while the reply streams": {},
+    "lists running agents on one line each and folds the finished ones": {},
+    "View all files shows the Files list even while a file is open": {}
+   }
+  },
+  "operately-operately-325cf7f01dc2": {
+   "file": "good",
+   "tests": {
+    "SearchPage > renders the initial state and keeps the search field focused": {},
+    "SearchPage > reports query changes without managing the request": {},
+    "SearchPage > renders loading, empty, and error states accessibly": {},
+    "SearchPage > renders result metadata, state, snippet, and navigation": {},
+    "SearchPage > uses the Resource Hub document icon and makes the resource hierarchy explicit": {},
+    "SearchPage > highlights matching query terms in titles and snippets without rendering HTML": {},
+    "SearchPage > renders all indexed resource labels and caps the visible list at 30 results": {}
+   }
   }
  }
 }
