@@ -1028,6 +1028,407 @@
     "GET /inbox/events (global SSE) > a resolve mutation fans a coarse event onto the global channel": {},
     "GET /inbox/events (global SSE) > receives events published via publishInboxChanged on the global channel": {}
    }
+  },
+  "hitesh2912-arvr-project-54c0042b602e": {
+   "file": "good",
+   "tests": {
+    "Flow Graph Data Nodes > Variable Block": {},
+    "Flow Graph Data Nodes > Values are cached for the same execution id": {}
+   }
+  },
+  "horusgoul-trizum-0793eb78b2a7": {
+   "file": "good",
+   "tests": {
+    "waits for completed sign-in and the matching provider account before native Premium": {},
+    "completes optional account sign-in without opening Premium": {},
+    "cancels pending sign-in, ignores late completion, and allows a fresh attempt": {},
+    "can sign in to the same account and open Premium on successive attempts": {},
+    "does not let a stale paywall completion close a newer request": {},
+    "opens browser help without sign-in or native commerce": {},
+    "clears a failed request and allows retry": {},
+    "ignores callbacks from a cancelled sign-in after starting another attempt": {}
+   }
+  },
+  "hypothetical-money-machine-hype-comms-192d39253d13": {
+   "file": "good",
+   "note": "pins CI workflow text with regexes; a change detector rather than behaviour, but it would catch the regressions it names",
+   "tests": {
+    "isolates a workflow job from neighboring jobs": {},
+    "runs public PostgreSQL CI on disposable GitHub-hosted infrastructure": {},
+    "runs the display-server-free demo smokes on Ubuntu x64": {}
+   }
+  },
+  "iblai-os-23a6bf03bf57": {
+   "file": "weak",
+   "note": "the absence checks use try { waitFor visible; expect(true).toBe(false) } catch {}, and the catch swallows the failing expect, so the absence tests cannot fail on the thing their titles claim",
+   "tests": {
+    "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Appears With Bounce Dots During Streaming and Settles After": {},
+    "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Expands to Show Tool Names and Query Detail": {},
+    "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Header Counts Unique Tool Types Not Total Calls": {},
+    "Journey 52: Tool Call Indicator and Reasoning Section > Web Search Button is NOT Visible When Tool is Disabled on Mentor": {
+     "yes": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "expect(true).toBe(false) sits inside a try whose catch swallows it, so the button-absence check can never fail; only isToolEnabled is real"
+     }
+    },
+    "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Does Not Appear When Web Search is Enabled But Not Activated": {
+     "yes": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "the only absence check, expect(true).toBe(false), is caught by its own catch; the rest only checks that elements are visible"
+     }
+    },
+    "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Renders and Auto-Collapses to Thought After Streaming": {},
+    "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Does Not Appear When Model Does Not Produce Reasoning Tokens": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "only asserts the last message is visible; the absence of a reasoning section is only console.warn'd, never asserted"
+     }
+    },
+    "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator and Reasoning Section Both Render in the Same Message": {},
+    "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Is Hidden When Verbose Reasoning Is Off": {
+     "yes": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "the hidden-indicator check, expect(true).toBe(false), is swallowed by its catch; only the setting toggle is really checked"
+     }
+    }
+   }
+  },
+  "itsomidkarami-kraft-5f727fb34e3a": {
+   "file": "good",
+   "tests": {
+    "theme.css > has 30 neutral blocks and 36 accent blocks": {},
+    "theme.css > %s %s %s accent %s clears every floor": {}
+   }
+  },
+  "jarrettmeyer-databricks-mcp-395ce908cdeb": {
+   "file": "good",
+   "tests": {
+    "executeDatabricksCommand > uses 'databricks' by default when DATABRICKS_PATH is not set": {},
+    "executeDatabricksCommand > uses DATABRICKS_PATH when set": {},
+    "executeDatabricksCommand > strips pipe suffix so only the databricks portion is spawned": {},
+    "executeDatabricksCommand > strips redirect suffix so only the databricks portion is spawned": {},
+    "executeDatabricksCommand > strips everything after the first pipe in a multi-stage pipeline": {},
+    "executeDatabricksCommand > preserves quoted redirect inside a SQL string": {}
+   }
+  },
+  "jeanlorencini-herdr-web-ui-40bc62e2774c": {
+   "file": "good",
+   "tests": {
+    "parseMarkdown > renders inline and display math while leaving fenced code untouched": {},
+    "parseMarkdown > parses level one through three headings": {},
+    "parseMarkdown > parses unordered, ordered, and one-level nested lists": {},
+    "parseMarkdown > keeps fenced code and its language": {},
+    "parseMarkdown > recognizes display math without parsing its contents as markdown": {},
+    "parseMarkdown > keeps later markdown and code intact after an unclosed display formula": {},
+    "parseMarkdown > parses a GFM table": {},
+    "inline markdown > parses links and rejects unsafe protocols": {},
+    "inline markdown > keeps a link to a local file as that file, not only its label": {},
+    "inline markdown > links an address written without its scheme, and leaves files and non-addresses alone": {},
+    "inline markdown > parses inline code, bold, italic, and strikethrough": {},
+    "inline markdown > renders inline math in prose but not in code spans": {},
+    "inline markdown > preserves underscores in identifiers while retaining standalone emphasis": {},
+    "autolinks > links a bare http(s) URL and keeps the text around it": {},
+    "autolinks > leaves the sentence's punctuation out, and keeps parentheses the URL opened": {},
+    "autolinks > links an <angle> URL, and nothing inside code, a markdown link, or another scheme": {},
+    "autolinks > links inside emphasis": {},
+    "foldCode > shows blocks up to the limit whole": {},
+    "foldCode > folds a longer block to its first lines and counts all of them": {},
+    "numbered lists as agents write them > keeps one list across blank lines between its items": {},
+    "numbered lists as agents write them > goes on from its own number after a code block or other break, and starts where it says": {},
+    "numbered lists as agents write them > reads an item's indented lines as its own text, and an indented fence as code": {},
+    "numbered lists as agents write them > shows a table indented under an item as a table in that item, not as the item's text": {},
+    "numbered lists as agents write them > goes on counting after a table in an item, the way agents number every item 1.": {},
+    "numbered lists as agents write them > keeps a table and a nested list under one item in the order they were written": {},
+    "numbered lists as agents write them > keeps an item's text after its table below the table": {},
+    "numbered lists as agents write them > ends the list at a quote after an item's table, as before tables nested": {},
+    "numbered lists as agents write them > ends an item's table at the next item or a line outside the item": {},
+    "numbered lists as agents write them > keeps both of two nested lists under one item": {},
+    "numbered lists as agents write them > escapes markup in a table cell inside a list item": {},
+    "numbered lists as agents write them > shows a table indented under an item as a table, not as the item's text": {}
+   }
+  },
+  "jkalasas-lightdash-02ccbbc41001": {
+   "file": "good",
+   "tests": {
+    "AppGenerateService.getAppCode > returns a DataAppCode with manifest and extracted source files for the latest ready version": {},
+    "AppGenerateService.getAppCode > emits spaceSlug as a content-as-code path for an in-space app": {},
+    "AppGenerateService.getAppCode > resolves the app via the uuid-or-slug lookup when given a slug": {},
+    "AppGenerateService.getAppCode > uses the resolved app_id — never the raw uuid-or-slug ref — for the S3 source key": {},
+    "AppGenerateService.getAppCode > includes the version viz schema in the manifest for a data app viz": {},
+    "AppGenerateService.getAppCode > omits vizSchema from the manifest when the version has no schema": {},
+    "AppGenerateService.getAppCode > emits app external-connection links as {alias, connectionSlug} in the manifest": {},
+    "AppGenerateService.getAppCode > uses the provided version number instead of latest ready": {},
+    "AppGenerateService.getAppCode > throws NotFoundError when no ready version exists and version is omitted": {},
+    "AppGenerateService.getAppCode > throws NotFoundError when the source.tar object does not exist in S3": {},
+    "AppGenerateService.getAppCode > throws ForbiddenError when the user cannot view the app": {},
+    "AppGenerateService.getAppCode > resolves with manifest and files intact when semanticLayer fetch fails (degraded context)": {},
+    "AppGenerateService.getAppCode > passes limit: 100 to getAppWithVersions when assembling prompt history": {
+     "yes": [
+      "oracle/interaction-only"
+     ],
+     "reason": {
+      "oracle/interaction-only": "only asserts getAppWithVersions was called with limit 100 (arguments checked); the returned prompt history in the result is not checked"
+     }
+    },
+    "AppGenerateService.getAppCode > assembles context: semantic layer, null parameters (empty), prompt history, and empty theme": {},
+    "AppGenerateService.getDataAppAuthoringContext > returns project context with empty prompt history for a new local app": {},
+    "AppGenerateService.getDataAppAuthoringContext > rejects a slug already reserved in the project": {},
+    "AppGenerateService.getDataAppAuthoringContext > rejects an invalid local app slug": {}
+   }
+  },
+  "kenastark-provenance-0104572e2a7d": {
+   "file": "good",
+   "tests": {
+    "`${route.name} has no critical accessibility violations (dark)`": {},
+    "`${route.name} has no critical accessibility violations (light)`": {},
+    "admin screen (admin role) > has no critical accessibility violations (dark)": {},
+    "admin screen (admin role) > has no critical accessibility violations (light)": {},
+    "admin screen (admin role) > a role below admin sees the block stated in words, not a wall of request errors": {},
+    "sign-in screen > has no critical accessibility violations (dark)": {},
+    "sign-in screen > has no critical accessibility violations (light)": {},
+    "sign-in screen > every role card is reachable with the keyboard and shows a visible focus ring": {},
+    "sign-in screen > focus lands on the main landmark once sign-in completes": {},
+    "keyboard traversal > the skip link is the first tab stop and lands on the content": {},
+    "keyboard traversal > every screen is reachable with the keyboard alone": {},
+    "keyboard traversal > a station can be opened from the quality table without a mouse": {},
+    "keyboard traversal > focus is visible wherever it lands": {},
+    "keyboard traversal > the layer toggle that is not ready is disabled and explained": {},
+    "reduced motion > is respected": {}
+   }
+  },
+  "kevin-taha-scriptorium-03f12195b790": {
+   "file": "good",
+   "tests": {
+    "the build enforces a strict Content-Security-Policy that reading, notes and focus mode stay within": {}
+   }
+  },
+  "kgoggin-facts-checker-7329f6f9c7f4": {
+   "file": "good",
+   "tests": {
+    "token prints only the refresh token to stdout and progress to stderr, logging in once": {},
+    "token --json prints the token set, ISO expiry and shared OAuth/API configuration": {},
+    "config prints the shared constants without credentials, prompts or login": {},
+    "missing configuration without a TTY uses the existing FACTS_CONFIG error (%j)": {},
+    "missing credentials on a TTY are prompted for and passed to login without changing env": {},
+    "a TTY prompts only for missing values and does not retry empty answers": {},
+    "a blank authenticator secret lets a TTY answer authenticator MFA interactively": {},
+    "email destination and email code requests use the interactive OTP callback even with a TOTP secret": {},
+    "invalid TOTP configuration fails before login": {},
+    "FactsError prints only code and message, with no cause or stack, and never retries": {},
+    "unexpected failures do not disclose exception messages or stacks": {},
+    "cancelled input fails with FACTS_CONFIG before login": {},
+    "help (%j) prints usage to stderr without login": {},
+    "invalid arguments (%j) print usage to stderr and exit 2": {}
+   }
+  },
+  "kingithegreat-sadie-2e6ffe236302": {
+   "file": "good",
+   "tests": {
+    "rejects a same-prefix sibling via %s path before indexing": {},
+    "indexes and retrieves a real document inside home using the Documents shortcut": {},
+    "uses the Windows profile boundary when HOME differs": {},
+    "a filesystem-root profile (D:\\ on Windows, / on POSIX) still indexes a document under it": {}
+   }
+  },
+  "learn-ukrainian-learn-ukrainian-github-io-434e9d71904c": {
+   "file": "good",
+   "note": "T8 compares the same call on both sides on purpose (determinism); fine on its own, but a constant function would pass",
+   "tests": {
+    "dateSeed > uses the local calendar date": {},
+    "pickDaily > is deterministic for a fixed pool, seed, and count": {},
+    "pickDaily > caps the count at the pool length": {},
+    "deckSeed > is deterministic and varies by deck id": {},
+    "deckSeed > combined with dateSeed, draws different sets for different decks on the same day": {},
+    "deckSeed > combined with dateSeed, is stable for the same deck and day but rotates across days": {},
+    "reRollSeed > is zero for the default (un-re-rolled) draw": {},
+    "reRollSeed > #6132: re-rolling draws a different set without changing the day": {},
+    "reRollSeed > is deterministic for a given count, so the same re-roll replays identically": {}
+   }
+  },
+  "learn-ukrainian-learn-ukrainian-github-io-902e29730ad0": {
+   "file": "good",
+   "tests": {
+    "lexicon SRS facade > parses legacy no-separator card keys as flashcards": {},
+    "lexicon SRS facade > parses known card-key modes and schedules backed wave-1 drills": {},
+    "lexicon SRS facade > emits heritage candidates from published items in mixed and focus modes": {},
+    "lexicon SRS facade > classify rotates outcome sets while keeping one SRS card key": {},
+    "lexicon SRS facade > quarantines explicit unknown card-key modes without rewriting stored state": {},
+    "lexicon SRS facade > stability counters and selector debt skip quarantined unknown-mode cards": {},
+    "lexicon SRS facade > practice mode set is coupled to the deck-version sentinel": {},
+    "lexicon SRS facade > schedules deterministically with FSRS defaults": {},
+    "lexicon SRS facade > keys cards by lemmaId and mode": {},
+    "lexicon SRS facade > migrates legacy storage into flashcard card keys and writes backup": {},
+    "lexicon SRS facade > backs up existing raw state before save overwrites": {},
+    "lexicon SRS facade > writes the primary state before the best-effort backup": {},
+    "lexicon SRS facade > keeps a successful primary state when the backup write fails": {},
+    "lexicon SRS facade > recovers a rating by dropping the backup when it is the quota blocker": {},
+    "lexicon SRS facade > keeps the rating in memory and exposes a storage-full state after exhausted recovery": {},
+    "lexicon SRS facade > migrates and compacts oversized review history without changing card schedules": {},
+    "lexicon SRS facade > bounds persisted review-state size across simulated long-term sessions": {},
+    "lexicon SRS facade > keeps corrupt storage and surfaces fallback flag": {},
+    "lexicon SRS facade > detects clock jumps beyond seven days": {},
+    "lexicon SRS facade > due queue includes new cards and excludes future reviews per mode": {},
+    "lexicon SRS facade > counts mastered cards for the requested mode": {},
+    "lexicon SRS facade > selector keeps lapsed cards ahead of hard variety drops": {},
+    "lexicon SRS facade > selector applies soft variety across realistic due-time spread": {},
+    "lexicon SRS facade > soft variety never overtakes a genuinely more-due card (no penalty leak across urgency buckets)": {},
+    "lexicon SRS facade > selector never borrows not-due cards while overdue cards exist": {},
+    "lexicon SRS facade > selector widens the due window before borrowing farther not-due cards": {},
+    "lexicon SRS facade > selector mode debt surfaces a starved due mode": {},
+    "lexicon SRS facade > selector uses the session seed only as a stable tied-new-card tiebreak": {},
+    "lexicon SRS facade > selector returns immutable snapshots of cached candidates": {},
+    "lexicon SRS facade > due and lapsed cards beat tied new cards regardless of seed": {},
+    "lexicon SRS facade > B1 decks introduce B1 new cards before same-urgency lower-level cards": {},
+    "lexicon SRS facade > B1 sessions prefer B1 due reviews over same-urgency lower-level reviews": {},
+    "lexicon SRS facade > A2 sessions prefer A2 due reviews over same-urgency A1 reviews": {},
+    "lexicon SRS facade > urgency still beats level bias for lower-level overdue cards": {},
+    "lexicon SRS facade > seeded answer placement varies correct-answer positions across a session": {},
+    "lexicon SRS facade > selector handles a warmed 18k-candidate transition under the perf budget": {},
+    "lexicon SRS facade > explicit cloze mode reaches authored cloze before recognition mastery": {},
+    "lexicon SRS facade > cloze soft cap yields to lapsed cloze pressure": {},
+    "lexicon SRS facade > cloze soft cap exempts overdue non-lapsed cloze": {},
+    "lexicon SRS facade > validates cloze option sets and Ukrainian plural forms": {},
+    "recentSessionHistory (#6132 cross-session anti-repeat) > seeds from the same-day tail of the persisted review log": {},
+    "recentSessionHistory (#6132 cross-session anti-repeat) > drops reviews from a different local calendar day": {},
+    "recentSessionHistory (#6132 cross-session anti-repeat) > caps to the most recent `limit` entries, keeping chronological order": {},
+    "recentSessionHistory (#6132 cross-session anti-repeat) > an empty review log seeds an empty history (first-ever session)": {},
+    "daily practice deck (K3 chunk 1) > daily deck size is 12 for viewport density (#5502)": {},
+    "daily practice deck (K3 chunk 1) > selects exactly DAILY_PRACTICE_DECK_SIZE unique lemmas when enough data exists": {},
+    "daily practice deck (K3 chunk 1) > orders due before new and applies deterministic tie-breakers": {},
+    "daily practice deck (K3 chunk 1) > multiple due modes for one lemma consume one daily slot": {},
+    "daily practice deck (K3 chunk 1) > reviewed-but-not-due lemmas do not displace due or new candidates": {},
+    "daily practice deck (K3 chunk 1) > uses the actual eligible count as denominator when fewer than daily size lemmas exist": {},
+    "daily practice deck (K3 chunk 1) > published levels stay A1 through C1 and C2 is not added": {},
+    "daily practice deck (K3 chunk 1) > a valid snapshot is stable after SRS mutations and page reload": {},
+    "daily practice deck (K3 chunk 1) > invalidates snapshot on date, level, or deckVersion mismatch": {},
+    "daily practice deck (K3 chunk 1) > corrupt JSON falls back to null without blocking": {},
+    "daily practice deck (K3 chunk 1) > refill drops missing IDs and deterministically replaces them": {},
+    "daily practice deck (K3 chunk 1) > refill reuses valid IDs when deck version changes": {},
+    "daily practice deck (K3 chunk 1) > again moves a completed lemma back to pending due; success moves it back to done": {},
+    "daily practice deck (K3 chunk 1) > deriveDailyPracticeRows groups done rows after pending due and pending new": {}
+   }
+  },
+  "leozhengliu-pixel-flow-8833ea3282e8": {
+   "file": "good",
+   "note": "pixel-position layout tests; the diff swaps absolute x positions for relative insets, equally specific",
+   "tests": {
+    "mobile cycles timeline > `cycle cards, cooldown, chart and navigation at ${width}px`": {},
+    "mobile cycle detail > `grouped estimate rows match the phone chrome at ${width}px`": {},
+    "mobile initiative overview > `closed details preserve the overview and latest update at ${width}px`": {},
+    "mobile initiatives list > `All initiatives keeps its phone header and on-track row at ${width}px`": {},
+    "mobile projects list > phone All projects rows show the icon, name, milestone, health and progress": {},
+    "mobile project overview > phone project overview shows the header tabs, property pills and sections": {},
+    "mobile project properties panel > phone project details panel sits at the right edge over the overview with split date rows": {},
+    "mobile project activity > phone project activity shows the comment composer, a month heading and the framed comment card": {},
+    "mobile project update composer > phone project updates show the changed properties and post-update footer": {},
+    "mobile project issues empty state > phone issues tab shows the centred empty state, shortcut keycaps and the display dot": {},
+    "mobile project milestones section > phone overview scrolls to the description goals and milestone card": {},
+    "mobile project milestones section > `phone descriptions keep wrapped, ordered and nested list text unclipped at ${width}px`": {}
+   }
+  },
+  "linuxfoundation-lfx-self-serve-edf59d04c79d": {
+   "file": "good",
+   "tests": {
+    "WG Weekly Brief card — feature-flag gating > card is NOT rendered when wg-weekly-brief flag is OFF": {},
+    "WG Weekly Brief card — feature-flag gating > card IS rendered for the same fixture when LaunchDarkly is reachable": {},
+    "WG Weekly Brief card — empty state (flag ON) > renders empty state with Generate enabled and the \"No brief yet\" copy": {},
+    "WG Weekly Brief card — empty state (flag ON) > Generate is disabled once the weekly generate quota is exhausted": {},
+    "WG Weekly Brief card — generated state (flag ON) > renders brief text, week label, throttle badge, and primary actions": {},
+    "WG Weekly Brief card — Edit → Save round-trip > PUT request carries the modified brief text, and UI re-renders with the \"Edited\" badge": {},
+    "WG Weekly Brief card — Generate from empty > clicking Generate fires POST, polls until terminal, and the UI re-renders to the generated state": {},
+    "WG Weekly Brief card — loads directly into the generating state > a page load landing on an already-generating brief polls to terminal on its own, without a Generate click": {},
+    "WG Weekly Brief card — read failure (flag ON) > shows a retryable unavailable state when GET current fails, then recovers on retry": {}
+   }
+  },
+  "ljcl-intervals-mcp-5f27b9fa475a": {
+   "file": "good",
+   "tests": {
+    "createActivityTool input schema > rejects a sport type Strava does not define, before any write (#244)": {},
+    "createActivityTool input schema > accepts every sport type it advertises": {},
+    "createActivityTool.execute > creates a manual activity from the required fields": {},
+    "createActivityTool.execute > passes optional fields through and reports the distance": {},
+    "createActivityTool.execute > adds a scope hint on a 401 error": {},
+    "createActivityTool.execute > adds a duplicate hint on a 409 conflict": {},
+    "createActivityTool.execute > reports other failures without a hint": {},
+    "create-activity input schema > accepts local ISO datetimes with and without an offset": {},
+    "create-activity input schema > rejects a non-datetime start and a non-positive duration": {}
+   }
+  },
+  "lopes-felipe-f5-cef748444718": {
+   "file": "good",
+   "tests": {
+    "Antigravity native tools > locates native replacement hunks and never presents unknown snippets as whole files": {},
+    "Antigravity native tools > decodes the short Target/Replacement argument names on the snippet path": {},
+    "Antigravity native tools > diffs the full before/after texts current releases send on completion": {},
+    "Antigravity native tools > diffs only the completed update, never a cached preview": {},
+    "Antigravity native tools > keeps snippet-shaped texts off the full-file path": {},
+    "Antigravity native tools > shares one patch budget across the entries of an update": {},
+    "Antigravity native tools > whole-file writes against the pre-write snapshot > diffs a new file against /dev/null and an existing one against its old text": {},
+    "Antigravity native tools > whole-file writes against the pre-write snapshot > keeps the path when the snapshot is unknown, already matches, or names another file": {},
+    "Antigravity native tools > whole-file writes against the pre-write snapshot > snapshots once per call, again after a failure, and evicts beyond 32 calls": {},
+    "Antigravity native tools > shows a new-file write as an addition and an overwrite as a path-only change": {},
+    "Antigravity native tools > uses Antigravity's tool summary as the command description": {},
+    "Antigravity native tools > shows writes into the brain directory as artifacts, not file changes": {}
+   }
+  },
+  "lucent-financial-group-zeta-3bb878cde226": {
+   "file": "good",
+   "tests": {
+    "package.json wiring > keeps the package wiring pointed at the enforcing inventory guard": {},
+    "buildInventoryReport > accepts the retained shell allowlist": {},
+    "buildInventoryReport > flags new post-install shell files as drift": {},
+    "buildInventoryReport > flags repo-wide shell files outside the allowlist as drift": {},
+    "buildInventoryReport > flags missing retained shell scripts": {},
+    "buildInventoryReport > flags duplicate allowlist entries before classifying repo shell drift": {},
+    "buildInventoryReport > flags unsorted allowlist entries before classifying repo shell drift": {},
+    "buildInventoryReport > flags category metadata entries that are no longer retained": {},
+    "buildInventoryReport > flags retained allowlist entries without category metadata": {},
+    "buildInventoryReport > summarizes retained shell files by explicit category": {},
+    "buildInventoryReport > matches the current tracked repo shell inventory": {},
+    "buildInventoryReport > enumerates tracked shell-family files while excluding Lean vendor scripts": {},
+    "renderReport > renders an OK summary for a matching inventory": {},
+    "renderReport > renders drift sections": {},
+    "renderReport > renders allowlist integrity errors before drift sections": {},
+    "renderReport > renders out-of-order allowlist entries as allowlist integrity errors": {},
+    "renderReport > renders stale category map entries as allowlist integrity errors": {},
+    "renderReport > renders uncategorized allowlist entries as allowlist integrity errors": {}
+   }
+  },
+  "maheidem-openstyle-0501f5438d4d": {
+   "file": "good",
+   "tests": {
+    "buildChoices > ranks people by word overlap with the question": {},
+    "buildChoices > lists open items first, then done items marked [done], with the item key as id": {},
+    "buildChoices > an unfiled meeting has open items in scope all": {},
+    "buildChoices > ranks meetings by title and by date words": {},
+    "buildChoices > uses earlier questions of the thread to rank": {},
+    "buildChoices > respects the scope": {},
+    "buildChoices > lists the folders": {},
+    "buildChoices > caps the lists": {},
+    "buildChoices > gold choice is listed: %s": {},
+    "nativeToolDefs > builds OpenAI function tools with closed labels and no date field": {},
+    "nativeToolDefs > shows at most 8 tools": {},
+    "nativeToolDefs > leaves out a tool whose closed list is empty": {},
+    "validateNativeCall > maps a label to the meeting id and parses with the zod schema": {},
+    "validateNativeCall > rejects an unknown label and does not repair it": {},
+    "validateNativeCall > rejects a raw meeting id that is not a label": {},
+    "validateNativeCall > rejects a tool outside the plan and an unknown tool": {},
+    "validateNativeCall > ignores a model date and uses the date of the question": {},
+    "validateNativeCall > sets no date when the question has none": {},
+    "validateNativeCall > uses the question for an empty query and cuts a long one": {},
+    "validateNativeCall > a meeting outside the scope is an error": {},
+    "validateNativeCall > maps a person id and rejects an unknown person": {},
+    "validateNativeCall > builds write proposals from labels": {},
+    "validateNativeCall > retag without a meeting uses the meetings in the date range of the question": {}
+   }
   }
  }
 }
