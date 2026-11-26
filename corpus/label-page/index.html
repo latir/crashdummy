@@ -115,11 +115,16 @@ pre .ln { color: var(--code-dim); display: inline-block; width: 34px; text-align
 pre .add { background: var(--add-bg); }
 pre .del { background: var(--del-bg); }
 pre .hunk { color: var(--code-dim); }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 14px; align-items: center; }
-.chip { border: 1px solid var(--line); background: var(--paper); border-radius: 999px; padding: 4px 11px; font-size: 12.5px; }
-.chip[data-s='yes'] { background: var(--yes-bg); border-color: var(--yes); color: var(--yes); font-weight: 600; }
-.chip[data-s='unsure'] { background: var(--unsure-bg); border-color: var(--unsure); color: var(--unsure); font-weight: 600; }
-.chips .sp { flex: 1; }
+.chips { display: flex; flex-direction: column; gap: 4px; padding: 10px 14px 12px; }
+.chip { display: grid; grid-template-columns: 190px minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; text-align: left; border: 1px solid var(--line); background: var(--paper); border-radius: 8px; padding: 6px 10px; }
+.chip .rn { font: 500 12.5px var(--font-mono); overflow-wrap: anywhere; }
+.chip .rd { color: var(--muted); font-size: 13px; }
+.chip .rs { font-size: 12px; font-weight: 600; min-width: 52px; text-align: right; color: var(--muted); }
+.chip[data-s='yes'] { background: var(--yes-bg); border-color: var(--yes); }
+.chip[data-s='yes'] .rn, .chip[data-s='yes'] .rs, .chip[data-s='yes'] .rd { color: var(--yes); }
+.chip[data-s='unsure'] { background: var(--unsure-bg); border-color: var(--unsure); }
+.chip[data-s='unsure'] .rn, .chip[data-s='unsure'] .rs, .chip[data-s='unsure'] .rd { color: var(--unsure); }
+.chips .foot { display: flex; justify-content: flex-end; padding-top: 6px; }
 .rev { border: 1px solid var(--line); background: var(--paper); border-radius: 8px; padding: 4px 12px; }
 .reviewed .rev { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); font-weight: 600; }
 details.help { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
@@ -133,6 +138,8 @@ details.help dd { margin: 0; }
 @media (max-width: 860px) {
   .shell { grid-template-columns: minmax(0, 1fr); }
   .cases { position: static; max-height: 220px; }
+  .chip { grid-template-columns: minmax(0, 1fr) auto; }
+  .chip .rd { grid-column: 1 / -1; grid-row: 2; }
 }
 @media (prefers-reduced-motion: no-preference) { .bar > i { transition: width 0.25s; } }
 </style>
@@ -142,13 +149,14 @@ details.help dd { margin: 0; }
   <h1>Test Labelling Desk</h1>
   <div class="meter"><div class="bar"><i id="bar"></i></div><span id="count" class="muted">loading…</span></div>
   <span id="sync" class="muted"></span>
+  <div class="seg" id="setseg" role="group" aria-label="Which cases"></div>
   <button class="btn" id="next">Next unreviewed</button>
   <button class="btn primary" id="export">Export labels</button>
 </div>
 
 <details class="help">
   <summary>How to label (read once)</summary>
-  <p class="muted">For each test, tick every problem you see. A test you mark <b>Reviewed</b> with nothing ticked counts as "no problem" for every rule. Click a problem once for <b>yes</b>, twice for <b>unsure</b>, three times to clear. Judge from the code alone. Full definitions are in <code>corpus/LABELING.md</code>.</p>
+  <p class="muted">For each test, tick every problem you see. A test you mark <b>Reviewed</b> with nothing ticked counts as "no problem" for every rule. Click a problem row once for <b>yes</b>, twice for <b>unsure</b>, three times to clear. Each row spells out what the problem means, so you do not need to look it up. Judge from the code alone. Full definitions are in <code>corpus/LABELING.md</code>.</p>
   <dl id="rules"></dl>
 </details>
 
@@ -176,6 +184,7 @@ details.help dd { margin: 0; }
   var NEXT = { off: 'yes', yes: 'unsure', unsure: 'off' };
 
   var data = null, db = null, cur = null, view = 'tests', hideDone = false;
+  var setFilter = lsGet('cd-set-filter') || 'random';
   var state = {};            // caseId -> { file, note, tests: { testId: { r, y:[], u:[] } } }
   var saveTimers = {}, dirty = 0;
   var $ = function (id) { return document.getElementById(id); };
@@ -198,6 +207,9 @@ details.help dd { margin: 0; }
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
+  function visible() {
+    return data.cases.filter(function (c) { return setFilter === 'all' || c.set === setFilter; });
+  }
   function cs(id) { return state[id] || (state[id] = { file: '', note: '', tests: {} }); }
   function ts(c, t) { var s = cs(c.id).tests; return s[t.id] || (s[t.id] = { r: false, y: [], u: [] }); }
   function allTests(c) { return c.tests.concat(c.removed); }
@@ -220,14 +232,14 @@ details.help dd { margin: 0; }
 
   function renderMeter() {
     var done = 0, total = 0;
-    data.cases.forEach(function (c) { done += reviewedIn(c); total += allTests(c).length; });
+    visible().forEach(function (c) { done += reviewedIn(c); total += allTests(c).length; });
     $('count').textContent = done + ' of ' + total + ' tests reviewed';
     $('bar').style.width = (total ? (100 * done / total) : 0) + '%';
   }
 
   function renderList() {
     var box = $('cases'); box.textContent = '';
-    data.cases.forEach(function (c) {
+    visible().forEach(function (c) {
       var n = allTests(c).length, d = reviewedIn(c);
       var b = el('button', { class: 'case' + (n && d === n ? ' done' : ''), 'aria-current': String(cur && cur.id === c.id), onclick: function () { open(c.id); } }, [
         el('span', { class: 'name', text: c.repo + ' / ' + c.path.split('/').pop() }),
@@ -267,8 +279,7 @@ details.help dd { margin: 0; }
     t.rules.forEach(function (rule) {
       var st = chipState(s, rule);
       chips.appendChild(el('button', {
-        class: 'chip', 'data-s': st, title: RULES[rule], 'aria-label': rule + ': ' + st,
-        text: rule.split('/')[1] + (st === 'unsure' ? ' ?' : ''),
+        class: 'chip', 'data-s': st, 'aria-label': rule + ': ' + RULES[rule] + ' (' + st + ')',
         onclick: function () {
           var nx = NEXT[chipState(s, rule)];
           s.y = s.y.filter(function (r) { return r !== rule; });
@@ -278,13 +289,16 @@ details.help dd { margin: 0; }
           if (nx !== 'off') s.r = true;
           save(c); render(true);
         }
-      }));
+      }, [
+        el('span', { class: 'rn', text: rule }),
+        el('span', { class: 'rd', text: RULES[rule] }),
+        el('span', { class: 'rs', text: st === 'yes' ? 'YES' : st === 'unsure' ? 'UNSURE' : '' })
+      ]));
     });
-    chips.appendChild(el('span', { class: 'sp' }));
-    chips.appendChild(el('button', {
+    chips.appendChild(el('div', { class: 'foot' }, [el('button', {
       class: 'rev', text: s.r ? 'Reviewed ✓' : 'No problems · Reviewed',
       onclick: function () { s.r = !s.r; save(c); render(true); }
-    }));
+    })]));
     card.appendChild(chips);
     return card;
   }
@@ -333,6 +347,20 @@ details.help dd { margin: 0; }
     if (keepScroll) window.scrollTo(0, y);
   }
 
+  function renderSet() {
+    var box = $('setseg'); box.textContent = '';
+    [['random', 'Random set'], ['targeted', 'Targeted'], ['all', 'All']].forEach(function (p) {
+      var n = data.cases.filter(function (c) { return p[0] === 'all' || c.set === p[0]; }).length;
+      box.appendChild(el('button', {
+        text: p[1] + ' (' + n + ')', 'aria-pressed': String(setFilter === p[0]),
+        onclick: function () {
+          setFilter = p[0]; lsSet('cd-set-filter', setFilter); renderSet();
+          if (!cur || visible().indexOf(cur) < 0) next(); else render();
+        }
+      }));
+    });
+  }
+
   function open(id) {
     cur = data.cases.filter(function (c) { return c.id === id; })[0] || null;
     view = 'tests'; render(); window.scrollTo(0, 0);
@@ -340,9 +368,10 @@ details.help dd { margin: 0; }
   }
 
   function next() {
-    var from = cur ? data.cases.indexOf(cur) : -1;
-    for (var i = 1; i <= data.cases.length; i++) {
-      var c = data.cases[(from + i) % data.cases.length];
+    var list = visible();
+    var from = cur ? list.indexOf(cur) : -1;
+    for (var i = 1; i <= list.length; i++) {
+      var c = list[(from + i) % list.length];
       if (reviewedIn(c) < allTests(c).length) { open(c.id); return; }
     }
     toast('Everything is reviewed.');
@@ -401,9 +430,11 @@ details.help dd { margin: 0; }
       if (e.key === 'n') next();
     });
     fetch('label-data.json').then(function (r) { return r.json(); }).then(function (d) {
-      data = d; loadLocal(); render();
+      data = d; loadLocal();
       var want = (location.hash || '').slice(1);
       var hit = data.cases.filter(function (c) { return want && c.id.indexOf(want) === 0; })[0];
+      if (hit && hit.set !== setFilter) setFilter = 'all';
+      renderSet(); render();
       if (hit) open(hit.id); else next();
       return claude.use('db');
     }).then(function (handle) {
