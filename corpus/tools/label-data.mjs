@@ -52,10 +52,64 @@ export function unifiedDiff(before, after) {
   }
 }
 
+const FUNCTION_INITS = new Set(['ArrowFunctionExpression', 'FunctionExpression']);
+const MAX_HELPER_LINES = 40;
+const MAX_HELPERS = 4;
+
+/**
+ * What a reader needs to understand a test that calls things defined elsewhere in the file:
+ * the top-level functions, and the imports with where they come from.
+ */
+export function fileContext(program, source) {
+  const functions = new Map();
+  const imports = new Map();
+  for (const top of program.body ?? []) {
+    let n = top;
+    if (n.type === 'ImportDeclaration') {
+      for (const spec of n.specifiers ?? []) {
+        if (spec.local?.name) imports.set(spec.local.name, n.source?.value ?? '?');
+      }
+      continue;
+    }
+    if (n.type === 'ExportNamedDeclaration' && n.declaration) n = n.declaration;
+    if (n.type === 'FunctionDeclaration' && n.id?.name) {
+      functions.set(n.id.name, source.slice(top.start, top.end));
+    } else if (n.type === 'VariableDeclaration') {
+      for (const d of n.declarations ?? []) {
+        if (d.id?.type === 'Identifier' && d.init && FUNCTION_INITS.has(d.init.type)) {
+          functions.set(d.id.name, source.slice(top.start, top.end));
+        }
+      }
+    }
+  }
+  return { functions, imports };
+}
+
+/** Helpers a test calls, and imports it uses, found by name. Shown to the labeller as context. */
+export function contextFor(testSource, ctx) {
+  const names = new Set(testSource.match(/[A-Za-z_$][\w$]*/g) ?? []);
+  const helpers = [];
+  for (const [name, text] of ctx.functions) {
+    if (!names.has(name) || helpers.length >= MAX_HELPERS) continue;
+    const lines = text.split('\n');
+    const cut = lines.length > MAX_HELPER_LINES;
+    helpers.push({
+      name,
+      source: (cut ? lines.slice(0, MAX_HELPER_LINES).concat(['// ...']) : lines).join('\n'),
+    });
+  }
+  const from = [];
+  for (const [name, spec] of ctx.imports) {
+    if (names.has(name) && from.length < 8) from.push({ name, from: spec });
+  }
+  return { helpers, imports: from };
+}
+
 /** The source of each test, found with the parser rather than by guessing at braces. */
 export function describeTests(core, path, source) {
   const analysis = core.analyzeTestFile(path, source, { resolve: false });
   if (analysis.errors.length > 0) return { error: String(analysis.errors[0].message ?? 'syntax') };
+  const ctx = fileContext(analysis.file.program, source);
   const lines = source.split('\n');
   const byId = new Map(analysis.facts.map((f) => [f.id, f]));
   const tests = analysis.summary.tests.map((t) => {
@@ -70,6 +124,7 @@ export function describeTests(core, path, source) {
       endLine,
       modifier: t.modifier ?? null,
       source: lines.slice(startLine - 1, endLine).join('\n'),
+      context: contextFor(lines.slice(startLine - 1, endLine).join('\n'), ctx),
     };
   });
   return { tests };
@@ -116,6 +171,13 @@ export async function buildLabelData({ casesDir, core }) {
       // The whole file, so a labeller can read imports and helpers.
       source: after,
       diff: hasDiff ? unifiedDiff(before, after) : null,
+      lines: after.split('\n').length,
+      imports: [
+        ...fileContext(
+          core.analyzeTestFile(meta.path, after, { resolve: false }).file.program,
+          after,
+        ).imports,
+      ].map(([name, from]) => ({ name, from })),
       tests,
       removed,
     });
