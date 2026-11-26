@@ -3441,6 +3441,1194 @@
           "reason": {}
         }
       }
+    },
+    "jeanlorencini-herdr-web-ui-40bc62e2774c": {
+      "file": "good",
+      "tests": {
+        "parseMarkdown > renders inline and display math while leaving fenced code untouched": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseMarkdown > parses level one through three headings": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseMarkdown > parses unordered, ordered, and one-level nested lists": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseMarkdown > keeps fenced code and its language": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseMarkdown > recognizes display math without parsing its contents as markdown": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseMarkdown > keeps later markdown and code intact after an unclosed display formula": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseMarkdown > parses a GFM table": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "inline markdown > parses links and rejects unsafe protocols": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "inline markdown > keeps a link to a local file as that file, not only its label": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "inline markdown > links an address written without its scheme, and leaves files and non-addresses alone": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "inline markdown > parses inline code, bold, italic, and strikethrough": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "inline markdown > renders inline math in prose but not in code spans": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "inline markdown > preserves underscores in identifiers while retaining standalone emphasis": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "autolinks > links a bare http(s) URL and keeps the text around it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "autolinks > leaves the sentence's punctuation out, and keeps parentheses the URL opened": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "autolinks > links an <angle> URL, and nothing inside code, a markdown link, or another scheme": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "autolinks > links inside emphasis": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "foldCode > shows blocks up to the limit whole": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "foldCode > folds a longer block to its first lines and counts all of them": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > keeps one list across blank lines between its items": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > goes on from its own number after a code block or other break, and starts where it says": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > reads an item's indented lines as its own text, and an indented fence as code": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > shows a table indented under an item as a table in that item, not as the item's text": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > goes on counting after a table in an item, the way agents number every item 1.": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > keeps a table and a nested list under one item in the order they were written": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > keeps an item's text after its table below the table": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > ends the list at a quote after an item's table, as before tables nested": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > ends an item's table at the next item or a line outside the item": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > keeps both of two nested lists under one item": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > escapes markup in a table cell inside a list item": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "numbered lists as agents write them > shows a table indented under an item as a table, not as the item's text": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "jkalasas-lightdash-02ccbbc41001": {
+      "file": "good",
+      "tests": {
+        "AppGenerateService.getAppCode > returns a DataAppCode with manifest and extracted source files for the latest ready version": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > emits spaceSlug as a content-as-code path for an in-space app": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > resolves the app via the uuid-or-slug lookup when given a slug": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > uses the resolved app_id — never the raw uuid-or-slug ref — for the S3 source key": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > includes the version viz schema in the manifest for a data app viz": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > omits vizSchema from the manifest when the version has no schema": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > emits app external-connection links as {alias, connectionSlug} in the manifest": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > uses the provided version number instead of latest ready": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > throws NotFoundError when no ready version exists and version is omitted": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > throws NotFoundError when the source.tar object does not exist in S3": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > throws ForbiddenError when the user cannot view the app": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > resolves with manifest and files intact when semanticLayer fetch fails (degraded context)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getAppCode > passes limit: 100 to getAppWithVersions when assembling prompt history": {
+          "yes": [
+            "oracle/interaction-only"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/interaction-only": "Asserts only the getAppWithVersions call arguments (limit 100); the assembled prompt history is never checked."
+          }
+        },
+        "AppGenerateService.getAppCode > assembles context: semantic layer, null parameters (empty), prompt history, and empty theme": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getDataAppAuthoringContext > returns project context with empty prompt history for a new local app": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getDataAppAuthoringContext > rejects a slug already reserved in the project": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AppGenerateService.getDataAppAuthoringContext > rejects an invalid local app slug": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "kingithegreat-sadie-2e6ffe236302": {
+      "file": "good",
+      "tests": {
+        "rejects a same-prefix sibling via %s path before indexing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "indexes and retrieves a real document inside home using the Documents shortcut": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "uses the Windows profile boundary when HOME differs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a filesystem-root profile (D:\\ on Windows, / on POSIX) still indexes a document under it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "learn-ukrainian-learn-ukrainian-github-io-434e9d71904c": {
+      "file": "good",
+      "tests": {
+        "dateSeed > uses the local calendar date": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "pickDaily > is deterministic for a fixed pool, seed, and count": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "pickDaily > caps the count at the pool length": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deckSeed > is deterministic and varies by deck id": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deckSeed > combined with dateSeed, draws different sets for different decks on the same day": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "deckSeed > combined with dateSeed, is stable for the same deck and day but rotates across days": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "reRollSeed > is zero for the default (un-re-rolled) draw": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "reRollSeed > #6132: re-rolling draws a different set without changing the day": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "reRollSeed > is deterministic for a given count, so the same re-roll replays identically": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "ljcl-intervals-mcp-5f27b9fa475a": {
+      "file": "good",
+      "tests": {
+        "createActivityTool input schema > rejects a sport type Strava does not define, before any write (#244)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createActivityTool input schema > accepts every sport type it advertises": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createActivityTool.execute > creates a manual activity from the required fields": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createActivityTool.execute > passes optional fields through and reports the distance": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createActivityTool.execute > adds a scope hint on a 401 error": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createActivityTool.execute > adds a duplicate hint on a 409 conflict": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createActivityTool.execute > reports other failures without a hint": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "create-activity input schema > accepts local ISO datetimes with and without an offset": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "create-activity input schema > rejects a non-datetime start and a non-positive duration": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "matidegli-oversight-b22064cdedeb": {
+      "file": "good",
+      "tests": {
+        "retains the last count as a prop across cone card unmount and remount, without another event": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "egeominotti-bunqueue-009b932c328e": {
+      "file": "good",
+      "note": "Core queue behaviour is tested well. About ten tests carry vacuous or type-only checks, noted per test.",
+      "tests": {
+        "Push Operation Edge Cases > push with invalid priority should handle gracefully": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Push Operation Edge Cases > push with dependency on completed job should be immediately ready": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Pull Operation Edge Cases > pull with zero timeout should return immediately when empty": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Pull Operation Edge Cases > pull with timeout should return job pushed during wait": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Pull Operation Edge Cases > pull should skip expired jobs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Pull Operation Edge Cases > concurrent pulls should not duplicate jobs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Pull Operation Edge Cases > pull from paused queue should return null": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Pull Operation Edge Cases > pullBatch should respect batch size limit": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Ack Operation Edge Cases > ack already completed job should throw": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Ack Operation Edge Cases > concurrent ack and fail on same job": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Ack Operation Edge Cases > ack with removeOnComplete should delete job": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Ack Operation Edge Cases > fail should respect maxAttempts and move to DLQ": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Ack Operation Edge Cases > fail with retry should requeue job": {
+          "yes": [
+            "oracle/tautological-assertion"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/tautological-assertion": "waiting + active >= 0 is always true for counts; this is one of the assertions on the retry path."
+          }
+        },
+        "Query Operation Edge Cases > getJob for job in different states": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Operation Edge Cases > getJobState returns correct states": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Operation Edge Cases > getJobByCustomId returns null for non-existent": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Operation Edge Cases > getResult returns stored result": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Operation Edge Cases > getProgress returns correct progress": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Operation Edge Cases > getProgress returns null for non-active job": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Queue Control Edge Cases > concurrent pause/resume should handle correctly": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "typeof isPaused is boolean is the only check, so any boolean passes."
+          }
+        },
+        "Queue Control Edge Cases > drain should not affect active jobs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Queue Control Edge Cases > obliterate should remove waiting jobs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Queue Control Edge Cases > clean should remove old completed jobs": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "Array.isArray is the only check; the test never verifies completed jobs were removed."
+          }
+        },
+        "Queue Control Edge Cases > listQueues returns all queue names": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management Edge Cases > cancel waiting job should succeed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management Edge Cases > cancel active job should fail": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management Edge Cases > promote delayed job should make it ready": {
+          "yes": [
+            "oracle/tautological-assertion"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/tautological-assertion": "waiting >= 0 is always true for counts."
+          }
+        },
+        "Job Management Edge Cases > changePriority should update job priority": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management Edge Cases > updateJobData should modify job data": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management Edge Cases > discard should move job to DLQ": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management Edge Cases > discard with concurrent pull race": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Boundary Condition Tests > push with max integer priority": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Boundary Condition Tests > push with zero delay should be immediately ready": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Boundary Condition Tests > push with negative delay should be treated as zero": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Boundary Condition Tests > ack with complex nested result": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "toBeDefined is the only check on the stored result, whose contents matter."
+          }
+        },
+        "Boundary Condition Tests > updateProgress with boundary values": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Rate Limiting and Concurrency Edge Cases > pull should respect rate limit": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Rate Limiting and Concurrency Edge Cases > pull should respect concurrency limit": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Rate Limiting and Concurrency Edge Cases > pullBatch should respect rate limit partially": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "FIFO Group Blocking > jobs in same group should process sequentially (FIFO)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "FIFO Group Blocking > jobs in different groups should process in parallel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Batch Ack with Results > ackBatchWithResults should store individual results": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Batch Ack with Results > ackBatchWithResults with small batch uses fast path": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Lifecycle Edge Cases > fail with removeOnFail should delete job": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Lifecycle Edge Cases > moveToDelayed should move active job back to delayed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Lifecycle Edge Cases > discard from waiting queue should work": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Lifecycle Edge Cases > updateJobData on active job should work": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Lifecycle Edge Cases > customId should be reusable after job completion": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Operations Extended > getJob for job in DLQ should work": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Operations Extended > getJobState for delayed job should return delayed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Operations Extended > count should return correct queue count": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Operations Extended > getJobByCustomId for job in processing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Progress Clamping > progress above 100 should be clamped to 100": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Progress Clamping > progress below 0 should be clamped to 0": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Dependency Waiting > job with pending dependency should wait": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Promote Edge Cases > promote non-delayed job should return false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Promote Edge Cases > promote non-existent job should return false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Promote Edge Cases > changePriority on non-existent job should return false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Promote Edge Cases > cancel non-existent job should return false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Empty Input Edge Cases > ackBatch with empty array should succeed": {
+          "yes": [
+            "oracle/tautological-assertion"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/tautological-assertion": "expect(true).toBe(true) cannot fail."
+          }
+        },
+        "Empty Input Edge Cases > ackBatchWithResults with empty array should succeed": {
+          "yes": [
+            "oracle/tautological-assertion"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/tautological-assertion": "expect(true).toBe(true) cannot fail."
+          }
+        },
+        "Empty Input Edge Cases > pushBatch with empty array should return empty": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Empty Input Edge Cases > listQueues on fresh manager should return empty": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Empty Input Edge Cases > drain empty queue should return 0": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Deduplication Edge Cases > dedup replace when original job completed should insert new": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Deduplication Edge Cases > dedup extend when original job completed should insert new": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Clean Operation Edge Cases > clean with limit should respect max jobs": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "Only an upper bound (<= 3); zero removals pass."
+          }
+        },
+        "Clean Operation Edge Cases > clean with state filter should only affect that state": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "Both checks are vacuous: Array.isArray and length >= 0. The state filter is never verified."
+          }
+        },
+        "Query Edge Cases - Storage Paths > getJobByCustomId returns null for completed job": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Edge Cases - Storage Paths > getResult for job without result returns undefined or null": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Query Edge Cases - Storage Paths > getJobState for unknown job returns unknown": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management - Not Found Paths > updateJobData on non-existent job returns false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management - Not Found Paths > updateProgress on non-existent job returns false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management - Not Found Paths > discard non-existent job returns false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management - Not Found Paths > moveToDelayed on waiting job moves it to delayed": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management - Not Found Paths > changePriority on active job returns false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Batch Operations - Race Conditions > ackBatch with some invalid job IDs should handle gracefully": {
+          "yes": [
+            "oracle/weak-matcher"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/weak-matcher": "active <= 1 passes whether or not the valid job was acked."
+          }
+        },
+        "Batch Operations - Race Conditions > concurrent pushBatch and pull should not conflict": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Progress Message Edge Cases > updateProgress with message should store message": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Progress Message Edge Cases > updateProgress without message should preserve null": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Job Management - Not Found Paths > moveToDelayed on waiting job returns false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "martinez-media-meal-planner-6b1069b56c6a": {
+      "file": "good",
+      "tests": {
+        "GET /:familyId/meals (list) > 200s and forwards the optional search filter": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /:familyId/meals (list) > forwards the recent-scheduling fields in the response body": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /:familyId/meals (list) > 500s when the service throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /:familyId/meals (create) > 201s with the created meal": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /:familyId/meals (create) > 400s on Zod failure (missing name)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /:familyId/meals (create) > 400s on an invalid difficulty enum": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /:familyId/meals (create) > 500s when the service throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /:familyId/meals/import (bulk) > 200s with the import result": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /:familyId/meals/import (bulk) > 400s on Zod failure (empty meals array)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "POST /:familyId/meals/import (bulk) > 500s when the service throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /:familyId/meals/:mealId (detail) > 200s with the meal": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /:familyId/meals/:mealId (detail) > 404s when the meal is not found": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "GET /:familyId/meals/:mealId (detail) > 500s when the service throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "PUT /:familyId/meals/:mealId (update) > 200s with the updated meal": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "PUT /:familyId/meals/:mealId (update) > 400s on Zod failure (empty name)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "PUT /:familyId/meals/:mealId (update) > 404s when the service reports the meal is missing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "PUT /:familyId/meals/:mealId (update) > 500s on an unexpected error": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DELETE /:familyId/meals/:mealId (parents only) > 204s on success": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DELETE /:familyId/meals/:mealId (parents only) > 404s when the meal is missing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DELETE /:familyId/meals/:mealId (parents only) > 409s when the meal still has approved suggestions": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "DELETE /:familyId/meals/:mealId (parents only) > 500s on an unexpected error": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "nampt102-devflow-912214a6755e": {
+      "file": "good",
+      "tests": {
+        "`typecheck cache restore and save: ${name}`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "cache excludes workspace code and executable installs, and preserves full checks": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "the typecheck pin step is identical to the Runner writer's": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "neokapi-neokapi-ed1c6a19c2c3": {
+      "file": "good",
+      "tests": {
+        "Project Map > opens a new project on the Map with its counts, and Rules from the panel": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "onyx-dot-app-onyx-7457d8390c95": {
+      "file": "good",
+      "tests": {
+        "shows nothing for a chat without requests, agents or files": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a waiting approval leads the trigger and its row scrolls to the card": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "a request this client already decided leaves the card at once": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "an agent that a streaming reply starts shows while the reply streams": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lists running agents on one line each and folds the finished ones": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "View all files shows the Files list even while a file is open": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "operately-operately-325cf7f01dc2": {
+      "file": "good",
+      "tests": {
+        "SearchPage > renders the initial state and keeps the search field focused": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SearchPage > reports query changes without managing the request": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SearchPage > renders loading, empty, and error states accessibly": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SearchPage > renders result metadata, state, snippet, and navigation": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SearchPage > uses the Resource Hub document icon and makes the resource hierarchy explicit": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SearchPage > highlights matching query terms in titles and snippets without rendering HTML": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "SearchPage > renders all indexed resource labels and caps the visible list at 30 results": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "sanity-io-react-rx-bb87463c9d1c": {
+      "file": "good",
+      "tests": {
+        "hidden Activity pre-render starts the source subscription without effects": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "promise that resolves while hidden appears without fallback on reveal": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "visible Activity hide/show preserves fulfilled value across toggles": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "entry evicted while hidden: reveal shows the cached value without fallback or refetch": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "long-lived source: share retention keeps the connection during ttl, so hidden emissions update the cache": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "sinmentis-rummycube-6ab519ae3c0f": {
+      "file": "good",
+      "tests": {
+        "saveBugReport writes timestamped JSON with sanitized match/player ids": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "saveBugReport defaults under FLATFILE_DIR so reports persist with match data volume": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "enrichBugReport adds boardgame.io state, metadata, log and initialState": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "enrichBugReport records fetch errors without blocking snapshot save": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "sricharan-technoidentity-kody-2eda7024f897": {
+      "file": "good",
+      "tests": {
+        "public form protection defaults closed, rejects honeypots, and verifies Turnstile": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "signup mode and Turnstile configuration default closed and degrade gracefully": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "configured Turnstile requires and verifies a token server-side": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "thefixer3x-vortexcore-bc900a1fa22f": {
+      "file": "weak",
+      "note": "This change removed the vi.mock calls for AuthContext and useToast, so mockAuthContext is no longer read by LoginForm. The signIn and loading assertions depend on an unwired mock.",
+      "tests": {
+        "LoginForm > renders login form correctly": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "LoginForm > displays validation errors for empty fields": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "LoginForm > displays validation error for invalid email format": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "LoginForm > calls signIn with correct credentials on form submission": {
+          "yes": [],
+          "unsure": [
+            "oracle/tautological-mock"
+          ],
+          "reason": {
+            "oracle/tautological-mock": "signIn mock is no longer wired to LoginForm after the vi.mock removal, so this assertion depends on a mock the component never reads."
+          }
+        },
+        "LoginForm > shows loading state during authentication": {
+          "yes": [],
+          "unsure": [
+            "oracle/tautological-mock"
+          ],
+          "reason": {
+            "oracle/tautological-mock": "isLoading is set on a mock that LoginForm no longer reads, so the disabled-button check depends on an unwired mock."
+          }
+        },
+        "LoginForm > handles authentication error gracefully": {
+          "yes": [],
+          "unsure": [
+            "oracle/tautological-mock"
+          ],
+          "reason": {
+            "oracle/tautological-mock": "mockRejectedValueOnce targets a signIn mock that is no longer wired to LoginForm, so the error text check depends on an unwired mock."
+          }
+        },
+        "LoginForm > provides option to switch to sign up": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "LoginForm > provides forgot password option": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
     }
   }
 }
