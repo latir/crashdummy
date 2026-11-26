@@ -180,6 +180,393 @@
     "checkTransferLegs > flags a COMPLETED transfer whose amountReceived is null": {},
     "checkTransferLegs > does not require amountReceived on ESTIMATED or CLOSED-unreceived transfers": {}
    }
+  },
+  "andreisavu-ambion-15d37b11b140": {
+   "file": "good",
+   "note": "T0 checks via explicit throw new Error rather than expect; it can still fail",
+   "tests": {
+    "$name > retains a sensor manifest and restores its referenced file through the object backend": {}
+   }
+  },
+  "andreisavu-ambion-20cac635bb5d": {
+   "file": "good",
+   "tests": {
+    "keeps the exported package name in step with the manifest": {},
+    "builds every entry the manifest names": {},
+    "exports exactly what an application needs to build a room, and nothing a host needs beyond it": {},
+    "exports exactly the wire and the hosting escape hatch, and nothing an application already has": {},
+    "exports exactly the conformance suite, its shared parts, and its in-process executor": {},
+    "names the ports, the reads, and the visit by their final names": {},
+    "names no model library: the manifest lists none, and no source file imports one": {},
+    "exports exactly the conformance suite and its in-process executor": {}
+   }
+  },
+  "ant1off-gram-a6a9a43a56e0": {
+   "file": "good",
+   "tests": {
+    "holdStill > keeps a clamped correction from landing on the update a press causes": {}
+   }
+  },
+  "autonome-research-hephaestus-19cc1bbfb82c": {
+   "file": "good",
+   "tests": {
+    "the context envelope > draws every member from the closed set and invents none": {},
+    "the context envelope > carries the explode PARAMETER and has nowhere to put a displacement": {},
+    "the context envelope > reports the hidden toggles, sorted, and never a visible count": {},
+    "the context envelope > submits the selection ids and never describes the selection": {},
+    "the context envelope > sends the pin mode only with the ref it qualifies": {},
+    "the context envelope > is null for the blank canvas, whatever the tabs say": {},
+    "the context envelope > honours a dropped member — every member is opt-out": {},
+    "the context envelope > drops the whole envelope when every reference is dropped": {},
+    "the context envelope > lets an explicit Add current view make the view a reference": {},
+    "the chip row > offers a chip for every reference the state names, in a fixed order": {},
+    "the chip row > renders the hidden set as a COUNT of toggles, not a value": {},
+    "the chip row > offers no chip for pin_mode, which is not independently droppable": {},
+    "the read-refresh boundary > names exactly the keys §7A.11 enumerates for a selected part": {},
+    "the read-refresh boundary > still refreshes the project keys on the blank canvas": {},
+    "the DOM contract > carries the closed state vocabulary and the session it is bound to": {},
+    "the DOM contract > says no_session rather than rendering nothing": {},
+    "the DOM contract > names agent_unavailable, its cause, and the path the server checked": {},
+    "the DOM contract > keeps every disabled reason inside the closed vocabulary": {},
+    "the DOM contract > renders cancel as unavailable-with-a-reason, never as a dead button": {},
+    "the DOM contract > puts no data-source on any context chip": {},
+    "the DOM contract > keeps the existing composer selectors when chrome is present": {},
+    "session chrome from GET /providers > uses the provider's own model id as the identifier, never a house name": {},
+    "session chrome from GET /providers > names no models when the configuration file does not exist": {},
+    "session chrome from GET /providers > hides the model projection when the runtime is missing": {},
+    "session chrome from GET /providers > renders the declared model id as a projection, not a picker, when a runtime is attached": {},
+    "session chrome from GET /providers > offers effort levels only when the selected model declared reasoning": {},
+    "the idle composer does not host DFM chrome > still knows when the inspector may show the two §6.4 controls": {},
+    "the idle composer does not host DFM chrome > does not put auto_run or Run DFM on the idle composer": {},
+    "the idle composer does not host DFM chrome > does not grow DFM chrome on the agent_unavailable refusal": {},
+    "context chips do not force a 2400px stream > keeps the full artifact ref on the chip and shortens only the glyphs": {},
+    "the DFM chip is the engine equivalent, not a per-message flag > shows the two §6.4 controls only when a part's DFM document is in hand": {},
+    "the DFM chip is the engine equivalent, not a per-message flag > names the absence when no part is selected and does not fake DFM chrome": {},
+    "the DFM chip is the engine equivalent, not a per-message flag > hides DFM chrome on the agent_unavailable refusal": {}
+   }
+  },
+  "autonome-research-hephaestus-5e335253b2e1": {
+   "file": "weak",
+   "note": "about half the tests regex-match CSS and TSX source text (e.g. T12, T13 grep Composer.tsx) rather than rendered behaviour; brittle and implementation-coupled, no rule covers it",
+   "tests": {
+    "stream column — composer is a pinned footer, not overflow > pins the composer as the last auto row under a shrinking main": {},
+    "stream column — composer is a pinned footer, not overflow > keeps the stream column from growing the 800px shell": {},
+    "stream column — composer is a pinned footer, not overflow > keeps Send inside the composer, which is the panel's last child in source": {},
+    "empty-session create — one sentence, two actions, no tutorial > renders the two create buttons and no explainer paragraphs": {},
+    "empty-session create — one sentence, two actions, no tutorial > keeps the honest selected-part sentence and does not grow a tutorial": {},
+    "rail providers — collapsed by default so Sign-in stays in the box > keeps the rail a height-bounded scroll host": {},
+    "rail providers — collapsed by default so Sign-in stays in the box > fails if a rail descendant can force wider than --rail-width": {},
+    "rail providers — collapsed by default so Sign-in stays in the box > does not mount the configuration table or allowlist until expanded": {},
+    "rail providers — collapsed by default so Sign-in stays in the box > still offers Sign-in and discovery in the compact row": {},
+    "rail providers — collapsed by default so Sign-in stays in the box > keeps acknowledged egress hosts in the compact DOM (G10C)": {},
+    "rail providers — collapsed by default so Sign-in stays in the box > keeps the zero-config empty action when there is no provider row": {},
+    "artifact pin — chip width that fits the 1280 header > shortens the visible pin below the width that ate Token": {},
+    "composer chrome — talking surface, not a Plan/DFM toolbar > does not render a bare effort off in the strip": {},
+    "composer chrome — talking surface, not a Plan/DFM toolbar > defaults the idle prompt to one row so Send stays on-screen": {},
+    "rail project sections — listed, empty-honest, collapsed > keeps the closed inventory and does not expand empty bodies by default": {},
+    "header git identity — no invented branch, no HEAD without a sha > treats porcelain (detached) as no branch and still shows an oid head": {},
+    "header git identity — no invented branch, no HEAD without a sha > omits both fields when GET /git/status has not answered": {},
+    "header git identity — no invented branch, no HEAD without a sha > does not print the label HEAD when head is not an oid": {},
+    "composer chrome — no unlabelled off toggles > does not render a bare effort off in the strip": {}
+   }
+  },
+  "awsomefox-campfire-822f7f297aab": {
+   "file": "weak",
+   "note": "coverage-padding test: defaults only toBeDefined, history only Array.isArray, readiness only echoes campaignId; only configure mode is a real check",
+   "tests": {
+    "AiDmService unit coverage tests > manages AI DM seat configuration, defaults, and readiness": {}
+   }
+  },
+  "awsomefox-campfire-8d7da00e07e6": {
+   "file": "weak",
+   "note": "coverage-padding: totalBytes >= 0 and dryRun echoing its input cannot catch much; empty list is the only real check",
+   "tests": {
+    "AttachmentsService unit coverage tests > manages attachment storage stats and listing": {}
+   }
+  },
+  "bamr87-zer0-mistakes-229c2fcb2dd3": {
+   "file": "good",
+   "tests": {
+    "Feature registry provenance (/features/) > reference table has a Provenance column": {},
+    "Feature registry provenance (/features/) > a known feature exposes a PR link with the correct GitHub href": {},
+    "Feature registry provenance (/features/) > commit links point at the repo commit endpoint": {},
+    "Feature registry provenance (/features/) > feature cards render a provenance line": {}
+   }
+  },
+  "braian-io-braian-14af8aa389d3": {
+   "file": "good",
+   "tests": {
+    "Products create dialog": {},
+    "Articles create dialog": {},
+    "Suppliers create dialog": {},
+    "From type select stays readable in dark theme": {},
+    "Object types create dialog": {},
+    "Link types create dialog": {
+     "yes": [
+      "integrity/assertions-dropped"
+     ],
+     "reason": {
+      "integrity/assertions-dropped": "inlining exercise() dropped the held-save step: create-object toBeDisabled during a pending save and Escape mid-save are no longer checked"
+     }
+    },
+    "Value lists create dialog": {},
+    "List values create dialog": {},
+    "Units create dialog": {},
+    "Attribute definitions create dialog": {},
+    "Type attributes create dialog": {},
+    "Structures create dialog": {}
+   }
+  },
+  "braian-io-braian-42116ca27b25": {
+   "file": "good",
+   "tests": {
+    "pairs with links two cheeses from the keyboard and the link type can be deleted": {},
+    "removing a link with values opens a plain confirm with no text input": {},
+    "removing a link updates the peer list at once and Undo brings the row back": {}
+   }
+  },
+  "brendadeeznuts1111-project-r-score-b2c7e90feaa1": {
+   "file": "good",
+   "note": "T2 and T3 assert on substrings of JS source text rather than behaviour",
+   "tests": {
+    "domain glossary portal > registry projection is integral, bounded, and color-normalized": {},
+    "domain glossary portal > portal vocabulary separates concept kind, semantic type, and UI role": {},
+    "domain glossary portal > board uses URLPattern.hash deep links and shared portal chrome": {},
+    "domain glossary portal > shared glossary UX keeps DOM, fragments, focus, and telemetry bounded": {},
+    "domain glossary portal > route, chrome, and weave make the glossary discoverable": {},
+    "domain glossary portal > registered limits sections and rendered concept references stay aligned": {},
+    "domain glossary portal > committed projection stays aligned with the canonical dump": {}
+   }
+  },
+  "broomva-genesis-4a39a355b7a9": {
+   "file": "good",
+   "tests": {
+    "DoD 1 — an ask survives a process restart and is still ackable > a subprocess writes; this process reads it back": {},
+    "DoD 1 — an ask survives a process restart and is still ackable > a THIRD process answers it, and the ask is individually ackable": {},
+    "DoD 1 — an ask survives a process restart and is still ackable > the bytes are on disk before the writing process exits": {},
+    "DoD 2 — answering twice is a no-op, not a double effect > two identical answers leave one answered ask": {},
+    "DoD 2 — answering twice is a no-op, not a double effect > a CHANGED answer for the same ask takes the later one": {},
+    "DoD 2 — answering twice is a no-op, not a double effect > a duplicate ASK collapses too — a retried tool call yields a stable id": {},
+    "DoD 5 — the ask log and queue.jsonl are separate stores > an ask never lands in the voice intake queue": {},
+    "DoD 5 — the ask log and queue.jsonl are separate stores > a voice ticket in the same directory is not read as an ask": {},
+    "reading is tolerant, and says when it is not > no files yet is a healthy empty, not a degradation": {},
+    "reading is tolerant, and says when it is not > a torn final line is skipped, not fatal": {},
+    "reading is tolerant, and says when it is not > a row with no question is not an ask": {},
+    "reading is tolerant, and says when it is not > filtering by thread returns only that thread's asks": {},
+    "reading is tolerant, and says when it is not > oldest first — an operator answers the longest-waiting question": {},
+    "findings from the P20 review > a short write is COMPLETED — every byte of the record reaches the file": {},
+    "findings from the P20 review > a NON-ASCII record survives a short write — bytes, not code units": {},
+    "findings from the P20 review > a write making no progress throws instead of spinning forever": {},
+    "findings from the P20 review > the fd is closed even when a short write throws": {},
+    "findings from the P20 review > two asks sharing an id in different threads do not mask each other": {},
+    "findings from the P20 review > malformed options are dropped, not handed to the client as AskOption[]": {},
+    "findings from the P20 review > a non-string threadId is SKIPPED, not coerced to thread \"\"": {},
+    "findings from the P20 review > both journals unreadable reports BOTH, not just the last": {},
+    "answeredAt is typed, not trusted > a numeric answeredAt does not round-trip as a string field": {},
+    "answeredAt is typed, not trusted > a well-formed answeredAt still works": {},
+    "readAsks accounts for malformed records > a record with no id is counted, not silently dropped": {},
+    "readAsks accounts for malformed records > a record with no question is counted": {},
+    "readAsks accounts for malformed records > the count is the number of bad records, not a boolean": {},
+    "readAsks accounts for malformed records > the exact shape dogfooding produced: askedAt instead of createdAt": {},
+    "readAsks accounts for malformed records > sessionId present, createdAt missing — still counted": {},
+    "readAsks accounts for malformed records > createdAt present, sessionId missing — still counted": {},
+    "readAsks accounts for malformed records > a line that is valid JSON but not an object is counted": {},
+    "readAsks accounts for malformed records > a record missing BOTH sessionId and createdAt counts once, not twice": {},
+    "readAsks accounts for malformed records > a well-formed log reports NOTHING degraded": {},
+    "readAsks accounts for malformed records > both counters travel together, and the unreadable-file message survives": {},
+    "readAsks accounts for malformed records > a filtered read still reports records the filter never reached": {},
+    "readBounded > a body at exactly the cap is returned": {},
+    "readBounded > one byte over the cap returns null": {},
+    "readBounded > the cap counts BYTES, not characters": {},
+    "readBounded > an empty body is an empty string, not null": {},
+    "readBounded > the stream is CANCELLED past the cap, not merely abandoned": {}
+   }
+  },
+  "cbrown564-alt-unitedstats-0265770b5432": {
+   "file": "good",
+   "tests": {
+    "revalidationPathsForMatches covers shared surfaces and per-match paths": {},
+    "revalidationPathsForMatches adds enriched player and manager pages": {},
+    "revalidationPathsForMatches dedupes paths across multiple matches": {}
+   }
+  },
+  "cbrown564-alt-unitedstats-0b34131ac5a1": {
+   "file": "good",
+   "tests": {
+    "buildProfile defaults to full outside Vercel preview": {
+     "unsure": [
+      "integrity/assertions-dropped"
+     ],
+     "reason": {
+      "integrity/assertions-dropped": "staticBuildDynamicParams assertion deleted with no replacement; probably the export was removed, which the file alone cannot confirm"
+     }
+    },
+    "buildProfile follows VERCEL_ENV=preview": {
+     "unsure": [
+      "integrity/assertions-dropped"
+     ],
+     "reason": {
+      "integrity/assertions-dropped": "staticBuildDynamicParams assertion deleted with no replacement; probably the export was removed, which the file alone cannot confirm"
+     }
+    },
+    "sampleStaticIds returns a stable preview subset": {},
+    "sampleStaticIds returns all ids on full builds": {}
+   }
+  },
+  "che-incubator-che-code-ce05745f51a7": {
+   "file": "good",
+   "tests": {
+    "SessionsWindowNotifier > uses confirmation setting for needs-input transitions": {},
+    "SessionsWindowNotifier > uses response setting for completed and failed transitions": {},
+    "SessionsWindowNotifier > does not notify for initial or duplicate state and respects focus": {},
+    "SessionsWindowNotifier > opens the exact session when the toast is activated": {},
+    "SessionsWindowNotifier > debounces completion notifications until the session stays completed": {},
+    "SessionsWindowNotifier > notifies for a question waiting in an inactive visible pane while the window is focused": {},
+    "SessionsWindowNotifier > does not notify an inactive ordinary pane while the window is focused": {},
+    "SessionsWindowNotifier > does not notify an inactive pane of an archived comparison while the window is focused": {},
+    "SessionsWindowNotifier > falls back to session status when a live model misses its needs-input state": {},
+    "SessionsWindowNotifier > stays silent when a live chat model exists for the session": {}
+   }
+  },
+  "christopher-buss-bedrock-0561a60e8083": {
+   "file": "good",
+   "tests": {
+    "deploy under a locking backend > should take the hold before dispatching any driver": {},
+    "deploy under a locking backend > should report a contended wait through the progress port before applying anything": {},
+    "deploy under a locking backend > should surface a lease the backend could not keep": {},
+    "deploy under a locking backend > should tell the backend which operation the hold is for": {},
+    "deploy under a locking backend > should give the hold up once the state write has been attempted": {},
+    "deploy under a locking backend > should give the hold up when the state write fails": {},
+    "deploy under a locking backend > should give the hold up when the deploy throws": {},
+    "deploy under a locking backend > should abort with lockAcquireFailed before dispatching any driver when the hold is refused": {},
+    "deploy under a locking backend > should keep the deploy result when the hold cannot be given up": {},
+    "deploy under a locking backend > should keep the deploy result when giving the hold up throws": {},
+    "deploy under a locking backend > should take the hold the configured backend supplies": {},
+    "deploy under a locking backend > should take the hold the caller supplies over the one the backend declares": {},
+    "deploy under a locking backend > should take the hold a caller supplies even where the config turned locking off": {},
+    "deploy under a locking backend > should deploy without taking a hold when the config turned locking off": {},
+    "deploy under a locking backend > should report that locking is off when the config turned it off": {},
+    "deploy under a locking backend > should say nothing about locking when the configured backend offers none": {},
+    "deploy under a locking backend > should say nothing about locking when the backend offers none to turn off": {},
+    "deploy under a locking backend > should take the hold for a provision, which shares the deploy's lifetime": {},
+    "deploy under a locking backend > should deploy without taking a hold when the backend declares no locking": {},
+    "$name release reporting > after reconcile $outcome > should report a $release release failure": {}
+   }
+  },
+  "christopher-buss-bedrock-2137ed581feb": {
+   "file": "good",
+   "tests": {
+    "createClackProgressAdapter > should warn that a failed release may need lock recovery": {},
+    "createClackProgressAdapter > should identify a created product by its marketplace ID": {},
+    "createClackProgressAdapter > should identify an adopted universe by its root place ID": {},
+    "createClackProgressAdapter > should render a deploySuccess event as the existing per-env summary line": {},
+    "createClackProgressAdapter > should delegate a deployFailure event to renderDeployError": {},
+    "createClackProgressAdapter > should stay silent on resourceOpStarted (no spinner, no line)": {},
+    "createClackProgressAdapter > should render resourceOpSucceeded (create form) with the per-kind Roblox ID": {},
+    "createClackProgressAdapter > should render resourceOpSucceeded (create form) without an ID for places": {},
+    "createClackProgressAdapter > should render resourceOpSucceeded (update form) listing the changed fields": {},
+    "createClackProgressAdapter > should render resourceOpNoop as an unchanged line": {},
+    "createClackProgressAdapter > should render resourceOpFailed with the driverFailure cause message": {},
+    "createClackProgressAdapter > should follow a failed resource line with diagnostics only when verbose is $verbose": {},
+    "createClackProgressAdapter > should print a failed resource's diagnostics once when the deploy then fails on it": {},
+    "createClackProgressAdapter > should follow a deploy failure with its cause chain when verbose": {},
+    "createClackProgressAdapter > should expand a network driverFailure with its transport code and failing call": {},
+    "createClackProgressAdapter > should render resourceOpFailed for the unexpectedThrow ApplyError": {},
+    "createClackProgressAdapter > should render resourceOpFailed for a permission driverFailure with the scope guidance": {},
+    "createClackProgressAdapter > should render resourceOpFailed for the updateUnsupported ApplyError": {},
+    "createClackProgressAdapter > should render applySummary as the aggregate footer with one-decimal seconds": {},
+    "createClackProgressAdapter > should render applySummary with failed ops as an error that does not claim success": {},
+    "createClackProgressAdapter > should render locking being off as a warning naming the environment": {},
+    "createClackProgressAdapter > should render a contended lock wait naming the holder and the time left": {},
+    "createClackProgressAdapter > should render a contended lock wait without a holder when the record was unreadable": {},
+    "createClackProgressAdapter > should render a lease the backend could not keep as an error": {},
+    "createClackProgressAdapter > should render stateWritten with the gist backend label resolved from the config": {},
+    "createClackProgressAdapter > should render stateWritten with the generic 'state' label when no config is provided": {},
+    "createClackProgressAdapter > should render stateWritten with the generic 'state' label when state config is absent for the environment": {},
+    "createClackProgressAdapter > should render stateWritten with the raw backend tag for non-gist backends": {},
+    "createClackProgressAdapter > should count state-only untrack operations in the summary": {}
+   }
+  },
+  "civio-butterbot-7a48529f65f7": {
+   "file": "good",
+   "tests": {
+    "buildSystemPrompt > lists an unrestricted skill everywhere": {},
+    "buildSystemPrompt > lists a restricted skill only in its channels": {},
+    "buildSystemPrompt > hides restricted skills in a DM": {},
+    "buildSystemPrompt > omits the skills section entirely when nothing is visible": {},
+    "buildSystemPrompt > describes the sandbox the tools actually run in": {},
+    "trimHistory > leaves a short transcript alone": {},
+    "trimHistory > drops the oldest turns once over the cap, and starts on a user message": {}
+   }
+  },
+  "cogvera-labs-next-expo-supabase-agent-harness-5b7d33a22ec8": {
+   "file": "good",
+   "note": "tests titled name are the treeTest wrapper (L54-55); the real bodies are the treeTest callbacks, which assert. Removed tests T34-T46 were re-registered through treeTest or retired with the regex scanner and site entries in 2.0.0",
+   "tests": {
+    "name": {},
+    "name #2": {},
+    "name #3": {},
+    "name #4": {},
+    "name #5": {},
+    "name #6": {},
+    "name #7": {},
+    "name #8": {},
+    "name #9": {},
+    "i18n: a DEAD catalog key reds — copy nothing renders is copy that rots": {},
+    "i18n: a dynamically-built key resolves by its static PREFIX (no false dead-key)": {},
+    "i18n: an EMPTY catalog fails — the seam cannot be adopted and vacuous at once": {},
+    "name #10": {},
+    "name #11": {},
+    "i18n: the gate SELF-DISABLES when the locale seam is not adopted": {},
+    "i18n: NO product surface at all — loud local skip, CI fail-closed": {},
+    "i18n: LOCALES unparseable (or index.ts absent) FAILS CLOSED — the closure cannot be checked": {},
+    "i18n: an installed data-consuming polyfill without locale-data for a catalog language reds": {},
+    "i18n: polyfill + matching locale-data closes the loop — green": {},
+    "i18n: locale-data no catalog locale resolves to is dead bundle weight — reds the other way": {},
+    "i18n: a pseudo-locale (en-XA) resolves through its BASE language — /en data suffices": {},
+    "i18n: data-free polyfills (getcanonicallocales, intl-locale) need no locale-data": {},
+    "i18n: a polyfill inlined into app/_layout.tsx is still seen — the closure covers the root layout": {},
+    "i18n: a clean tree passes and reports what it scanned": {},
+    "name #12": {},
+    "name #13": {},
+    "name #14": {},
+    "name #15": {},
+    "name #16": {},
+    "name #17": {},
+    "name #18": {},
+    "i18n: 2.0.0 — a 1.0.x {\"site\"} entry is malformed on every install, a 1.0.3 vintage included, and names what replaces it": {},
+    "i18n: with the parser ABSENT, checks 1 and 2 are not judged, the output says so, and CI fails closed": {},
+    "name #19": {},
+    "i18n: a hardcoded JSX text child reds, naming the string": {},
+    "i18n: the expo-router app/ tree is scanned too — copy in a screen file reds": {},
+    "i18n: a hardcoded user-facing ATTRIBUTE reds — the RN a11y names included": {},
+    "i18n: copy in an OBJECT literal reds — data modules and navigator options hold copy too": {},
+    "i18n: machine-facing literals are NOT copy (a path, a token, a kebab id)": {},
+    "i18n: TypeScript generics are not JSX — a .ts file with <T> reds nothing": {},
+    "i18n: an arrow function is not a tag — `=>` never opens JSX text": {},
+    "i18n: Intl / toLocale* / toFixed outside apps/mobile/src/i18n reds": {},
+    "i18n: .toFixed(2) reds with the reason — it hardcodes the decimal mark": {},
+    "i18n: the reviewed allowlist mutes findings by content KEY (copy AND boundary); malformed FAILS CLOSED": {},
+    "i18n: a content key stays on its string when a line is inserted above it; a site entry does not": {},
+    "i18n: one key mutes a finding whichever scanner reports it — the regular expressions alone included": {},
+    "i18n: with the parser ABSENT the regular expressions still judge and the output says the walk did not run; CI fails closed": {}
+   }
+  },
+  "commandershadow9-sicherheitsdienst-tool-adc2482e6625": {
+   "file": "good",
+   "tests": {
+    "listParams mapping > toSearchParams maps all fields including filters": {},
+    "listParams mapping > fromSearchParams reads values and defaults pageSize 25": {},
+    "listParams mapping > respects provided defaults": {}
+   }
+  },
+  "danielszabo92-pbibrain-82f55a53c16d": {
+   "file": "good",
+   "tests": {
+    "StatusBadge refuses a tone with no label": {},
+    "StatusBadge refuses a tone that is not known": {},
+    "StatusBadge accepts each tone with a word": {}
+   }
   }
  }
 }
