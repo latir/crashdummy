@@ -567,6 +567,467 @@
     "StatusBadge refuses a tone that is not known": {},
     "StatusBadge accepts each tone with a word": {}
    }
+  },
+  "decdn-sdk-typescript-1e28f9fd2141": {
+   "file": "good",
+   "note": "removed token tests follow removal of token auth; replacements exist for allowance/pool/empty-blob cases",
+   "tests": {
+    "DecdnClient.open > picks the context from the gateway URL": {},
+    "DecdnClient.open > opens a loopback client on %s": {},
+    "DecdnClient.open > normalises an IPv6 loopback spelling to [::1]": {},
+    "DecdnClient.open > opens a public client on %s": {},
+    "DecdnClient.open > refuses no gateway outside a site page, and a URL that does not parse": {},
+    "public context > streams a blob from the bare host and verifies it": {},
+    "public context > fails a tampered blob with HASH_MISMATCH, as a stream error and on bytes()": {},
+    "public context > still hashes a whole-body request the gateway answers with a window": {},
+    "public context > fails a body the gateway cuts with TRUNCATED": {},
+    "public context > fetches an entry through its site and verifies it against the manifest": {},
+    "public context > fetches a page or a stylesheet by its entry hash, unrewritten": {},
+    "public context > reads the manifest with the URI's namespace hint": {},
+    "public context > reads a directory's index.html by the directory's path, as its site does": {},
+    "public context > cuts the window from a whole body the gateway answers a range with": {},
+    "public context > refuses a window past the end of a whole body, as the gateway's 416": {},
+    "public context > answers a range of an empty whole body empty": {},
+    "public context > fails a whole body that ends before its window with TRUNCATED": {},
+    "public context > drops a manifest read every caller gave up on": {},
+    "public context > starts a fresh manifest read after an abort, and keeps the old one for its waiters": {},
+    "public context > keeps a settled manifest cached when a later caller aborts": {},
+    "public context > leaves a newer read of a key alone when an evicted one is abandoned": {},
+    "public context > sends nothing for a caller that has already given up": {},
+    "public context > takes a body shorter than its Content-Length when it was decoded on the way": {},
+    "public context > still bounds an encoded entry by its manifest size": {},
+    "public context > checks and normalises a URI given as an object": {},
+    "public context > fails a tampered entry with HASH_MISMATCH": {},
+    "public context > skips the manifest when verification is off": {},
+    "public context > answers a range with 206 and no verification": {},
+    "public context > refuses a range on a blob before any request": {},
+    "public context > keeps one caller's abort out of another's manifest read": {},
+    "public context > maps a range past the end to RANGE_NOT_SATISFIABLE with the size": {},
+    "public context > maps a public gateway nothing can pay for to PAYMENT_REQUIRED with the fallback URI": {},
+    "public context > maps a 503 that names no fallback URI, and a 401, to HTTP": {},
+    "public context > pays with a namespace-scoped capability only on its pointer's host, for the pointer's bundle": {},
+    "public context > serves a blob its cache holds whole when nothing can pay": {},
+    "public context > maps a pool that cannot pay to PAYMENT_REQUIRED": {},
+    "public context > retries once after Retry-After when asked": {},
+    "public context > does not wait out Retry-After once the caller has aborted": {},
+    "public context > fails a body aborted mid-stream with the signal's reason": {},
+    "public context > fails a window that runs past its declared length with TRUNCATED": {},
+    "public context > fails a whole entry that runs past its manifest size with TRUNCATED": {},
+    "public context > takes a body longer than its Content-Length, as one decoded on the way": {},
+    "public context > fetches an entry by its hash when its site serves it as %s": {},
+    "public context > fetches by hash without waiting on a page whose clone is kept unread": {},
+    "public context > takes a rewritten type as served when verification is off": {},
+    "public context > retries the fetch by hash after Retry-After when asked": {},
+    "public context > knows an entry the manifest lacks is not found without asking for it": {},
+    "public context > caches a manifest by hash": {},
+    "public context > keeps a manifest read again after an evicted read of it fails": {},
+    "public context > refuses a blob that is not a manifest": {},
+    "public context > resolves an entry to its hash and URLs": {},
+    "public context > builds site and namespace URLs": {},
+    "public context > reads an entry's size and hash from HEAD": {},
+    "public context > reads a raw blob's size and hash from HEAD": {},
+    "public context > maps a raw blob's HEAD refusals as its GET's": {},
+    "public context > pays a raw blob's proof once, under a site's /_decdn/ too": {},
+    "public context > redirects HEAD of bundle content under a site's /_decdn/ to its site, a directory to the directory, with no pull": {},
+    "public context > keeps the query on a site directory's redirect, and answers 404 for a directory with no index.html under /_decdn/": {},
+    "public context > redirects a navigation of bundle content under a site's /_decdn/ to its site, with no pull": {},
+    "public context > answers the empty blob with no proof and nothing that pays": {},
+    "public context > serves a bundle as its site index, unverified": {},
+    "public context > maps a failed fetch to NETWORK": {},
+    "public context > rejects a bad URI before any request": {},
+    "loopback context > sends no credential and verifies a blob": {},
+    "loopback context > refuses a page on another site or origin, and a browser that sends no Sec-Fetch-Site": {},
+    "loopback context > spends on a site origin only for its own pages, the user, and a top-level navigation": {},
+    "loopback context > does not read a directory's index.html by the directory's path, as the bare host does not": {},
+    "loopback context > fetches an entry on the bare host, byte-exact, and verifies it": {},
+    "loopback context > maps no usable capability to PAYMENT_REQUIRED": {},
+    "loopback context > answers HEAD from the manifest, since a loopback gateway refuses HEAD": {},
+    "loopback context > does not refetch by hash, where the bare host serves entries unrewritten": {},
+    "loopback context > builds site URLs under localhost on the gateway's port": {},
+    "site context > is detected on a site origin and reads its own entries same-origin": {},
+    "site context > reads a directory of its own bundle by the directory's path": {},
+    "site context > reads its own bundle under its host's namespace, whatever the call": {},
+    "site context > leaves a URI object it is given unchanged": {},
+    "site context > reads other content through /_decdn/": {},
+    "site context > is detected on a namespace host under the configured gateway, where the manifest is unknown": {},
+    "site context > keeps the page's query on its own entries and leaves the namespace to the host": {},
+    "site context > fetches its own entry by hash through /_decdn/ when the site serves it as a rewritten type": {},
+    "site context > opens the site on a loopback site page, whatever gateway URL it names": {},
+    "site context > opens a loopback gateway named by URL on a page that is not a site": {},
+    "site context > opens the site without a gateway URL": {},
+    "site context > does not take an arbitrary numeric subdomain for a namespace host": {},
+    "DecdnClient.open > picks the context from the gateway URL and token": {},
+    "DecdnClient.open > refuses a token without a host, and no gateway outside a site page": {},
+    "public context > maps a spent allowance to PAYMENT_REQUIRED with the fallback URI": {},
+    "public context > maps a pool that cannot pay to POOL_UNFUNDED": {},
+    "public context > answers the empty blob with no proof": {},
+    "public context > admits a window of a raw blob by its chunk-group span": {},
+    "loopback context > sends the token and host and verifies a blob": {},
+    "loopback context > refuses content without the token, before any request": {},
+    "loopback context > maps a wrong token to UNAUTHORIZED and an uncovered host to PAYMENT_REQUIRED": {},
+    "site context > opens a loopback gateway named by URL, for its delegate API": {},
+    "site context > opens the gateway a token names, and the site without a gateway URL": {}
+   }
+  },
+  "dotnet-skills-c1acda4fb74b": {
+   "file": "weak",
+   "note": "deliberately shallow fixture for an assertion-quality skill; the problems are real, so labelled as they stand",
+   "tests": {
+    "OrderService > creates an order": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "only toBeDefined on the created order"
+     }
+    },
+    "OrderService > creates returns truthy": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "only toBeTruthy on the created order"
+     }
+    },
+    "OrderService > creates returns not null": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "only not.toBeNull on the created order"
+     }
+    },
+    "OrderService > list returns array": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "only checks list() is an array, not its contents"
+     }
+    },
+    "OrderService > always true": {
+     "yes": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "expect(true).toBe(true)"
+     }
+    },
+    "OrderService > confirms order resolves": {
+     "yes": [
+      "oracle/swallowed-async",
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/swallowed-async": "expect(...).resolves not awaited or returned",
+      "oracle/weak-matcher": "resolves.toBeDefined only proves a value exists"
+     }
+    },
+    "OrderService > does not equal something irrelevant": {
+     "unsure": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "not.toBe against an unrelated literal can practically never fail, though not literally the same expression"
+     }
+    },
+    "OrderService > round trip identity": {
+     "yes": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "expect(o.id).toBe(o.id), same expression on both sides"
+     }
+    },
+    "OrderService > legitimate equality on returned customer": {},
+    "OrderService > legitimate exception assertion": {}
+   }
+  },
+  "egeominotti-bunqueue-009b932c328e": {
+   "file": "good",
+   "note": "mostly real state checks; a handful of tests only check types or tautologies",
+   "tests": {
+    "Push Operation Edge Cases > push with invalid priority should handle gracefully": {},
+    "Push Operation Edge Cases > push with dependency on completed job should be immediately ready": {},
+    "Pull Operation Edge Cases > pull with zero timeout should return immediately when empty": {},
+    "Pull Operation Edge Cases > pull with timeout should return job pushed during wait": {},
+    "Pull Operation Edge Cases > pull should skip expired jobs": {},
+    "Pull Operation Edge Cases > concurrent pulls should not duplicate jobs": {},
+    "Pull Operation Edge Cases > pull from paused queue should return null": {},
+    "Pull Operation Edge Cases > pullBatch should respect batch size limit": {},
+    "Ack Operation Edge Cases > ack already completed job should throw": {},
+    "Ack Operation Edge Cases > concurrent ack and fail on same job": {},
+    "Ack Operation Edge Cases > ack with removeOnComplete should delete job": {},
+    "Ack Operation Edge Cases > fail should respect maxAttempts and move to DLQ": {},
+    "Ack Operation Edge Cases > fail with retry should requeue job": {
+     "unsure": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "title says requeue but besides dlq 0 the only other check, waiting+active >= 0, can never fail"
+     }
+    },
+    "Query Operation Edge Cases > getJob for job in different states": {},
+    "Query Operation Edge Cases > getJobState returns correct states": {},
+    "Query Operation Edge Cases > getJobByCustomId returns null for non-existent": {},
+    "Query Operation Edge Cases > getResult returns stored result": {},
+    "Query Operation Edge Cases > getProgress returns correct progress": {},
+    "Query Operation Edge Cases > getProgress returns null for non-active job": {},
+    "Queue Control Edge Cases > concurrent pause/resume should handle correctly": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "only checks typeof isPaused is boolean after the race, not the resulting state"
+     }
+    },
+    "Queue Control Edge Cases > drain should not affect active jobs": {},
+    "Queue Control Edge Cases > obliterate should remove waiting jobs": {},
+    "Queue Control Edge Cases > clean should remove old completed jobs": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "only Array.isArray on the clean result; nothing checks the completed jobs were removed"
+     }
+    },
+    "Queue Control Edge Cases > listQueues returns all queue names": {},
+    "Job Management Edge Cases > cancel waiting job should succeed": {},
+    "Job Management Edge Cases > cancel active job should fail": {},
+    "Job Management Edge Cases > promote delayed job should make it ready": {},
+    "Job Management Edge Cases > changePriority should update job priority": {},
+    "Job Management Edge Cases > updateJobData should modify job data": {},
+    "Job Management Edge Cases > discard should move job to DLQ": {},
+    "Job Management Edge Cases > discard with concurrent pull race": {},
+    "Boundary Condition Tests > push with max integer priority": {},
+    "Boundary Condition Tests > push with zero delay should be immediately ready": {},
+    "Boundary Condition Tests > push with negative delay should be treated as zero": {},
+    "Boundary Condition Tests > ack with complex nested result": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "only toBeDefined on the stored complex result; its contents are never compared"
+     }
+    },
+    "Boundary Condition Tests > updateProgress with boundary values": {},
+    "Rate Limiting and Concurrency Edge Cases > pull should respect rate limit": {},
+    "Rate Limiting and Concurrency Edge Cases > pull should respect concurrency limit": {},
+    "Rate Limiting and Concurrency Edge Cases > pullBatch should respect rate limit partially": {},
+    "FIFO Group Blocking > jobs in same group should process sequentially (FIFO)": {},
+    "FIFO Group Blocking > jobs in different groups should process in parallel": {},
+    "Batch Ack with Results > ackBatchWithResults should store individual results": {},
+    "Batch Ack with Results > ackBatchWithResults with small batch uses fast path": {},
+    "Job Lifecycle Edge Cases > fail with removeOnFail should delete job": {},
+    "Job Lifecycle Edge Cases > moveToDelayed should move active job back to delayed": {},
+    "Job Lifecycle Edge Cases > discard from waiting queue should work": {},
+    "Job Lifecycle Edge Cases > updateJobData on active job should work": {},
+    "Job Lifecycle Edge Cases > customId should be reusable after job completion": {},
+    "Query Operations Extended > getJob for job in DLQ should work": {},
+    "Query Operations Extended > getJobState for delayed job should return delayed": {},
+    "Query Operations Extended > count should return correct queue count": {},
+    "Query Operations Extended > getJobByCustomId for job in processing": {},
+    "Progress Clamping > progress above 100 should be clamped to 100": {},
+    "Progress Clamping > progress below 0 should be clamped to 0": {},
+    "Dependency Waiting > job with pending dependency should wait": {},
+    "Promote Edge Cases > promote non-delayed job should return false": {},
+    "Promote Edge Cases > promote non-existent job should return false": {},
+    "Promote Edge Cases > changePriority on non-existent job should return false": {},
+    "Promote Edge Cases > cancel non-existent job should return false": {},
+    "Empty Input Edge Cases > ackBatch with empty array should succeed": {
+     "yes": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "expect(true).toBe(true) is the only assertion"
+     }
+    },
+    "Empty Input Edge Cases > ackBatchWithResults with empty array should succeed": {
+     "yes": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "expect(true).toBe(true) is the only assertion"
+     }
+    },
+    "Empty Input Edge Cases > pushBatch with empty array should return empty": {},
+    "Empty Input Edge Cases > listQueues on fresh manager should return empty": {},
+    "Empty Input Edge Cases > drain empty queue should return 0": {},
+    "Deduplication Edge Cases > dedup replace when original job completed should insert new": {},
+    "Deduplication Edge Cases > dedup extend when original job completed should insert new": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "toBeDefined and not.toBeNull only; the new job's data or version is never checked"
+     }
+    },
+    "Clean Operation Edge Cases > clean with limit should respect max jobs": {},
+    "Clean Operation Edge Cases > clean with state filter should only affect that state": {
+     "yes": [
+      "oracle/weak-matcher"
+     ],
+     "reason": {
+      "oracle/weak-matcher": "Array.isArray and length >= 0 only; nothing checks the state filter"
+     }
+    },
+    "Query Edge Cases - Storage Paths > getJobByCustomId returns null for completed job": {},
+    "Query Edge Cases - Storage Paths > getResult for job without result returns undefined or null": {},
+    "Query Edge Cases - Storage Paths > getJobState for unknown job returns unknown": {},
+    "Job Management - Not Found Paths > updateJobData on non-existent job returns false": {},
+    "Job Management - Not Found Paths > updateProgress on non-existent job returns false": {},
+    "Job Management - Not Found Paths > discard non-existent job returns false": {},
+    "Job Management - Not Found Paths > moveToDelayed on waiting job moves it to delayed": {},
+    "Job Management - Not Found Paths > changePriority on active job returns false": {},
+    "Batch Operations - Race Conditions > ackBatch with some invalid job IDs should handle gracefully": {
+     "unsure": [
+      "oracle/tautological-assertion"
+     ],
+     "reason": {
+      "oracle/tautological-assertion": "with one job, stats.active <= 1 cannot fail whatever ackBatch does"
+     }
+    },
+    "Batch Operations - Race Conditions > concurrent pushBatch and pull should not conflict": {},
+    "Progress Message Edge Cases > updateProgress with message should store message": {},
+    "Progress Message Edge Cases > updateProgress without message should preserve null": {},
+    "Job Management - Not Found Paths > moveToDelayed on waiting job returns false": {}
+   }
+  },
+  "frkim-japon2027-13j-5175805aefc3": {
+   "file": "good",
+   "tests": {
+    "markers have unique valid IDs, names, descriptions and Japan coordinates": {},
+    "categories and itinerary day references are valid": {},
+    "geographic markers match all itinerary stops and their days": {},
+    "five separate stays reference existing hotels and allocate every hotel night once": {},
+    "flight nights and arrival home are not hotel stays or foreign map markers": {},
+    "route references geographic markers in order and preserves the Kyoto return": {}
+   }
+  },
+  "gambitnl-aralia-6e43db7b7afc": {
+   "file": "good",
+   "tests": {
+    "MOVE_PLAYER cell-native arrival > lands the EXACT destination cell, resets Locale feet, and stamps the entry anchor": {
+     "unsure": [
+      "integrity/assertions-dropped"
+     ],
+     "reason": {
+      "integrity/assertions-dropped": "dropped the check that the destination cell differs from the location-derived one; newLocationId and destinationCell are now both 562, so the test cannot tell which the reducer used"
+     }
+    },
+    "MOVE_PLAYER cell-native arrival > without destinationCell reads the cell from the cell_<id> location id": {},
+    "Stage 4 — MOVE_PLAYER cell-native arrival > lands the EXACT destination cell, resets Locale feet, and stamps the entry anchor": {},
+    "Stage 4 — MOVE_PLAYER cell-native arrival > without destinationCell is unchanged: Stage-2 tile-derived cell + null entry anchor": {}
+   }
+  },
+  "getsentry-sentry-59d4566a5f45": {
+   "file": "good",
+   "tests": {
+    "useCurrentProjectState > should return currentProject=undefined when currentPanel != targetPanel": {},
+    "useCurrentProjectState > should return currentProject=undefined when project query parameter is present and currentPanel != targetPanel": {},
+    "useCurrentProjectState > should return the currentProject when currentPanel = targetPanel": {},
+    "useCurrentProjectState > uses the project query parameter when no selected projects are loaded": {},
+    "useCurrentProjectState > should return the first project if global selection does not have onboarding": {},
+    "useCurrentProjectState > should return the first onboarding project": {},
+    "useCurrentProjectState > should return the first project if no selection": {},
+    "useCurrentProjectState > should return the first project if no selection and no projects have onboarding": {},
+    "useCurrentProjectState > should override current project if setCurrentProjects is called": {},
+    "useCurrentProjectState > should update when the page filters store changes": {},
+    "useCurrentProjectState > should return currentProject=undefined when project url param is present and currentPanel != targetPanel": {},
+    "useCurrentProjectState > should return the currentProject when project url param is present and currentPanel = targetPanel": {}
+   }
+  },
+  "getsentry-sentry-8f76b130aa5a": {
+   "file": "good",
+   "tests": {
+    "SeerProjectTable > blocks coding-agent handoff and warns for a project with a non-GitHub repo": {},
+    "SeerProjectTable > blocks handoff when a non-GitHub repo is only on a later page": {},
+    "SeerProjectTable > allows coding-agent handoff for a GitHub-only project": {
+     "yes": [
+      "oracle/interaction-only"
+     ],
+     "reason": {
+      "oracle/interaction-only": "only checks settingsPut was called (no arguments) and the error spy was not; neither the saved value nor the rendered selection is checked"
+     }
+    },
+    "SeerProjectTable > saves the PR iteration dropdown for a project": {},
+    "SeerProjectTable > sets PR iteration for all selected projects": {},
+    "SeerProjectTable > updates a PR iteration dropdown that was already changed when the bulk menu is used": {},
+    "SeerProjectTable > updates an automation steps dropdown that was already changed when the bulk menu is used": {},
+    "SeerProjectTable > marks a row PR iteration dropdown invalid when its save fails": {},
+    "SeerProjectTable > keeps a row PR iteration dropdown in place while its own save is in flight": {},
+    "SeerProjectTable > disables the bulk controls while a row is saving": {},
+    "SeerProjectTable > disables the bulk controls while a bulk edit is saving": {},
+    "SeerProjectTable > disables the row controls while a bulk edit is saving": {},
+    "SeerProjectTable > leaves the built-in repos filter out of the selection banner": {},
+    "SeerProjectTable > disables adding a project without organization write access": {}
+   }
+  },
+  "githubnext-ado-aw-06e5b81353f6": {
+   "file": "good",
+   "tests": {
+    "parseArgs > parses mode and per-repository source/target triples": {},
+    "parseArgs > allows target-worktree entries without a source ref": {},
+    "parseArgs > rejects unknown modes": {},
+    "prepare-pr-base main > uses ADO metadata to fetch exact shallow source and target ranges": {},
+    "prepare-pr-base main > falls back to bounded dual-ref fetch when ADO REST is unavailable": {},
+    "prepare-pr-base main > prefers the self resource ref over the triggering repository branch": {},
+    "prepare-pr-base main > target-worktree fetches only the target tip at depth one": {},
+    "prepare-pr-base main > does not send the ADO bearer to a non-Azure origin": {},
+    "prepare-pr-base main > isolates a checkout-directory failure and processes later repos": {},
+    "prepare-pr-base main > uses BUILD_SOURCESDIRECTORY and BUILD_SOURCEBRANCH for legacy no-arg calls": {}
+   }
+  },
+  "goosy-benchmark-sentry-graphite-3558d7b474b8": {
+   "file": "good",
+   "tests": {
+    "projectPerformance > renders the fields": {},
+    "projectPerformance > updates the field": {},
+    "projectPerformance > keeps sampling priority forms synchronized after saves": {},
+    "projectPerformance > shows sampling priority save errors": {},
+    "projectPerformance > resets threshold settings": {},
+    "projectPerformance > serializes metric and threshold updates": {},
+    "projectPerformance > prevents threshold edits from racing with reset": {},
+    "projectPerformance > renders detector threshold configuration - admin ui": {},
+    "projectPerformance > disables admin detector settings without project write access": {},
+    "projectPerformance > renders configured detector thresholds and updates a threshold": {},
+    "projectPerformance > positions detector sliders at nonstandard configured values": {},
+    "projectPerformance > resets configurable detector settings": {},
+    "projectPerformance > allows project admins to disable detectors": {},
+    "projectPerformance > disables detector thresholds while the detector update is pending": {},
+    "projectPerformance > serializes detector updates that share the settings resource": {},
+    "projectPerformance > does not allow non-admins to manage detectors": {},
+    "projectPerformance > renders detector thresholds settings for $title issue": {
+     "unsure": [
+      "integrity/test-removed"
+     ],
+     "reason": {
+      "integrity/test-removed": "folded into one test that checks every threshold renders but updates only one; the per-threshold PUT payload and analytics are no longer checked"
+     }
+    },
+    "projectPerformance > allows project admins to manage $label": {
+     "unsure": [
+      "integrity/test-removed"
+     ],
+     "reason": {
+      "integrity/test-removed": "folded into a loop that only disables each detector; the re-enable PUT with true is no longer checked"
+     }
+    },
+    "projectPerformance > does not allow non-admins to manage $label": {}
+   }
+  },
+  "gregmeyer-some-useful-agents-e4382387c1ca": {
+   "file": "good",
+   "tests": {
+    "GET /inbox/:id/events (SSE) > returns 404 when the inbox message does not exist": {},
+    "GET /inbox/:id/events (SSE) > requires auth (no cookie → 401)": {},
+    "GET /inbox/:id/events (SSE) > opens with the SSE content-type and an initial open frame": {},
+    "GET /inbox/:id/events (SSE) > replays buffered events newer than Last-Event-ID": {},
+    "GET /inbox/events (global SSE) > requires auth (no cookie → 401)": {},
+    "GET /inbox/events (global SSE) > is not shadowed by /inbox/:id/events (no 404 for the literal \"events\")": {},
+    "GET /inbox/events (global SSE) > a resolve mutation fans a coarse event onto the global channel": {},
+    "GET /inbox/events (global SSE) > receives events published via publishInboxChanged on the global channel": {}
+   }
   }
  }
 }
