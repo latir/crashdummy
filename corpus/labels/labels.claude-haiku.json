@@ -1409,6 +1409,384 @@
         "daily practice deck (K3 chunk 1) > again moves a completed lemma back to pending due; success moves it back to done": {},
         "daily practice deck (K3 chunk 1) > deriveDailyPracticeRows groups done rows after pending due and pending new": {}
       }
+    },
+    "leozhengliu-pixel-flow-8833ea3282e8": {
+      "file": "good",
+      "tests": {
+        "mobile cycles timeline > `cycle cards, cooldown, chart and navigation at ${width}px`": {},
+        "mobile cycle detail > `grouped estimate rows match the phone chrome at ${width}px`": {},
+        "mobile initiative overview > `closed details preserve the overview and latest update at ${width}px`": {},
+        "mobile initiatives list > `All initiatives keeps its phone header and on-track row at ${width}px`": {},
+        "mobile projects list > phone All projects rows show the icon, name, milestone, health and progress": {},
+        "mobile project overview > phone project overview shows the header tabs, property pills and sections": {},
+        "mobile project properties panel > phone project details panel sits at the right edge over the overview with split date rows": {},
+        "mobile project activity > phone project activity shows the comment composer, a month heading and the framed comment card": {},
+        "mobile project update composer > phone project updates show the changed properties and post-update footer": {},
+        "mobile project issues empty state > phone issues tab shows the centred empty state, shortcut keycaps and the display dot": {},
+        "mobile project milestones section > phone overview scrolls to the description goals and milestone card": {},
+        "mobile project milestones section > `phone descriptions keep wrapped, ordered and nested list text unclipped at ${width}px`": {}
+      }
+    },
+    "linuxfoundation-lfx-self-serve-edf59d04c79d": {
+      "file": "good",
+      "tests": {
+        "WG Weekly Brief card — feature-flag gating > card is NOT rendered when wg-weekly-brief flag is OFF": {},
+        "WG Weekly Brief card — feature-flag gating > card IS rendered for the same fixture when LaunchDarkly is reachable": {},
+        "WG Weekly Brief card — empty state (flag ON) > renders empty state with Generate enabled and the \"No brief yet\" copy": {},
+        "WG Weekly Brief card — empty state (flag ON) > Generate is disabled once the weekly generate quota is exhausted": {},
+        "WG Weekly Brief card — generated state (flag ON) > renders brief text, week label, throttle badge, and primary actions": {},
+        "WG Weekly Brief card — Edit → Save round-trip > PUT request carries the modified brief text, and UI re-renders with the \"Edited\" badge": {},
+        "WG Weekly Brief card — Generate from empty > clicking Generate fires POST, polls until terminal, and the UI re-renders to the generated state": {},
+        "WG Weekly Brief card — loads directly into the generating state > a page load landing on an already-generating brief polls to terminal on its own, without a Generate click": {},
+        "WG Weekly Brief card — read failure (flag ON) > shows a retryable unavailable state when GET current fails, then recovers on retry": {}
+      }
+    },
+    "ljcl-intervals-mcp-5f27b9fa475a": {
+      "file": "good",
+      "tests": {
+        "createActivityTool input schema > rejects a sport type Strava does not define, before any write (#244)": {},
+        "createActivityTool input schema > accepts every sport type it advertises": {},
+        "createActivityTool.execute > creates a manual activity from the required fields": {},
+        "createActivityTool.execute > passes optional fields through and reports the distance": {},
+        "createActivityTool.execute > adds a scope hint on a 401 error": {},
+        "createActivityTool.execute > adds a duplicate hint on a 409 conflict": {},
+        "createActivityTool.execute > reports other failures without a hint": {},
+        "create-activity input schema > accepts local ISO datetimes with and without an offset": {},
+        "create-activity input schema > rejects a non-datetime start and a non-positive duration": {}
+      }
+    },
+    "lopes-felipe-f5-cef748444718": {
+      "file": "good",
+      "tests": {
+        "Antigravity native tools > locates native replacement hunks and never presents unknown snippets as whole files": {},
+        "Antigravity native tools > decodes the short Target/Replacement argument names on the snippet path": {},
+        "Antigravity native tools > diffs the full before/after texts current releases send on completion": {},
+        "Antigravity native tools > diffs only the completed update, never a cached preview": {},
+        "Antigravity native tools > keeps snippet-shaped texts off the full-file path": {},
+        "Antigravity native tools > shares one patch budget across the entries of an update": {},
+        "Antigravity native tools > whole-file writes against the pre-write snapshot > diffs a new file against /dev/null and an existing one against its old text": {},
+        "Antigravity native tools > whole-file writes against the pre-write snapshot > keeps the path when the snapshot is unknown, already matches, or names another file": {},
+        "Antigravity native tools > whole-file writes against the pre-write snapshot > snapshots once per call, again after a failure, and evicts beyond 32 calls": {},
+        "Antigravity native tools > shows a new-file write as an addition and an overwrite as a path-only change": {},
+        "Antigravity native tools > uses Antigravity's tool summary as the command description": {},
+        "Antigravity native tools > shows writes into the brain directory as artifacts, not file changes": {}
+      }
+    },
+    "lucent-financial-group-zeta-3bb878cde226": {
+      "file": "good",
+      "tests": {
+        "package.json wiring > keeps the package wiring pointed at the enforcing inventory guard": {},
+        "buildInventoryReport > accepts the retained shell allowlist": {},
+        "buildInventoryReport > flags new post-install shell files as drift": {},
+        "buildInventoryReport > flags repo-wide shell files outside the allowlist as drift": {},
+        "buildInventoryReport > flags missing retained shell scripts": {},
+        "buildInventoryReport > flags duplicate allowlist entries before classifying repo shell drift": {},
+        "buildInventoryReport > flags unsorted allowlist entries before classifying repo shell drift": {},
+        "buildInventoryReport > flags category metadata entries that are no longer retained": {},
+        "buildInventoryReport > flags retained allowlist entries without category metadata": {},
+        "buildInventoryReport > summarizes retained shell files by explicit category": {},
+        "buildInventoryReport > matches the current tracked repo shell inventory": {},
+        "buildInventoryReport > enumerates tracked shell-family files while excluding Lean vendor scripts": {},
+        "renderReport > renders an OK summary for a matching inventory": {},
+        "renderReport > renders drift sections": {},
+        "renderReport > renders allowlist integrity errors before drift sections": {},
+        "renderReport > renders out-of-order allowlist entries as allowlist integrity errors": {},
+        "renderReport > renders stale category map entries as allowlist integrity errors": {},
+        "renderReport > renders uncategorized allowlist entries as allowlist integrity errors": {}
+      }
+    },
+    "maheidem-openstyle-0501f5438d4d": {
+      "file": "good",
+      "tests": {
+        "buildChoices > ranks people by word overlap with the question": {},
+        "buildChoices > lists open items first, then done items marked [done], with the item key as id": {},
+        "buildChoices > an unfiled meeting has open items in scope all": {},
+        "buildChoices > ranks meetings by title and by date words": {},
+        "buildChoices > uses earlier questions of the thread to rank": {},
+        "buildChoices > respects the scope": {},
+        "buildChoices > lists the folders": {},
+        "buildChoices > caps the lists": {},
+        "buildChoices > gold choice is listed: %s": {},
+        "nativeToolDefs > builds OpenAI function tools with closed labels and no date field": {},
+        "nativeToolDefs > shows at most 8 tools": {},
+        "nativeToolDefs > leaves out a tool whose closed list is empty": {},
+        "validateNativeCall > maps a label to the meeting id and parses with the zod schema": {},
+        "validateNativeCall > rejects an unknown label and does not repair it": {},
+        "validateNativeCall > rejects a raw meeting id that is not a label": {},
+        "validateNativeCall > rejects a tool outside the plan and an unknown tool": {},
+        "validateNativeCall > ignores a model date and uses the date of the question": {},
+        "validateNativeCall > sets no date when the question has none": {},
+        "validateNativeCall > uses the question for an empty query and cuts a long one": {},
+        "validateNativeCall > a meeting outside the scope is an error": {},
+        "validateNativeCall > maps a person id and rejects an unknown person": {},
+        "validateNativeCall > builds write proposals from labels": {},
+        "validateNativeCall > retag without a meeting uses the meetings in the date range of the question": {}
+      }
+    },
+    "martinez-media-meal-planner-6b1069b56c6a": {
+      "file": "good",
+      "tests": {
+        "GET /:familyId/meals (list) > 200s and forwards the optional search filter": {},
+        "GET /:familyId/meals (list) > forwards the recent-scheduling fields in the response body": {},
+        "GET /:familyId/meals (list) > 500s when the service throws": {},
+        "POST /:familyId/meals (create) > 201s with the created meal": {},
+        "POST /:familyId/meals (create) > 400s on Zod failure (missing name)": {},
+        "POST /:familyId/meals (create) > 400s on an invalid difficulty enum": {},
+        "POST /:familyId/meals (create) > 500s when the service throws": {},
+        "POST /:familyId/meals/import (bulk) > 200s with the import result": {},
+        "POST /:familyId/meals/import (bulk) > 400s on Zod failure (empty meals array)": {},
+        "POST /:familyId/meals/import (bulk) > 500s when the service throws": {},
+        "GET /:familyId/meals/:mealId (detail) > 200s with the meal": {},
+        "GET /:familyId/meals/:mealId (detail) > 404s when the meal is not found": {},
+        "GET /:familyId/meals/:mealId (detail) > 500s when the service throws": {},
+        "PUT /:familyId/meals/:mealId (update) > 200s with the updated meal": {},
+        "PUT /:familyId/meals/:mealId (update) > 400s on Zod failure (empty name)": {},
+        "PUT /:familyId/meals/:mealId (update) > 404s when the service reports the meal is missing": {},
+        "PUT /:familyId/meals/:mealId (update) > 500s on an unexpected error": {},
+        "DELETE /:familyId/meals/:mealId (parents only) > 204s on success": {},
+        "DELETE /:familyId/meals/:mealId (parents only) > 404s when the meal is missing": {},
+        "DELETE /:familyId/meals/:mealId (parents only) > 409s when the meal still has approved suggestions": {},
+        "DELETE /:familyId/meals/:mealId (parents only) > 500s on an unexpected error": {}
+      }
+    },
+    "matidegli-oversight-b22064cdedeb": {
+      "file": "good",
+      "tests": {
+        "retains the last count as a prop across cone card unmount and remount, without another event": {}
+      }
+    },
+    "modelcontextprotocol-inspector-02c8c865e1d1": {
+      "file": "good",
+      "note": "Several CLI tests rely on the expectCliFailure helper, which is not visible in this case; unsure on those.",
+      "tests": {
+        "daemon coverage > handle() covers invalid connect / connections/use / unknown op": {},
+        "daemon coverage > rejects a second daemon while a live one holds the lock": {},
+        "daemon coverage > reclaims a lock left by a dead pid": {},
+        "daemon coverage > does not delete a lock it no longer owns on stop": {},
+        "daemon coverage > restores a live lock created between the dead-pid read and the rename": {},
+        "daemon coverage > treats a young pidless lock as held instead of stealing it": {},
+        "daemon coverage > reclaims a pidless lock older than the write grace period": {},
+        "daemon coverage > restores a young pidless lock renamed aside mid-reclaim": {},
+        "daemon coverage > stop() force-destroys sockets whose shutdown flush never drains": {},
+        "daemon coverage > removes a stale socket before binding": {},
+        "daemon coverage > daemon/stop responds then shuts down": {},
+        "daemon coverage > accepts malformed NDJSON lines without crashing": {},
+        "daemon coverage > resolves the daemon.token directory without deriving it from pipe paths": {},
+        "daemon coverage > callDaemon rejects immediately on a pre-aborted signal instead of hanging": {},
+        "daemon coverage > callDaemon maps error responses and unreachable sockets": {},
+        "daemon coverage > callDaemon reassembles a multi-byte UTF-8 character split across chunks": {},
+        "daemon coverage > callDaemon with an already-aborted signal rejects without dialing": {},
+        "daemon coverage > callDaemon rejects malformed response JSON": {},
+        "daemon coverage > callDaemon ignores mismatched response ids then accepts a match": {},
+        "daemon coverage > callDaemon skips blank lines and defaults missing exitCode": {},
+        "daemon coverage > stop() without start and with missing lock files is safe": {},
+        "daemon coverage > repeated stop() returns the same in-flight cleanup promise": {},
+        "daemon coverage > rejects new ops while stopping but keeps status ops answerable": {},
+        "daemon coverage > stop() quiesces in-flight ops before disconnecting connections": {},
+        "daemon coverage > callDaemon times out a hung server": {},
+        "daemon coverage > callDaemon with timeoutMs 0 arms no local deadline; daemon close still fails it": {},
+        "daemon coverage > connections/use and reconnect replace an existing connection": {},
+        "daemon coverage > idle handler fires after last disconnect when idleMs > 0": {},
+        "daemon coverage > covers touch/auth/oauth-setup/disconnect-swallow/reconnect-before-idle": {},
+        "daemon coverage > ensureDaemon reuses a running daemon and resolveDaemonScriptPath finds build": {},
+        "daemon coverage > ensureDaemon auto-spawns when no daemon is present": {},
+        "daemon coverage > ping and daemon/status report stopping during shutdown": {},
+        "daemon coverage > waitForDaemonExit resolves for a dead pid and times out on a live one": {},
+        "daemon coverage > waitForDaemonExit falls back to socket reachability without a pid": {
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "no expect; the test only passes if waitForDaemonExit does not throw, and its fallback result is not checked"
+          }
+        },
+        "daemon coverage > ensureDaemon waits out a stopping daemon and spawns a fresh one": {},
+        "daemon coverage > start-timeout error quotes the daemon's stderr log": {},
+        "daemon coverage > start-timeout error stays clean when the daemon logged nothing": {},
+        "daemon coverage > readLogTail returns the last lines and empty string when unreadable": {},
+        "daemon coverage > ensureDaemon fails loudly when a live listener rejects ping (no takeover)": {},
+        "daemon coverage > ensureDaemon fails loudly on daemon_auth_failed (wrong token is not a stale socket)": {},
+        "daemon coverage > connection-less start arms idle and self-reaps": {},
+        "daemon coverage > connect failure for a dead stdio command is surfaced and re-arms idle": {},
+        "daemon coverage > re-arms idle when createConnectionClient fails before client.connect": {},
+        "daemon coverage > callDaemon fails immediately when the peer closes without a response": {},
+        "daemon coverage > connections/use via handle and blank IPC lines": {},
+        "mcp connection coverage > covers connections/use, daemon status, @connection connect, and stop no-op": {},
+        "mcp connection coverage > rejects connect with no target and invalid --format": {
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "no expect in body; relies entirely on imported expectCliFailure, not visible here"
+          }
+        },
+        "mcp connection coverage > connects an ad-hoc stdio target": {},
+        "mcp connection coverage > treats a URL positional as ad-hoc": {
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "no expect in body; relies entirely on imported expectCliFailure, not visible here"
+          }
+        },
+        "mcp connection coverage > requires explicit connection in non-interactive mode without opt-in": {}
+      }
+    },
+    "mattbalza-buzz-dd821639a04a": {
+      "file": "good",
+      "tests": {
+        "create channel and verify in sidebar": {},
+        "two users see the same channel": {},
+        "message delivery across users": {},
+        "live mentions refetch the home feed without waiting for polling": {},
+        "live forum mentions refetch the home feed without waiting for polling": {},
+        "DM channel appears in sidebar": {},
+        "send message to DM": {},
+        "forum channel appears in sidebar": {},
+        "create channel with description": {},
+        "multiple channels independent": {},
+        "manage sheet updates channel details through the relay": {},
+        "manage sheet archive and unarchive survives a reload through the relay": {}
+      }
+    },
+    "mgrin-scani-oss-4239d4f32525": {
+      "file": "good",
+      "tests": {
+        "IDOR — payments router > update refuses to modify another user's payment": {},
+        "IDOR — payments router > settleOccurrence refuses to settle another user's occurrence": {},
+        "IDOR — vendors router > create derives the owner from ctx.userId, never from a client-supplied field": {},
+        "IDOR — vendors router > addAlias refuses to attach an alias to another user's vendor": {},
+        "IDOR — vendors router > addAlias lets the owner through — the control that makes the refusal above a decision": {},
+        "IDOR — vendors router > merge passes ctx.userId to the enforcement boundary, never a client field": {},
+        "IDOR — vendors router > merge lets the owner through — the control that makes the refusal above a decision": {},
+        "IDOR — documents router > acceptExtraction refuses to accept another user's extraction and leaves review_state untouched": {}
+      }
+    },
+    "nampt102-devflow-912214a6755e": {
+      "file": "good",
+      "tests": {
+        "`typecheck cache restore and save: ${name}`": {},
+        "cache excludes workspace code and executable installs, and preserves full checks": {},
+        "the typecheck pin step is identical to the Runner writer's": {}
+      }
+    },
+    "neokapi-neokapi-ed1c6a19c2c3": {
+      "file": "good",
+      "tests": {
+        "Project Map > opens a new project on the Map with its counts, and Rules from the panel": {}
+      }
+    },
+    "nubbymong-ai-code-conductor-a70cabefd2c3": {
+      "file": "good",
+      "tests": {
+        "decideMultiSpawnIntro — once per upgrade > shows on an upgrade from an earlier build": {},
+        "decideMultiSpawnIntro — once per upgrade > does NOT show on the second start of the same build": {},
+        "decideMultiSpawnIntro — once per upgrade > treats a differently-formatted stamp as the same release": {},
+        "decideMultiSpawnIntro — once per upgrade > NEVER shows on a fresh install — and stamps, so it does not ambush them later on this build": {},
+        "decideMultiSpawnIntro — once per upgrade > no saved configs: stamps SILENTLY rather than showing an empty list": {},
+        "decideMultiSpawnIntro — once per upgrade > shows again after a LATER upgrade — the marker is per-build, not once-ever": {},
+        "decideMultiSpawnIntro — once per upgrade > a build with no version define shows nothing and stamps nothing": {},
+        "decideMultiSpawnIntro — once per upgrade > the stamp records the version RUNNING, never the changelog head (#369)": {},
+        "multiSpawnStartupRowState — where each toggle starts > c.name": {},
+        "multiSpawnStartupRowState — where each toggle starts > counts a resumable remote as a copy, like the migration does": {},
+        "resolveStartupRowSave — what Continue writes > un-ticking an AUTO-ENABLED row stores an explicit false, not undefined": {},
+        "resolveStartupRowSave — what Continue writes > un-ticking a row the migration ALREADY wrote also stores false": {},
+        "resolveStartupRowSave — what Continue writes > leaving an untouched never-chosen row alone keeps it undefined": {},
+        "resolveStartupRowSave — what Continue writes > ticking anything stores true": {},
+        "resolveStartupRowSave — what Continue writes > a standing decline left alone stays a decline": {},
+        "resumingSessionCount > adds restored sessions to registry entries": {},
+        "resumingSessionCount > never double-counts a remote whose session came back live": {},
+        "resumingSessionCount > skips the config-less Ask Conductor session": {},
+        "resumingSessionCount > is zero when nothing is coming back": {},
+        "groupConfigsForStartup — the sidebar's grouping > groups in the sidebar's order with Ungrouped last": {},
+        "groupConfigsForStartup — the sidebar's grouping > a stale groupId counts as loose, exactly as the sidebar treats it": {},
+        "groupConfigsForStartup — the sidebar's grouping > drops an empty group rather than showing a heading over nothing": {},
+        "MultiSpawnStartupPage — the real page > lists every saved config, grouped, with the hero and the safety note": {},
+        "MultiSpawnStartupPage — the real page > no resuming sessions: NO strip, and no counts derived from them": {},
+        "MultiSpawnStartupPage — the real page > sessions resuming: the strip says how many, and it is the number the counts came from": {},
+        "MultiSpawnStartupPage — the real page > singular strip copy for a single resuming session": {},
+        "MultiSpawnStartupPage — the real page > initial toggle states: stored-true on, migration-enable on + chip, undefined off, declined off with NO chip": {},
+        "MultiSpawnStartupPage — the real page > a row the migration enabled BEFORE the page mounted still gets its chip": {},
+        "MultiSpawnStartupPage — the real page > Continue persists the tri-state correctly across all four row kinds": {},
+        "MultiSpawnStartupPage — the real page > Skip persists NOTHING but the seen marker": {},
+        "MultiSpawnStartupPage — the real page > a flip survives a re-render — user decisions outrank the derived state": {},
+        "MultiSpawnStartupPage — the real page > reuses the sidebar's badges so a config is recognisable by eye": {}
+      }
+    },
+    "onyx-dot-app-onyx-7457d8390c95": {
+      "file": "good",
+      "tests": {
+        "shows nothing for a chat without requests, agents or files": {},
+        "a waiting approval leads the trigger and its row scrolls to the card": {},
+        "a request this client already decided leaves the card at once": {},
+        "an agent that a streaming reply starts shows while the reply streams": {},
+        "lists running agents on one line each and folds the finished ones": {},
+        "View all files shows the Files list even while a file is open": {}
+      }
+    },
+    "operately-operately-325cf7f01dc2": {
+      "file": "good",
+      "tests": {
+        "SearchPage > renders the initial state and keeps the search field focused": {},
+        "SearchPage > reports query changes without managing the request": {},
+        "SearchPage > renders loading, empty, and error states accessibly": {},
+        "SearchPage > renders result metadata, state, snippet, and navigation": {},
+        "SearchPage > uses the Resource Hub document icon and makes the resource hierarchy explicit": {},
+        "SearchPage > highlights matching query terms in titles and snippets without rendering HTML": {},
+        "SearchPage > renders all indexed resource labels and caps the visible list at 30 results": {}
+      }
+    },
+    "orange-case-joustmania-ac7ee3c04de0": {
+      "file": "good",
+      "tests": {
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 a live real game wins: no shadow game is followed": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 no real game live: the newest live shadow game is followed": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 a real game in ENDING still holds the stage": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 an ended real game does not hold the view": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 the followed shadow game is kept while live (no flicker)": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 an ended followed game hands over to the newest live one": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 nothing live: nothing followed": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 live states accept enum names and numbers": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/A9 following a shadow game adds its players; other shadow players stay hidden, nothing real is hidden": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 with a real game live, live shadow players are hidden from the grid": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 lobby with experiments running: real lobby controllers are never hidden": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 real game ENDING with a live shadow game: the real controllers stay": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 unknown follow state (coordinator unreachable) shows every tile": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/BR-005 without follow information the newest real game still anchors (stage default)": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 the followed shadow game anchors the strip with its backend": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 no real game live and the followed game has no decide yet: newest shadow row": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/BR-005 no real game live, nothing followed: a newer real row beats an older shadow row": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 the decide store applies the follow state": {},
+        "UC-070: A9 BR-005 follow state across polls > UC-070/BR-005 a transient poll error keeps the followed game": {},
+        "UC-070: A9 BR-005 follow state across polls > UC-070/BR-005 a sustained outage resets to unknown, then resumes the same game": {}
+      }
+    },
+    "plow-pbc-tkmx-client-402de6675594": {
+      "file": "good",
+      "tests": {
+        "toIsoDate > converts YYYYMMDD to YYYY-MM-DD": {},
+        "toIsoDate > preserves single-digit months and days": {},
+        "parseAgentsviewOutput > tags each breakdown with the given source": {},
+        "parseAgentsviewOutput > computes totalTokens as sum of all token-type fields": {},
+        "parseAgentsviewOutput > preserves the cost field untouched": {},
+        "parseAgentsviewOutput > converts schema v3 microdollars to dollars": {},
+        "parseAgentsviewOutput > rejects invalid schema v3 microdollar costs": {},
+        "parseAgentsviewOutput > returns [] for empty daily": {},
+        "parseAgentsviewOutput > returns [] when daily field is missing": {},
+        "parseAgentsviewOutput > treats missing token fields as 0 when computing totalTokens": {},
+        "parseAgentsviewOutput > handles a day with no modelBreakdowns array": {},
+        "collectAgentsviewUsage WARP_DIR scoping > sets WARP_DIR=/var/empty on the syncing claude call but not the --no-sync codex call": {},
+        "resolveAgentsview > returns null when no candidate path exists": {},
+        "resolveAgentsview > returns the first existing executable candidate": {},
+        "resolveAgentsview > skips non-executable candidates": {},
+        "resolveAgentsview > skips candidates that are directories, not files": {},
+        "resolveAgentsview > respects AGENTSVIEW_BIN override": {},
+        "resolveAgentsview > ignores AGENTSVIEW_BIN override when it points at nothing": {},
+        "resolveAgentsview > falls back to PATH when no hard-coded candidate exists": {},
+        "resolveAgentsviewWith — Windows branch (host-independent) > finds agentsview.exe in the installer location under USERPROFILE": {},
+        "resolveAgentsviewWith — Windows branch (host-independent) > resolves agentsview.exe from a ;-separated PATH": {},
+        "resolveAgentsviewWith — Windows branch (host-independent) > never resolves a .cmd/.bat shim — execFileSync can't run one on Windows": {}
+      }
     }
   }
 }
