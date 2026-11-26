@@ -5015,6 +5015,361 @@
           "reason": {}
         }
       }
+    },
+    "nubbymong-ai-code-conductor-a70cabefd2c3": {
+      "file": "good",
+      "tests": {
+        "decideMultiSpawnIntro — once per upgrade > shows on an upgrade from an earlier build": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "decideMultiSpawnIntro — once per upgrade > does NOT show on the second start of the same build": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "decideMultiSpawnIntro — once per upgrade > treats a differently-formatted stamp as the same release": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "decideMultiSpawnIntro — once per upgrade > NEVER shows on a fresh install — and stamps, so it does not ambush them later on this build": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "decideMultiSpawnIntro — once per upgrade > no saved configs: stamps SILENTLY rather than showing an empty list": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "decideMultiSpawnIntro — once per upgrade > shows again after a LATER upgrade — the marker is per-build, not once-ever": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "decideMultiSpawnIntro — once per upgrade > a build with no version define shows nothing and stamps nothing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "decideMultiSpawnIntro — once per upgrade > the stamp records the version RUNNING, never the changelog head (#369)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "multiSpawnStartupRowState — where each toggle starts > c.name": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "multiSpawnStartupRowState — where each toggle starts > counts a resumable remote as a copy, like the migration does": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveStartupRowSave — what Continue writes > un-ticking an AUTO-ENABLED row stores an explicit false, not undefined": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveStartupRowSave — what Continue writes > un-ticking a row the migration ALREADY wrote also stores false": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveStartupRowSave — what Continue writes > leaving an untouched never-chosen row alone keeps it undefined": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveStartupRowSave — what Continue writes > ticking anything stores true": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resolveStartupRowSave — what Continue writes > a standing decline left alone stays a decline": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resumingSessionCount > adds restored sessions to registry entries": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resumingSessionCount > never double-counts a remote whose session came back live": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resumingSessionCount > skips the config-less Ask Conductor session": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "resumingSessionCount > is zero when nothing is coming back": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "groupConfigsForStartup — the sidebar's grouping > groups in the sidebar's order with Ungrouped last": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "groupConfigsForStartup — the sidebar's grouping > a stale groupId counts as loose, exactly as the sidebar treats it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "groupConfigsForStartup — the sidebar's grouping > drops an empty group rather than showing a heading over nothing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > lists every saved config, grouped, with the hero and the safety note": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > no resuming sessions: NO strip, and no counts derived from them": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > sessions resuming: the strip says how many, and it is the number the counts came from": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > singular strip copy for a single resuming session": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > initial toggle states: stored-true on, migration-enable on + chip, undefined off, declined off with NO chip": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > a row the migration enabled BEFORE the page mounted still gets its chip": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > Continue persists the tri-state correctly across all four row kinds": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > Skip persists NOTHING but the seen marker": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > a flip survives a re-render — user decisions outrank the derived state": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "MultiSpawnStartupPage — the real page > reuses the sidebar's badges so a config is recognisable by eye": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "travistruett-10db-8356d5f5f1fb": {
+      "file": "good",
+      "tests": {
+        "opens a pass on two pages, answers one in place, sends a picture to the other, signs it off, and every view passes axe": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "unexpear-chipblocks-346345ca4085": {
+      "file": "good",
+      "tests": {
+        "crc16Trellis — matches Project Trellis's own implementation > reproduces values from Trellis's compiled C++ over a deterministic byte stream": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "crc16Trellis — matches Project Trellis's own implementation > is a DIFFERENT checksum from the iCE40 one (poly 0x8005 / init 0x0000)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "ECP5_DEVICES — the device table > covers the ten ECP5 parts with distinct IDCODEs and whole-byte frames": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — reads the container > recovers the device, usercode, comment and frames, with the CRC verified": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — reads the container > a corrupted frame byte is reported as crcOk=false, not thrown": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > a file with no ECP5 preamble throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > frame data before the device is identified throws rather than guessing geometry": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > an unknown IDCODE is reported, and its frame data refused (geometry unknown)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > a COMPRESSED bitstream is refused, not silently mis-read": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > EBR (block-RAM) data is refused": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > an unknown command byte throws": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — a GENUINE ecppack bitstream > reads a real vendor bitstream: right device, CRC verified, every frame recovered": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — a GENUINE ecppack bitstream > frames are stored in the REVERSED order ECP5 streams them in": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parseEcp5Bitstream — a GENUINE ecppack bitstream > the config-word BIT ORDER, verified against the real tool rather than derived from its source": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "unexpear-chipblocks-adf72f858fc2": {
+      "file": "good",
+      "tests": {
+        "lowerNetlistToCanvas — a real bitstream becomes canvas gates our own engine runs > lowers to real logic-primitive gates, with a node per cell output and per primary input": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lowerNetlistToCanvas — a real bitstream becomes canvas gates our own engine runs > the app's fast logic engine computes the same function: B = A = i0 & i1": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lowerNetlistToCanvas — honest about what it cannot lower > a carry-driven input is reported in `unlowered`, not silently mis-wired": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lowerNetlistToCanvas — honest about what it cannot lower > a LUT needing INVERTED minterms (XOR2) lowers correctly — the NOT gates are real": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lowerNetlistToCanvas — honest about what it cannot lower > a constant-LUT cell lowers to a fixed level, and a registered cell is reported": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lowerNetlistToCanvas — computes the SAME function as the FPGA simulator > a driver listed AFTER its consumer is still wired (two-pass lowering)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lowerNetlistToCanvas — computes the SAME function as the FPGA simulator > 100 random LUTs agree with the FPGA simulator on every input, including pins with no source": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lowerNetlistToCanvas — registers are real boundaries (Q is the output, D is the LUT) > a registered cell's output is its stored Q; consumers follow Q, not the LUT's D": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "lowerNetlistToCanvas — registers are real boundaries (Q is the output, D is the LUT) > driving the state nodes from simulateClocked steps the canvas through real cycles": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "yaront1111-moe-s-tavern-740ea4a686b6": {
+      "file": "good",
+      "tests": {
+        "addCommentTool validation > rejects content longer than max allowed length": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Task comments > adds a comment to a task": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Task comments > uses workerId as author when provided": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Task comments > preserves all comments when under limit": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Task comments > trims oldest comment when adding at limit": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Task comments > trims task with 300 existing comments down to max preserving newest": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Task comments > handles null/undefined comments array gracefully": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Task comments > always preserves newest comments including newly added one": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Task comments > rejects empty content": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "Task comments > rejects missing taskId": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
     }
   }
 }
