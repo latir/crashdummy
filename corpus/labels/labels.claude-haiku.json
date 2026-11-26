@@ -1,0 +1,736 @@
+{
+  "labeller": "claude-haiku",
+  "schema": 1,
+  "cases": {
+    "181192-brasscribe-5a01aa49fb7f": {
+      "file": "weak",
+      "note": "Screenshot writer skipped unless PINK_SHOTS is set; asserts nothing about rendering beyond a poll, so it cannot catch regressions.",
+      "tests": {
+        "`Pink score viewer, ${system}`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "181192-brasscribe-81400ca06a35": {
+      "file": "good",
+      "tests": {
+        "`more contrast: ${c.choice ?? \"Match system\"} on a ${c.system} system uses ${c.palette} high contrast`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "without more contrast the ordinary palettes apply": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "forced colours still drop the pinned theme": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "`${choice} on a ${system} system uses pink ${mode}`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "`an earlier Pink on a ${system} system becomes ${migrated}`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "more contrast wins over the Pink palette and keeps its light or dark": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "five activations of the lockup unlock Pink light and Pink dark, from the keyboard too": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "`Pink on a ${system} system uses pink ${system}`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "more contrast wins over Pink": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "five activations of the lockup unlock Pink, from the keyboard too": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "a-novel-kit-workflows-7bb580e2530f": {
+      "file": "good",
+      "tests": {
+        "composite contexts respect expression boundaries, quoting and access syntax": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "malformed expressions with repeated quotes cannot stall manifest validation": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "a-novel-kit-workflows-a3d30f67a329": {
+      "file": "good",
+      "tests": {
+        "release branch guard treats branch names as data": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "release bump updates all package formats and quoted filenames, leaving versionless packages alone": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "invalid release baselines and broken workspace manifests fail before any file changes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "release plan stamps only this repository's stable Go requirements and emits nested tags": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "release pushes are atomic, hotfixes only push tags, and dry runs publish nothing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "release train distinguishes read failure, empty history and release types": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "release receipt replacement preserves prose and literal backslashes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "acolomba-pi-claude-marketplace-063720f82ffe": {
+      "file": "good",
+      "tests": {
+        "registerClaudePluginCommand > registers the slash command once under its published description (D-04)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand > hands the argument text and the command context to the subcommand router (D-04)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand > shares the supplied lifecycle routing owner with registered import execution": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand > resolves argument completions against the working directory the callback runs in (D-04)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand > keeps supplied lifecycle completion-cache hits isolated between registrations": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand > runs registered bootstrap through the supplied lifecycle cache and both real children": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rebuilds completion rows through the cache that owns a successful registered add": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rebuilds completion rows through the cache that owns a successful registered remove": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rebuilds completion rows through the cache that owns a successful registered update": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rebuilds completion rows through the cache that owns a successful registered install": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rebuilds completion rows through the cache that owns a successful registered reinstall": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "rebuilds completion rows through the cache that owns a successful registered uninstall": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand autocomplete wrapper > installs exactly one autocomplete provider when the session starts (TC-7)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand autocomplete wrapper > returns the underlying provider's suggestions unchanged (TC-7)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand autocomplete wrapper > collapses the whitespace run a completion left on its own command line (TC-7)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand autocomplete wrapper > leaves another extension's command line exactly as the underlying provider left it (TC-7)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand autocomplete wrapper > leaves the result untouched when the cursor names a line the buffer does not hold (TC-7)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand autocomplete wrapper > defers the file-completion trigger to the underlying provider that answers it (TC-7)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudePluginCommand autocomplete wrapper > permits the file-completion trigger when the underlying provider does not answer it (TC-7)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "registerClaudeMarketplaceTools > registers the two read-only tools in order and nothing else (D-04)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "argument rejection cases cover every routed command and alias": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "`registered ${spelling} rejects ${kind} before reading runtime context`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "`registered ${spelling} rejects the empty scope ${emptyValue} before a valid-looking token`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "acolomba-pi-claude-marketplace-b3e062f52b6c": {
+      "file": "good",
+      "note": "Large table-driven suite; rows assert exact parse results.",
+      "tests": {
+        "parsePluginSource > name": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parsePluginSource > name #2": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "parsePluginSource > re-parsing an already-parsed URL source is idempotent on raw": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "pathSource > \"rejects \" + JSON.stringify(invalidPath) + \" as an empty path\"": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "pathSource > returns a complete path source": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "githubSource > returns a complete GitHub source": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "githubSource > \"rejects \" + raw + \" as a non-GitHub source\"": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "samePlannedSource > name": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "sourceLogical > name": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "ensureGitSuffix > \"normalizes \" + url + \" for Git transport\"": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "stripSlashAndFragment > name": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "stripGitSuffix > name": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Removed stripGitSuffix block: its doubled .git.git and .GIT rows moved to the generic-URL arm, so the github.com variants are no longer tested directly."
+          }
+        }
+      }
+    },
+    "actions-marketplace-validations-github-gh-aw-fir-18748a85eeb2": {
+      "file": "good",
+      "tests": {
+        "readPrivateRoutingJson > parses a bounded private file": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readPrivateRoutingJson > rejects a file larger than its bound": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "readPrivateRoutingJson > refuses to follow a symlink": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loadRoutingConversation > loads a conversation under the one MiB bound": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loadRoutingConversation > translates a missing file into a routing configuration error": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loadRoutingConversation > translates invalid JSON into a routing contract error": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "loadRoutingConversation > is cancelled by an aborted signal": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingController > returns null when routing is not configured": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingController > rejects a configuration without a Copilot adapter owner": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createRoutingObserver > logs failure stages at warn and other stages at info": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingSession > returns null when routing is not configured": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingSession > publishes the selection atomically and completion only after draining": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingSession > reflects the selection the agent must send, and failures without a selection": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingSession > publishes a failure record when the controller fails": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingSession > publishes a bootstrap failure when the controller cannot be built": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingSession > terminates with exit code 78 when a bootstrap failure cannot be published": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingSession > refuses to plan when a stale result already exists": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingSession > publishes a runtime failure raised after the selection": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProductionRoutingSession > terminates with exit code 78 when a runtime failure cannot be published": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "actions-marketplace-validations-github-gh-aw-fir-5dd5ca233047": {
+      "file": "good",
+      "tests": {
+        "createProviderServer > passes the adapter request signer to the HTTP proxy pipeline": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProviderServer > fails closed for WebSocket upgrades when AWS request signing is configured": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProviderServer > shutdownConnections closes tracked upgraded sockets": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProviderServer routing enforcement > observes a routed request without rejecting it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProviderServer routing enforcement > composes the observe-only routing transform with the adapter transform": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProviderServer routing enforcement > proxies an upgrade while routing is active": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "createProviderServer routing enforcement > screens an inference request before revealing adapter configuration": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Screening and upgrade-rejection tests deleted; the observe-only replacements do not test rejection, and whether rejection was dropped on purpose cannot be seen from the code."
+          }
+        },
+        "createProviderServer routing enforcement > uses the enforcement body transform for an admitted routed request": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Enforcement body-transform test deleted; the replacement composes an observe-only transform, so rejection behaviour has no test left."
+          }
+        },
+        "createProviderServer routing enforcement > rejects an upgrade while routing is active": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Upgrade-rejection test deleted and replaced by a proxy-upgrade test; the reversal may be intentional but cannot be verified here."
+          }
+        }
+      }
+    },
+    "anco91-mbongo-69dd3de662d5": {
+      "file": "good",
+      "tests": {
+        "checkTransferLegs > accepts a completed cross-currency transfer whose legs match": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > accepts a completed same-currency transfer (rate 1, no fee)": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > accepts an estimated transfer with only its SOURCE leg": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > flags a SOURCE leg that is not -amountSent": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > flags a TARGET leg that is not +amountReceived": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > flags a missing SOURCE or TARGET leg on a completed transfer": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > flags a TARGET leg on a transfer not yet received": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > flags a leg on the wrong account": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > flags duplicated legs": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > flags fees that do not explain estimated minus received": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > tolerates rounding of one cent in the fee gap": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > flags a CLOSED transfer whose TARGET leg is missing": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > flags a COMPLETED transfer whose amountReceived is null": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "checkTransferLegs > does not require amountReceived on ESTIMATED or CLOSED-unreceived transfers": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "andreisavu-ambion-15d37b11b140": {
+      "file": "good",
+      "tests": {
+        "$name > retains a sensor manifest and restores its referenced file through the object backend": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "aelmanaa-hardhat-kms-0ea6aca93503": {
+      "file": "good",
+      "tests": {
+        "AWS KMS adapter > returns the key's public key and KMS's DER signature of the digest, unchanged": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > signs digests with the key ARN from GetPublicKey, never the alias, and MessageType DIGEST": {
+          "yes": [
+            "oracle/interaction-only"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/interaction-only": "Asserts only SDK call arguments (command, KeyId, MessageType); the signature signDigest returns is never checked."
+          }
+        },
+        "AWS KMS adapter > looks the ARN up first if asked to sign before the public key": {
+          "yes": [
+            "oracle/interaction-only"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/interaction-only": "Asserts only the SDK call order; the signature signDigest returns is never checked."
+          }
+        },
+        "AWS KMS adapter > uses the region of a key ARN over the key's, and passes profile and endpoint": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > describes the key by its display values, and closes the client": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on GetPublicKey: ${name}`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on Sign: ${name}`": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > works with multi-region keys, whose ARNs use mrk- ids": {
+          "yes": [
+            "oracle/interaction-only",
+            "integrity/assertions-dropped"
+          ],
+          "unsure": [],
+          "reason": {
+            "oracle/interaction-only": "Asserts only the KeyId argument; the returned signature is never checked.",
+            "integrity/assertions-dropped": "Address check against the known Hardhat account was removed and nothing in the test replaces it."
+          }
+        },
+        "AWS KMS adapter > says when no region is configured, instead of a bare error class": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > passes other SDK errors on unchanged": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > does not keep the ARN from a call that was abandoned": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > signs exactly like Hardhat's local accounts, even from high-S DER signatures": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > uses the region from a key ARN, the key or the defaults, and passes profile and endpoint": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > describes the key without its values, and closes the client": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > rejects a Sign response whose key id differs, even only in case": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "AWS KMS adapter > rejects an SDK module that does not look like @aws-sdk/client-kms": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "SDK-module shape check test deleted; the new factory takes an SDK object, so the check may be gone or moved. Not visible here."
+          }
+        },
+        "AWS KMS adapter > refuses keys of other providers": {
+          "yes": [],
+          "unsure": [
+            "integrity/test-removed"
+          ],
+          "reason": {
+            "integrity/test-removed": "Test for refusing keys of other providers deleted; the new factory accepts only AWS keys, so the guard may have moved to types or hardhat-kms."
+          }
+        }
+      }
+    },
+    "andreisavu-ambion-20cac635bb5d": {
+      "file": "good",
+      "note": "Export-surface tests; intentional API pinning.",
+      "tests": {
+        "keeps the exported package name in step with the manifest": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "builds every entry the manifest names": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "exports exactly what an application needs to build a room, and nothing a host needs beyond it": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "exports exactly the wire and the hosting escape hatch, and nothing an application already has": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "exports exactly the conformance suite, its shared parts, and its in-process executor": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "names the ports, the reads, and the visit by their final names": {
+          "yes": [],
+          "unsure": [
+            "oracle/no-assertion"
+          ],
+          "reason": {
+            "oracle/no-assertion": "Only expectTypeOf calls, which are type-level and pass at runtime unless vitest typecheck or tsc runs."
+          }
+        },
+        "names no model library: the manifest lists none, and no source file imports one": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        },
+        "exports exactly the conformance suite and its in-process executor": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    },
+    "ant1off-gram-a6a9a43a56e0": {
+      "file": "good",
+      "tests": {
+        "holdStill > keeps a clamped correction from landing on the update a press causes": {
+          "yes": [],
+          "unsure": [],
+          "reason": {}
+        }
+      }
+    }
+  }
+}
