@@ -101,6 +101,7 @@ export const modifierAdded: IntegrityRule = {
       const subject = many ? `${g.ids.length} tests are` : `test ${listIds(g.ids)} is`;
       return gateFinding(this.id, ctx.file, {
         loc: g.loc,
+        tests: g.ids,
         message: `${subject} now ${g.modifier}${many ? `: ${listIds(g.ids)}` : ''}`,
         hint:
           g.modifier === 'only'
