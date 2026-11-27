@@ -233,7 +233,7 @@ Penalties are per test, with a cap per rule per file. **Gate** means the rule al
 
 | Rule | Signal | Evidence | Penalty / cap | Gate |
 | --- | --- | --- | --- | --- |
-| **`oracle/no-assertion`** | No `expect` / `assert` / `t.assert*`, after following local helpers one level deep. `assertFunctionNames` is configurable | Strong | 15 / 30 | yes |
+| **`oracle/no-assertion`** | No `expect` / `assert` / `t.assert*`, after following local helpers one level deep. A function named `expectX` / `assertX` that cannot be followed (imported) counts by its name; other names go in `assertFunctionNames` | Strong | 15 / 30 | yes |
 | **`oracle/tautological-assertion`** | `expect(true).toBe(true)`, `expect(x).toBe(x)`, literal compared with literal | Strong | 15 / 30 | yes |
 | **`oracle/mocks-subject`** | `vi.mock` / `jest.mock` path resolves to the module under test. A partial mock (spreading the original) is only a warning | Moderate–strong | 15 / 30 | full mocks only |
 | **`oracle/swallowed-async`** | Unawaited `.resolves` / `.rejects`, `expect` in `.then` without await or return, `done` misuse | Strong | 10 / 20 | yes |

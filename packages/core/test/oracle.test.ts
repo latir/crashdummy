@@ -75,10 +75,29 @@ describe('findings', () => {
 });
 
 describe('assertFunctionNames', () => {
-  const src = `import { test } from 'vitest';\nimport { expectOk } from './h.js';\ntest('x', () => { expectOk(f()); });`;
-  test('a custom assertion counts only when configured', () => {
-    expect(run(src).findings.map((f) => f.ruleId)).toEqual(['oracle/no-assertion']);
-    expect(run(src, { assertFunctionNames: ['expectOk'] }).findings).toEqual([]);
+  const imported = (name: string): string =>
+    `import { test } from 'vitest';\nimport { ${name} } from './h.js';\ntest('x', () => { ${name}(f()); });`;
+  test('an imported helper named expectX or assertX counts without configuration', () => {
+    expect(run(imported('expectOk')).findings).toEqual([]);
+    expect(run(imported('assertNoViolations')).findings).toEqual([]);
+  });
+  test('any other helper name counts only when configured', () => {
+    expect(run(imported('verifyOk')).findings.map((f) => f.ruleId)).toEqual([
+      'oracle/no-assertion',
+    ]);
+    expect(run(imported('verifyOk'), { assertFunctionNames: ['verifyOk'] }).findings).toEqual([]);
+  });
+  test('names that only start like a check do not count', () => {
+    expect(run(imported('expected')).findings.map((f) => f.ruleId)).toEqual([
+      'oracle/no-assertion',
+    ]);
+    expect(run(imported('assertion')).findings.map((f) => f.ruleId)).toEqual([
+      'oracle/no-assertion',
+    ]);
+  });
+  test('a helper in the same file is followed, whatever it is called', () => {
+    const local = `import { test } from 'vitest';\nfunction expectOk(v: unknown) { return v; }\ntest('x', () => { expectOk(f()); });`;
+    expect(run(local).findings.map((f) => f.ruleId)).toEqual(['oracle/no-assertion']);
   });
 });
 
