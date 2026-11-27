@@ -10,7 +10,7 @@
   "date": "2026-09-30T23:46:51.000Z",
   "license": "Apache-2.0",
   "licenseFile": "LICENSE",
-  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "copyright": "Copyright 2026 Omid Karami",
   "framework": "vitest",
   "tests": 2,
   "hasBefore": false

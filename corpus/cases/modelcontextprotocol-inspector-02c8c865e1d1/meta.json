@@ -10,7 +10,7 @@
   "date": "2026-09-30T15:26:16.000-07:00",
   "license": "Apache-2.0",
   "licenseFile": "LICENSE",
-  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "copyright": "Copyright (c) 2024-2025 Model Context Protocol a Series of LF Projects, LLC.",
   "framework": "vitest",
   "tests": 50,
   "hasBefore": true

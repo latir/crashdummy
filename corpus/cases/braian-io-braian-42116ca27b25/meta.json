@@ -10,7 +10,7 @@
   "date": "2026-11-25T00:09:34.000+01:00",
   "license": "Apache-2.0",
   "licenseFile": "LICENSE",
-  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "copyright": null,
   "framework": "playwright",
   "tests": 3,
   "hasBefore": true

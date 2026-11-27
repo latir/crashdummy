@@ -10,7 +10,7 @@
   "date": "2026-07-27T16:45:34.000-04:00",
   "license": "Apache-2.0",
   "licenseFile": "LICENSE",
-  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "copyright": "Copyright 2026 Block, Inc.",
   "framework": "playwright",
   "tests": 12,
   "hasBefore": true
