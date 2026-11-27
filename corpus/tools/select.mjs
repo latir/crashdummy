@@ -15,7 +15,8 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { Pool } from './harvest.mjs';
+import { Pool, defaultIo } from './harvest.mjs';
+import { collectLicenseFiles, licenseDocs, writeLicenseFiles } from './licenses.mjs';
 import { caseSlug, drawRandom, drawTargeted, looksSensitive } from './lib.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -114,6 +115,13 @@ export async function select(options = {}, io = {}) {
   ];
 
   if (o.write !== false) {
+    // licence texts are read first: if one cannot be read, nothing has been replaced yet
+    const collect = io.collectLicenses ?? collectLicenseFiles;
+    const plan = await collect(
+      io.git ?? defaultIo,
+      join(pool.dir, 'repos'),
+      cases.map((c) => c.f),
+    );
     const dir = join(out, 'cases');
     rmSync(dir, { recursive: true, force: true });
     for (const { f, set } of cases) {
@@ -148,7 +156,14 @@ export async function select(options = {}, io = {}) {
         )}\n`,
       );
     }
-    writeFileSync(join(out, 'NOTICE.md'), notice(cases.map((c) => c.f)));
+    writeLicenseFiles(plan, out);
+    writeFileSync(
+      join(out, 'NOTICE.md'),
+      notice(
+        cases.map((c) => c.f),
+        licenseDocs(plan),
+      ),
+    );
     writeFileSync(
       join(out, 'selection.json'),
       `${JSON.stringify(
@@ -180,7 +195,7 @@ export async function select(options = {}, io = {}) {
 }
 
 /** Every source repository with its licence and copyright line, as the licences require. */
-export function notice(files) {
+export function notice(files, docs = new Map()) {
   const byRepo = new Map();
   for (const f of files) {
     const entry = byRepo.get(f.repo) ?? {
@@ -207,14 +222,21 @@ export function notice(files) {
     lines.push(`- Licence: ${e.license}`);
     if (e.copyright) lines.push(`- ${e.copyright}`);
     lines.push(`- Source: https://github.com/${repo}`);
+    const docFiles = docs.get(repo) ?? [];
+    if (docFiles.length > 0) {
+      lines.push(
+        `- Licence text${docFiles.length === 1 ? '' : 's'}: ${docFiles.map((f) => `\`${f}\``).join(', ')}`,
+      );
+    }
     lines.push(
       `- Commit${e.sha.size === 1 ? '' : 's'}: ${[...e.sha].map((s) => s.slice(0, 12)).join(', ')}`,
     );
     lines.push(`- Files: ${e.files}`, '');
   }
   lines.push(
-    'The full licence texts are in each source repository at the commit above (`licenseFile` in',
-    '`meta.json`). Apache-2.0 sources may also carry a NOTICE file there.',
+    'The licence texts (and the NOTICE files that Apache-2.0 sources carry) are bundled under',
+    '`licenses/`, copied unchanged from each source repository at the commit above. They have to',
+    'stay with the files in `cases/` wherever those are redistributed.',
     '',
   );
   return lines.join('\n');

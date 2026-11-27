@@ -4,6 +4,7 @@ coverage
 pnpm-lock.yaml
 fixtures
 corpus/cases
+corpus/licenses
 corpus/.pool
 docs/technical-plan.md
 .changeset/*.md
