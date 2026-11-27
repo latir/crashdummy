@@ -13,6 +13,7 @@ import {
   child,
   children,
   isFunction,
+  isNode,
   isTsValueWrapper,
   isTypeOnly,
   memberPath,
@@ -359,6 +360,11 @@ class AssertionFinder {
     const root = expectCallee ? this.norm(memberPath(expectCallee))?.join('.') : undefined;
     if (!root || !EXPECT_ROOTS.has(root)) return undefined;
     const typeLevel = root === 'expectTypeOf';
+    // `.parameter(0)` picks a part of the type: it is followed to the final matcher but is never
+    // an assertion itself, or a projection that checks nothing would count as one
+    if (typeLevel && (TYPE_SELECTOR_CALLS.has(matcher) || TYPE_SELECTORS.has(matcher))) {
+      return undefined;
+    }
     // selectors only mean something on `expectTypeOf`: `expect(x).returns.toBe(1)` is not one
     if (selectors && !typeLevel) return undefined;
 
@@ -887,11 +893,33 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       if (targets[i]!.kind === 'helper') return targets[i];
     return undefined;
   };
+  /** Named functions that a test or `it` declaration runs as its body: `test('x', body)`. */
+  const testCallbackNames = new Set<string>();
+  /** The declarations of those functions, whose parameters are the test context. */
+  const testCallbackFns = new WeakSet<AstNode>();
+  const collectTestCallbackNames = (node: AstNode): void => {
+    if (isTypeOnly(node)) return;
+    if (node.type === 'CallExpression') {
+      const decl = parseDecl(node, norm);
+      if (decl && decl.kind !== 'describe' && decl.fnRef) {
+        const name = str(decl.fnRef, 'name');
+        if (name) testCallbackNames.add(name);
+      }
+    }
+    for (const key in node) {
+      if (key === 'type' || key === 'start' || key === 'end') continue;
+      const value = node[key];
+      if (Array.isArray(value)) {
+        for (const item of value) if (isNode(item)) collectTestCallbackNames(item);
+      } else if (isNode(value)) collectTestCallbackNames(value);
+    }
+  };
   const bindParams = (fn: AstNode): void => {
     const names: string[] = [];
     const params = children(fn, 'params');
     for (const param of params) patternNames(param, names);
-    const testContext = currentTest !== undefined && currentTest.fn === fn;
+    const testContext =
+      (currentTest !== undefined && currentTest.fn === fn) || testCallbackFns.has(fn);
     for (const name of names) {
       scope.names.set(name, { mock: false, param: true, ...(testContext ? { testContext } : {}) });
     }
@@ -1371,10 +1399,12 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         if (stmt.type === 'ImportDeclaration') registerImport(stmt);
       }
       hoistDeclarations(children(node, 'body'));
+      collectTestCallbackNames(node);
     },
     FunctionDeclaration(node) {
       const id = child(node, 'id');
       const name = id ? str(id, 'name') : undefined;
+      if (name && testCallbackNames.has(name)) testCallbackFns.add(node);
       // A named function is a helper: its assertions count only where it is called.
       if (name) {
         const binding = scope.names.get(name) ?? { mock: false };
@@ -1455,6 +1485,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       const init = initRaw ? unwrap(initRaw) : undefined;
 
       if (init && isFunction(init) && id?.type === 'Identifier' && names[0]) {
+        if (testCallbackNames.has(names[0])) testCallbackFns.add(init);
         owner.names.set(names[0], { mock: false, helper: deferFunction(init) });
         targets[targets.length - 1]!.node = node; // popped on the declarator's exit
         return;
