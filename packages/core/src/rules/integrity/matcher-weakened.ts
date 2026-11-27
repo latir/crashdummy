@@ -98,6 +98,7 @@ export const matcherWeakened: IntegrityRule = {
       findings.push(
         gateFinding(this.id, ctx.file, {
           loc: after.loc,
+          test: after.id,
           message: `test '${after.id}' got weaker assertions: ${shown}${more}`,
           hint: 'Assert the exact value again. If loosening it is intended, add `// crashdummy-allow integrity/matcher-weakened: <reason>` above the test.',
         }),

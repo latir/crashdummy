@@ -90,6 +90,20 @@ describe('integrity fixtures', () => {
       if (c.kind === 'valid') expect(expected).toEqual([]);
       if (c.kind === 'invalid') expect(expected.length).toBeGreaterThan(0);
       if (c.rule === 'overrides' && c.kind === 'valid') expect(allowed.length).toBeGreaterThan(0);
+      // a finding about tests says which: scores and the corpus join on it
+      const aboutTests = findings.filter((f) =>
+        [
+          'integrity/test-removed',
+          'integrity/assertions-dropped',
+          'integrity/matcher-weakened',
+          'integrity/modifier-added',
+        ].includes(f.ruleId),
+      );
+      for (const f of aboutTests) {
+        const named = f.test !== undefined || (f.tests !== undefined && f.tests.length > 1);
+        expect(named, `${f.ruleId} at ${f.loc?.line}: ${f.message}`).toBe(true);
+        expect(f.test !== undefined && f.tests !== undefined).toBe(false);
+      }
     });
   });
 });

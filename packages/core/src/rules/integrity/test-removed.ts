@@ -22,6 +22,7 @@ export const testRemoved: IntegrityRule = {
     return removed.map((t) =>
       gateFinding(this.id, ctx.file, {
         loc: t.loc,
+        test: t.id,
         message: `test ${listIds([t.id])} was removed`,
         hint: 'Restore it. If it moved, keep its body unchanged. If removing it is intended, add `// crashdummy-allow integrity/test-removed: <reason>` at the top of the file.',
       }),
