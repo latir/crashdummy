@@ -76,7 +76,7 @@ export const tautologicalAssertion: OracleRule = {
           for (const a of test.assertions) {
             // An opaque helper or a matcher we do not know can run the code under test whatever
             // its arguments look like, so only assertions with known meaning are judged.
-            if (seen.has(a.node) || a.custom || !a.known) continue;
+            if (seen.has(a.node) || a.custom || a.typeLevel || !a.known) continue;
             const args = children(a.node, 'arguments');
             const isAssert = a.matcher.startsWith('assert.');
             const subject = isAssert ? args[0] : a.subject;

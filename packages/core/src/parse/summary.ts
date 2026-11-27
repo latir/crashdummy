@@ -200,12 +200,28 @@ function pickModifier(mods: readonly TestModifier[]): TestModifier | undefined {
 // Assertions: expect chains, node:assert, custom helpers
 
 const CHAIN_MODS = new Set(['not', 'resolves', 'rejects']);
-const EXPECT_ROOTS = new Set(['expect', 'expect.soft', 'expect.poll']);
+/** `expectTypeOf(fn).returns`, `.parameters`, `.items`: pick a part of the type to check. */
+const TYPE_SELECTORS = new Set([
+  'returns',
+  'parameters',
+  'constructorParameters',
+  'instance',
+  'items',
+  'guards',
+  'asserts',
+  'branded',
+  'thisParameter',
+]);
+/** `expectTypeOf(fn).parameter(0)`: the same, taking an argument. */
+const TYPE_SELECTOR_CALLS = new Set(['parameter']);
+const EXPECT_ROOTS = new Set(['expect', 'expect.soft', 'expect.poll', 'expectTypeOf']);
 
 interface Assertion {
   ref: MatcherRef;
   /** Matched by `assertFunctionNames`: an opaque helper, not a framework assertion. */
   custom?: true;
+  /** `expectTypeOf(...)`: checks a type, so runtime rules (literals, promises) do not apply. */
+  typeLevel?: true;
   /** The value being checked, for mock detection. */
   subject: AstNode | undefined;
 }
@@ -249,6 +265,8 @@ const STRICT_METHODS: Record<string, string> = {
   notDeepEqual: 'notDeepStrictEqual',
 };
 
+const CALL_WITH = /^(toHaveBeen(Nth|Last)?CalledWith|toBeCalledWith|lastCalledWith|nthCalledWith)$/;
+
 const ASSERT_MODULES = new Set(['assert', 'node:assert']);
 const ASSERT_STRICT_MODULES = new Set(['assert/strict', 'node:assert/strict']);
 
@@ -261,6 +279,8 @@ interface BindingInfo {
   assert?: AssertBinding;
   /** A function parameter. In a `node:test` file one of them is the context: `ctx.assert.equal(...)`. */
   param?: boolean;
+  /** A parameter of the function a test runs: where vitest's `({ expect }) => ...` comes from. */
+  testContext?: boolean;
   importFrom?: string;
 }
 
@@ -308,25 +328,63 @@ class AssertionFinder {
     let obj = unwrap(object);
     let negated = false;
     const modifiers: ResolveModifier[] = [];
-    while (obj.type === 'MemberExpression' && obj['computed'] !== true) {
-      const p = child(obj, 'property');
-      const name = p ? str(p, 'name') : undefined;
-      const inner = child(obj, 'object');
-      if (!name || !CHAIN_MODS.has(name) || !inner) break;
-      if (name === 'not') negated = !negated;
-      else modifiers.push(name as ResolveModifier);
-      obj = unwrap(inner);
+    let selectors = false;
+    for (;;) {
+      if (obj.type === 'MemberExpression' && obj['computed'] !== true) {
+        const p = child(obj, 'property');
+        const name = p ? str(p, 'name') : undefined;
+        const inner = child(obj, 'object');
+        if (!name || !inner) break;
+        if (CHAIN_MODS.has(name)) {
+          if (name === 'not') negated = !negated;
+          else modifiers.push(name as ResolveModifier);
+        } else if (TYPE_SELECTORS.has(name)) {
+          selectors = true;
+        } else break;
+        obj = unwrap(inner);
+      } else if (obj.type === 'CallExpression') {
+        // `expectTypeOf(f).parameter(0).toBeNumber()`: a call that picks a part of the type
+        const callee = child(obj, 'callee');
+        const c = callee ? unwrap(callee) : undefined;
+        const p = c?.type === 'MemberExpression' ? child(c, 'property') : undefined;
+        const name = p ? str(p, 'name') : undefined;
+        const inner = c ? child(c, 'object') : undefined;
+        if (!name || !inner || !TYPE_SELECTOR_CALLS.has(name)) break;
+        selectors = true;
+        obj = unwrap(inner);
+      } else break;
     }
     if (obj.type !== 'CallExpression') return undefined;
     const expectCallee = child(obj, 'callee');
     const root = expectCallee ? this.norm(memberPath(expectCallee))?.join('.') : undefined;
     if (!root || !EXPECT_ROOTS.has(root)) return undefined;
+    const typeLevel = root === 'expectTypeOf';
+    // selectors only mean something on `expectTypeOf`: `expect(x).returns.toBe(1)` is not one
+    if (selectors && !typeLevel) return undefined;
 
     const subject = children(obj, 'arguments')[0];
     return {
-      ref: { name: matcher, negated, arg: argKind(args[0], this.norm), modifiers },
+      ref: {
+        name: matcher,
+        negated,
+        arg: this.matcherArg(matcher, args),
+        // `resolves` on a type is part of the type, not an await the test must make
+        modifiers: typeLevel ? [] : modifiers,
+      },
       subject: root === 'expect.poll' ? undefined : subject,
+      ...(typeLevel ? { typeLevel: true as const } : {}),
     };
+  }
+
+  /**
+   * What the matcher is given. `toHaveBeenCalledWith(expect.anything(), 'ws_1')` pins its other
+   * arguments, so one `expect.anything()` among them does not make the check an existence one.
+   */
+  private matcherArg(matcher: string, args: AstNode[]): ArgKind {
+    const first = argKind(args[0], this.norm);
+    if (!CALL_WITH.test(matcher) || args.length < 2) return first;
+    const kinds = args.map((a) => argKind(a, this.norm));
+    return kinds.find((k) => k !== 'anything') ?? 'anything';
   }
 
   /**
@@ -664,6 +722,7 @@ type Entry =
       loc: { line: number; col: number };
       subject: AstNode | undefined;
       custom: boolean;
+      typeLevel: boolean;
     }
   /** A reference that may run a local helper: `check()`, `page.expectOk()`, `items.forEach(check)`. */
   | { pos: number; call: string; method?: string; scope: Scope; def?: HelperDef | null }
@@ -740,6 +799,9 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     const fw = binding.framework;
     if (fw?.kind === 'named') return [fw.imported, ...path.slice(1)];
     if (fw?.kind === 'namespace') return path.length > 1 ? path.slice(1) : path;
+    // vitest hands each test its own `expect` through the context: `({ expect }) => { ... }`
+    if (head === 'expect' && binding.testContext === true && binding.importFrom === undefined)
+      return path;
     // other imports (bun:test, chai, ...) stay recognised by name; locals shadow the framework
     return binding.importFrom !== undefined ? path : [`${LOCAL}${head}`, ...path.slice(1)];
   };
@@ -829,7 +891,10 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     const names: string[] = [];
     const params = children(fn, 'params');
     for (const param of params) patternNames(param, names);
-    for (const name of names) scope.names.set(name, { mock: false, param: true });
+    const testContext = currentTest !== undefined && currentTest.fn === fn;
+    for (const name of names) {
+      scope.names.set(name, { mock: false, param: true, ...(testContext ? { testContext } : {}) });
+    }
   };
 
   /**
@@ -1053,6 +1118,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         loc: ctx.loc(node.start),
         subject: found.subject,
         custom: found.custom === true,
+        typeLevel: found.typeLevel === true,
       });
       return;
     }
@@ -1537,6 +1603,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
             viaHelper: !follow,
             known: lattice.resolveMatcher(entry.ref).known,
             custom: entry.custom,
+            typeLevel: entry.typeLevel,
           });
         } else if ('timeout' in entry) out.timeout = entry.timeout;
         else if (follow) {

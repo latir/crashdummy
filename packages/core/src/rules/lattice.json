@@ -28,6 +28,33 @@
   },
   "chains": [
     {
+      "id": "types",
+      "levels": [
+        {
+          "strength": 3,
+          "matchers": [
+            "toEqualTypeOf",
+            "toMatchTypeOf",
+            "toExtend",
+            "toBeString",
+            "toBeNumber",
+            "toBeBoolean",
+            "toBeFunction",
+            "toBeObject",
+            "toBeArray",
+            "toBeNever",
+            "toBeAny",
+            "toBeUnknown",
+            "toBeVoid",
+            "toBeSymbol",
+            "toBeBigInt",
+            "toBeCallableWith",
+            "toBeConstructibleWith"
+          ]
+        }
+      ]
+    },
+    {
       "id": "existence",
       "levels": [
         {

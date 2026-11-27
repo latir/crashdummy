@@ -24,6 +24,8 @@ export interface AssertionFact {
   known: boolean;
   /** A function named in `assertFunctionNames`. What it checks is up to the helper. */
   custom: boolean;
+  /** `expectTypeOf(...)`: checks a type, not a runtime value. */
+  typeLevel: boolean;
 }
 
 /** One test, with the detail rules need. Same order as `TestSummary.tests`. */
