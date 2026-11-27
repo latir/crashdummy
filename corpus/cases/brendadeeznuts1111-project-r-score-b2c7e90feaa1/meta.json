@@ -1,0 +1,17 @@
+{
+  "id": "b2c7e90feaa1",
+  "set": "random",
+  "repo": "brendadeeznuts1111/project-R-score",
+  "url": "https://github.com/brendadeeznuts1111/project-R-score/blob/8be6bb8ee10515a1ebaff722722d3072c9bc2366/tests/domain-glossary-portal.test.ts",
+  "commit": "8be6bb8ee10515a1ebaff722722d3072c9bc2366",
+  "path": "tests/domain-glossary-portal.test.ts",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-07-31T07:40:58.000-05:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 FactoryWager Enterprise Platform",
+  "framework": "unknown",
+  "tests": 7,
+  "hasBefore": true
+}

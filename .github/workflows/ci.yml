@@ -23,6 +23,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm build
       - run: pnpm test
+      - name: Mutant suite
+        run: node corpus/tools/mutants.mjs --check
       # Production dependencies must stay at 5 or fewer.
       - run: pnpm check:deps
       # The published CLI targets Node 20+: run the built bundle there.

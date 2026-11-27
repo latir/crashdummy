@@ -1,0 +1,17 @@
+{
+  "id": "6ab519ae3c0f",
+  "set": "random",
+  "repo": "sinmentis/rummycube",
+  "url": "https://github.com/sinmentis/rummycube/blob/db2a1aca501cc567e0bb8b7083bbe2bfa22a034e/src/tests/bug-report.test.js",
+  "commit": "db2a1aca501cc567e0bb8b7083bbe2bfa22a034e",
+  "path": "src/tests/bug-report.test.js",
+  "status": "M",
+  "agent": "copilot",
+  "date": "2026-07-01T09:36:39.000+12:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 sinmentis (shunlyu.com)",
+  "framework": "jest",
+  "tests": 4,
+  "hasBefore": true
+}

@@ -1,0 +1,17 @@
+{
+  "id": "5eb3ca902a3d",
+  "set": "random",
+  "repo": "todd866/guns-only",
+  "url": "https://github.com/todd866/guns-only/blob/5b4e7ca772c80fe409b66fece927eed6d0a94ca4/web/wwwroot/render/debrief/tests/sortie_result.test.mjs",
+  "commit": "5b4e7ca772c80fe409b66fece927eed6d0a94ca4",
+  "path": "web/wwwroot/render/debrief/tests/sortie_result.test.mjs",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-08-01T07:59:02.000+08:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Ian Todd",
+  "framework": "node-test",
+  "tests": 25,
+  "hasBefore": true
+}

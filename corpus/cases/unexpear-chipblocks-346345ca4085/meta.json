@@ -1,0 +1,17 @@
+{
+  "id": "346345ca4085",
+  "set": "random",
+  "repo": "unexpear/chipblocks",
+  "url": "https://github.com/unexpear/chipblocks/blob/c3b98d8198e377068a7f99d966591ba47ec206ee/tests/fpga-trellis-bit.test.ts",
+  "commit": "c3b98d8198e377068a7f99d966591ba47ec206ee",
+  "path": "tests/fpga-trellis-bit.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-07-31T19:49:28.000-04:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 unexpear",
+  "framework": "vitest",
+  "tests": 14,
+  "hasBefore": true
+}

@@ -1,0 +1,17 @@
+{
+  "id": "cef748444718",
+  "set": "random",
+  "repo": "lopes-felipe/f5",
+  "url": "https://github.com/lopes-felipe/f5/blob/59b381ca2f1a9fb879f163cccd252bcc4049cdbd/apps/server/src/provider/acp/AntigravityToolCalls.test.ts",
+  "commit": "59b381ca2f1a9fb879f163cccd252bcc4049cdbd",
+  "path": "apps/server/src/provider/acp/AntigravityToolCalls.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-11-25T00:40:37.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 T3 Tools Inc.",
+  "framework": "vitest",
+  "tests": 12,
+  "hasBefore": true
+}

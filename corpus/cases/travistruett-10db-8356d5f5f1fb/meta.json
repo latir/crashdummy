@@ -1,0 +1,17 @@
+{
+  "id": "8356d5f5f1fb",
+  "set": "random",
+  "repo": "travistruett/10db",
+  "url": "https://github.com/travistruett/10db/blob/00407f51a5496ecbaaf318afa6014584653936ae/apps/desktop/e2e/workbench.spec.ts",
+  "commit": "00407f51a5496ecbaaf318afa6014584653936ae",
+  "path": "apps/desktop/e2e/workbench.spec.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-11-24T23:52:27.000Z",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": null,
+  "framework": "playwright",
+  "tests": 1,
+  "hasBefore": true
+}

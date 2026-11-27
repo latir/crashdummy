@@ -1,0 +1,17 @@
+{
+  "id": "a70cabefd2c3",
+  "set": "random",
+  "repo": "nubbymong/ai-code-conductor",
+  "url": "https://github.com/nubbymong/ai-code-conductor/blob/4c05e202155b5e54834801a92663e8008291b3ea/tests/unit/renderer/multi-spawn-startup-page.test.tsx",
+  "commit": "4c05e202155b5e54834801a92663e8008291b3ea",
+  "path": "tests/unit/renderer/multi-spawn-startup-page.test.tsx",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-09-01T00:58:02.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025-2026 Nicholas Moger",
+  "framework": "vitest",
+  "tests": 32,
+  "hasBefore": false
+}

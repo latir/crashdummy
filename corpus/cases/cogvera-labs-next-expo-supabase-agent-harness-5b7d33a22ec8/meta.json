@@ -1,0 +1,17 @@
+{
+  "id": "5b7d33a22ec8",
+  "set": "targeted",
+  "repo": "cogvera-labs/next-expo-supabase-agent-harness",
+  "url": "https://github.com/cogvera-labs/next-expo-supabase-agent-harness/blob/c2c036b9f51bafc5b98fc0bb387393e770cdfe72/tests/gates/check-i18n.test.mjs",
+  "commit": "c2c036b9f51bafc5b98fc0bb387393e770cdfe72",
+  "path": "tests/gates/check-i18n.test.mjs",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-09-30T23:47:23.000Z",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": null,
+  "framework": "node-test",
+  "tests": 34,
+  "hasBefore": true
+}

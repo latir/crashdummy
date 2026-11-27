@@ -1,0 +1,17 @@
+{
+  "id": "edf59d04c79d",
+  "set": "random",
+  "repo": "linuxfoundation/lfx-self-serve",
+  "url": "https://github.com/linuxfoundation/lfx-self-serve/blob/32676883fb7633650a22e584531c97bbc0ff8a6d/apps/lfx-one/e2e/weekly-brief-card.spec.ts",
+  "commit": "32676883fb7633650a22e584531c97bbc0ff8a6d",
+  "path": "apps/lfx-one/e2e/weekly-brief-card.spec.ts",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-07-31T15:56:56.000-07:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025 Linux Foundation",
+  "framework": "playwright",
+  "tests": 9,
+  "hasBefore": false
+}

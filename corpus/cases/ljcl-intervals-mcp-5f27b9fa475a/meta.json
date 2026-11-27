@@ -1,0 +1,17 @@
+{
+  "id": "5f27b9fa475a",
+  "set": "random",
+  "repo": "ljcl/intervals-mcp",
+  "url": "https://github.com/ljcl/intervals-mcp/blob/9f6665bcbe0a44406908de041f93e66c8865fe3f/apps/server/src/tools/createActivity.test.ts",
+  "commit": "9f6665bcbe0a44406908de041f93e66c8865fe3f",
+  "path": "apps/server/src/tools/createActivity.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-08-01T09:23:22.000+10:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Luke Clark",
+  "framework": "vitest",
+  "tests": 9,
+  "hasBefore": true
+}

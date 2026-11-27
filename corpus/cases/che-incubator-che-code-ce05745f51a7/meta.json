@@ -1,0 +1,17 @@
+{
+  "id": "ce05745f51a7",
+  "set": "random",
+  "repo": "che-incubator/che-code",
+  "url": "https://github.com/che-incubator/che-code/blob/dd3b04daa8a3dfaa41bafec47ac0b381b0521e1d/src/vs/sessions/contrib/sessions/test/browser/sessionsWindowNotifier.test.ts",
+  "commit": "dd3b04daa8a3dfaa41bafec47ac0b381b0521e1d",
+  "path": "src/vs/sessions/contrib/sessions/test/browser/sessionsWindowNotifier.test.ts",
+  "status": "M",
+  "agent": "copilot",
+  "date": "2026-09-30T23:34:52.000Z",
+  "license": "MIT",
+  "licenseFile": "LICENSE.txt",
+  "copyright": "Copyright (c) 2015 - present Microsoft Corporation",
+  "framework": "unknown",
+  "tests": 10,
+  "hasBefore": true
+}

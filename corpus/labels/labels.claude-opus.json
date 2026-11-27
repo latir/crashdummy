@@ -1,0 +1,2021 @@
+{
+  "labeller": "claude-opus",
+  "schema": 1,
+  "cases": {
+    "181192-brasscribe-5a01aa49fb7f": {
+      "file": "weak",
+      "note": "screenshot generator, skipped unless PINK_SHOTS set; only checks the score rendered",
+      "tests": {
+        "`Pink score viewer, ${system}`": {}
+      }
+    },
+    "181192-brasscribe-81400ca06a35": {
+      "file": "good",
+      "tests": {
+        "`more contrast: ${c.choice ?? \"Match system\"} on a ${c.system} system uses ${c.palette} high contrast`": {},
+        "without more contrast the ordinary palettes apply": {},
+        "forced colours still drop the pinned theme": {},
+        "`${choice} on a ${system} system uses pink ${mode}`": {},
+        "`an earlier Pink on a ${system} system becomes ${migrated}`": {},
+        "more contrast wins over the Pink palette and keeps its light or dark": {},
+        "five activations of the lockup unlock Pink light and Pink dark, from the keyboard too": {},
+        "`Pink on a ${system} system uses pink ${system}`": {},
+        "more contrast wins over Pink": {},
+        "five activations of the lockup unlock Pink, from the keyboard too": {}
+      }
+    },
+    "a-novel-kit-workflows-7bb580e2530f": {
+      "file": "good",
+      "tests": {
+        "composite contexts respect expression boundaries, quoting and access syntax": {},
+        "malformed expressions with repeated quotes cannot stall manifest validation": {}
+      }
+    },
+    "a-novel-kit-workflows-a3d30f67a329": {
+      "file": "good",
+      "tests": {
+        "release branch guard treats branch names as data": {},
+        "release bump updates all package formats and quoted filenames, leaving versionless packages alone": {},
+        "invalid release baselines and broken workspace manifests fail before any file changes": {},
+        "release plan stamps only this repository's stable Go requirements and emits nested tags": {},
+        "release pushes are atomic, hotfixes only push tags, and dry runs publish nothing": {},
+        "release train distinguishes read failure, empty history and release types": {},
+        "release receipt replacement preserves prose and literal backslashes": {}
+      }
+    },
+    "acolomba-pi-claude-marketplace-063720f82ffe": {
+      "file": "good",
+      "tests": {
+        "registerClaudePluginCommand > registers the slash command once under its published description (D-04)": {},
+        "registerClaudePluginCommand > hands the argument text and the command context to the subcommand router (D-04)": {},
+        "registerClaudePluginCommand > shares the supplied lifecycle routing owner with registered import execution": {},
+        "registerClaudePluginCommand > resolves argument completions against the working directory the callback runs in (D-04)": {},
+        "registerClaudePluginCommand > keeps supplied lifecycle completion-cache hits isolated between registrations": {},
+        "registerClaudePluginCommand > runs registered bootstrap through the supplied lifecycle cache and both real children": {},
+        "rebuilds completion rows through the cache that owns a successful registered add": {},
+        "rebuilds completion rows through the cache that owns a successful registered remove": {},
+        "rebuilds completion rows through the cache that owns a successful registered update": {},
+        "rebuilds completion rows through the cache that owns a successful registered install": {},
+        "rebuilds completion rows through the cache that owns a successful registered reinstall": {},
+        "rebuilds completion rows through the cache that owns a successful registered uninstall": {},
+        "registerClaudePluginCommand autocomplete wrapper > installs exactly one autocomplete provider when the session starts (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > returns the underlying provider's suggestions unchanged (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > collapses the whitespace run a completion left on its own command line (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > leaves another extension's command line exactly as the underlying provider left it (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > leaves the result untouched when the cursor names a line the buffer does not hold (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > defers the file-completion trigger to the underlying provider that answers it (TC-7)": {},
+        "registerClaudePluginCommand autocomplete wrapper > permits the file-completion trigger when the underlying provider does not answer it (TC-7)": {},
+        "registerClaudeMarketplaceTools > registers the two read-only tools in order and nothing else (D-04)": {},
+        "argument rejection cases cover every routed command and alias": {},
+        "`registered ${spelling} rejects ${kind} before reading runtime context`": {},
+        "`registered ${spelling} rejects the empty scope ${emptyValue} before a valid-looking token`": {}
+      }
+    },
+    "acolomba-pi-claude-marketplace-b3e062f52b6c": {
+      "file": "good",
+      "tests": {
+        "parsePluginSource > name": {},
+        "parsePluginSource > name #2": {},
+        "parsePluginSource > re-parsing an already-parsed URL source is idempotent on raw": {},
+        "pathSource > \"rejects \" + JSON.stringify(invalidPath) + \" as an empty path\"": {},
+        "pathSource > returns a complete path source": {},
+        "githubSource > returns a complete GitHub source": {},
+        "githubSource > \"rejects \" + raw + \" as a non-GitHub source\"": {},
+        "samePlannedSource > name": {},
+        "sourceLogical > name": {},
+        "ensureGitSuffix > \"normalizes \" + url + \" for Git transport\"": {},
+        "stripSlashAndFragment > name": {},
+        "stripGitSuffix > name": {}
+      }
+    },
+    "actions-marketplace-validations-github-gh-aw-fir-18748a85eeb2": {
+      "file": "good",
+      "tests": {
+        "readPrivateRoutingJson > parses a bounded private file": {},
+        "readPrivateRoutingJson > rejects a file larger than its bound": {},
+        "readPrivateRoutingJson > refuses to follow a symlink": {},
+        "loadRoutingConversation > loads a conversation under the one MiB bound": {},
+        "loadRoutingConversation > translates a missing file into a routing configuration error": {},
+        "loadRoutingConversation > translates invalid JSON into a routing contract error": {},
+        "loadRoutingConversation > is cancelled by an aborted signal": {},
+        "createProductionRoutingController > returns null when routing is not configured": {},
+        "createProductionRoutingController > rejects a configuration without a Copilot adapter owner": {},
+        "createRoutingObserver > logs failure stages at warn and other stages at info": {},
+        "createProductionRoutingSession > returns null when routing is not configured": {},
+        "createProductionRoutingSession > publishes the selection atomically and completion only after draining": {},
+        "createProductionRoutingSession > reflects the selection the agent must send, and failures without a selection": {},
+        "createProductionRoutingSession > publishes a failure record when the controller fails": {},
+        "createProductionRoutingSession > publishes a bootstrap failure when the controller cannot be built": {},
+        "createProductionRoutingSession > terminates with exit code 78 when a bootstrap failure cannot be published": {},
+        "createProductionRoutingSession > refuses to plan when a stale result already exists": {},
+        "createProductionRoutingSession > publishes a runtime failure raised after the selection": {},
+        "createProductionRoutingSession > terminates with exit code 78 when a runtime failure cannot be published": {}
+      }
+    },
+    "actions-marketplace-validations-github-gh-aw-fir-5dd5ca233047": {
+      "file": "good",
+      "tests": {
+        "createProviderServer > passes the adapter request signer to the HTTP proxy pipeline": {},
+        "createProviderServer > fails closed for WebSocket upgrades when AWS request signing is configured": {},
+        "createProviderServer > shutdownConnections closes tracked upgraded sockets": {},
+        "createProviderServer routing enforcement > observes a routed request without rejecting it": {},
+        "createProviderServer routing enforcement > composes the observe-only routing transform with the adapter transform": {},
+        "createProviderServer routing enforcement > proxies an upgrade while routing is active": {},
+        "createProviderServer routing enforcement > screens an inference request before revealing adapter configuration": {},
+        "createProviderServer routing enforcement > uses the enforcement body transform for an admitted routed request": {},
+        "createProviderServer routing enforcement > rejects an upgrade while routing is active": {}
+      }
+    },
+    "aelmanaa-hardhat-kms-0ea6aca93503": {
+      "file": "good",
+      "tests": {
+        "AWS KMS adapter > returns the key's public key and KMS's DER signature of the digest, unchanged": {},
+        "AWS KMS adapter > signs digests with the key ARN from GetPublicKey, never the alias, and MessageType DIGEST": {},
+        "AWS KMS adapter > looks the ARN up first if asked to sign before the public key": {},
+        "AWS KMS adapter > uses the region of a key ARN over the key's, and passes profile and endpoint": {},
+        "AWS KMS adapter > describes the key by its display values, and closes the client": {},
+        "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on GetPublicKey: ${name}`": {},
+        "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on Sign: ${name}`": {},
+        "AWS KMS adapter > works with multi-region keys, whose ARNs use mrk- ids": {},
+        "AWS KMS adapter > says when no region is configured, instead of a bare error class": {},
+        "AWS KMS adapter > passes other SDK errors on unchanged": {},
+        "AWS KMS adapter > does not keep the ARN from a call that was abandoned": {},
+        "AWS KMS adapter > signs exactly like Hardhat's local accounts, even from high-S DER signatures": {},
+        "AWS KMS adapter > uses the region from a key ARN, the key or the defaults, and passes profile and endpoint": {},
+        "AWS KMS adapter > describes the key without its values, and closes the client": {},
+        "AWS KMS adapter > rejects a Sign response whose key id differs, even only in case": {},
+        "AWS KMS adapter > rejects an SDK module that does not look like @aws-sdk/client-kms": {
+          "unsure": ["integrity/test-removed"],
+          "reason": {
+            "integrity/test-removed": "SDK-shape check deleted with no replacement here; may have moved with the loader to another package"
+          }
+        },
+        "AWS KMS adapter > refuses keys of other providers": {
+          "unsure": ["integrity/test-removed"],
+          "reason": {
+            "integrity/test-removed": "other-provider refusal deleted; adapter API no longer takes generic keys, check may live elsewhere"
+          }
+        }
+      }
+    },
+    "anco91-mbongo-69dd3de662d5": {
+      "file": "good",
+      "tests": {
+        "checkTransferLegs > accepts a completed cross-currency transfer whose legs match": {},
+        "checkTransferLegs > accepts a completed same-currency transfer (rate 1, no fee)": {},
+        "checkTransferLegs > accepts an estimated transfer with only its SOURCE leg": {},
+        "checkTransferLegs > flags a SOURCE leg that is not -amountSent": {},
+        "checkTransferLegs > flags a TARGET leg that is not +amountReceived": {},
+        "checkTransferLegs > flags a missing SOURCE or TARGET leg on a completed transfer": {},
+        "checkTransferLegs > flags a TARGET leg on a transfer not yet received": {},
+        "checkTransferLegs > flags a leg on the wrong account": {},
+        "checkTransferLegs > flags duplicated legs": {},
+        "checkTransferLegs > flags fees that do not explain estimated minus received": {},
+        "checkTransferLegs > tolerates rounding of one cent in the fee gap": {},
+        "checkTransferLegs > flags a CLOSED transfer whose TARGET leg is missing": {},
+        "checkTransferLegs > flags a COMPLETED transfer whose amountReceived is null": {},
+        "checkTransferLegs > does not require amountReceived on ESTIMATED or CLOSED-unreceived transfers": {}
+      }
+    },
+    "andreisavu-ambion-15d37b11b140": {
+      "file": "good",
+      "note": "T0 checks via explicit throw new Error rather than expect; it can still fail",
+      "tests": {
+        "$name > retains a sensor manifest and restores its referenced file through the object backend": {}
+      }
+    },
+    "andreisavu-ambion-20cac635bb5d": {
+      "file": "good",
+      "tests": {
+        "keeps the exported package name in step with the manifest": {},
+        "builds every entry the manifest names": {},
+        "exports exactly what an application needs to build a room, and nothing a host needs beyond it": {},
+        "exports exactly the wire and the hosting escape hatch, and nothing an application already has": {},
+        "exports exactly the conformance suite, its shared parts, and its in-process executor": {},
+        "names the ports, the reads, and the visit by their final names": {},
+        "names no model library: the manifest lists none, and no source file imports one": {},
+        "exports exactly the conformance suite and its in-process executor": {}
+      }
+    },
+    "ant1off-gram-a6a9a43a56e0": {
+      "file": "good",
+      "tests": {
+        "holdStill > keeps a clamped correction from landing on the update a press causes": {}
+      }
+    },
+    "autonome-research-hephaestus-19cc1bbfb82c": {
+      "file": "good",
+      "tests": {
+        "the context envelope > draws every member from the closed set and invents none": {},
+        "the context envelope > carries the explode PARAMETER and has nowhere to put a displacement": {},
+        "the context envelope > reports the hidden toggles, sorted, and never a visible count": {},
+        "the context envelope > submits the selection ids and never describes the selection": {},
+        "the context envelope > sends the pin mode only with the ref it qualifies": {},
+        "the context envelope > is null for the blank canvas, whatever the tabs say": {},
+        "the context envelope > honours a dropped member — every member is opt-out": {},
+        "the context envelope > drops the whole envelope when every reference is dropped": {},
+        "the context envelope > lets an explicit Add current view make the view a reference": {},
+        "the chip row > offers a chip for every reference the state names, in a fixed order": {},
+        "the chip row > renders the hidden set as a COUNT of toggles, not a value": {},
+        "the chip row > offers no chip for pin_mode, which is not independently droppable": {},
+        "the read-refresh boundary > names exactly the keys §7A.11 enumerates for a selected part": {},
+        "the read-refresh boundary > still refreshes the project keys on the blank canvas": {},
+        "the DOM contract > carries the closed state vocabulary and the session it is bound to": {},
+        "the DOM contract > says no_session rather than rendering nothing": {},
+        "the DOM contract > names agent_unavailable, its cause, and the path the server checked": {},
+        "the DOM contract > keeps every disabled reason inside the closed vocabulary": {},
+        "the DOM contract > renders cancel as unavailable-with-a-reason, never as a dead button": {},
+        "the DOM contract > puts no data-source on any context chip": {},
+        "the DOM contract > keeps the existing composer selectors when chrome is present": {},
+        "session chrome from GET /providers > uses the provider's own model id as the identifier, never a house name": {},
+        "session chrome from GET /providers > names no models when the configuration file does not exist": {},
+        "session chrome from GET /providers > hides the model projection when the runtime is missing": {},
+        "session chrome from GET /providers > renders the declared model id as a projection, not a picker, when a runtime is attached": {},
+        "session chrome from GET /providers > offers effort levels only when the selected model declared reasoning": {},
+        "the idle composer does not host DFM chrome > still knows when the inspector may show the two §6.4 controls": {},
+        "the idle composer does not host DFM chrome > does not put auto_run or Run DFM on the idle composer": {},
+        "the idle composer does not host DFM chrome > does not grow DFM chrome on the agent_unavailable refusal": {},
+        "context chips do not force a 2400px stream > keeps the full artifact ref on the chip and shortens only the glyphs": {},
+        "the DFM chip is the engine equivalent, not a per-message flag > shows the two §6.4 controls only when a part's DFM document is in hand": {},
+        "the DFM chip is the engine equivalent, not a per-message flag > names the absence when no part is selected and does not fake DFM chrome": {},
+        "the DFM chip is the engine equivalent, not a per-message flag > hides DFM chrome on the agent_unavailable refusal": {}
+      }
+    },
+    "autonome-research-hephaestus-5e335253b2e1": {
+      "file": "weak",
+      "note": "about half the tests regex-match CSS and TSX source text (e.g. T12, T13 grep Composer.tsx) rather than rendered behaviour; brittle and implementation-coupled, no rule covers it",
+      "tests": {
+        "stream column — composer is a pinned footer, not overflow > pins the composer as the last auto row under a shrinking main": {},
+        "stream column — composer is a pinned footer, not overflow > keeps the stream column from growing the 800px shell": {},
+        "stream column — composer is a pinned footer, not overflow > keeps Send inside the composer, which is the panel's last child in source": {},
+        "empty-session create — one sentence, two actions, no tutorial > renders the two create buttons and no explainer paragraphs": {},
+        "empty-session create — one sentence, two actions, no tutorial > keeps the honest selected-part sentence and does not grow a tutorial": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > keeps the rail a height-bounded scroll host": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > fails if a rail descendant can force wider than --rail-width": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > does not mount the configuration table or allowlist until expanded": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > still offers Sign-in and discovery in the compact row": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > keeps acknowledged egress hosts in the compact DOM (G10C)": {},
+        "rail providers — collapsed by default so Sign-in stays in the box > keeps the zero-config empty action when there is no provider row": {},
+        "artifact pin — chip width that fits the 1280 header > shortens the visible pin below the width that ate Token": {},
+        "composer chrome — talking surface, not a Plan/DFM toolbar > does not render a bare effort off in the strip": {},
+        "composer chrome — talking surface, not a Plan/DFM toolbar > defaults the idle prompt to one row so Send stays on-screen": {},
+        "rail project sections — listed, empty-honest, collapsed > keeps the closed inventory and does not expand empty bodies by default": {},
+        "header git identity — no invented branch, no HEAD without a sha > treats porcelain (detached) as no branch and still shows an oid head": {},
+        "header git identity — no invented branch, no HEAD without a sha > omits both fields when GET /git/status has not answered": {},
+        "header git identity — no invented branch, no HEAD without a sha > does not print the label HEAD when head is not an oid": {},
+        "composer chrome — no unlabelled off toggles > does not render a bare effort off in the strip": {}
+      }
+    },
+    "awsomefox-campfire-822f7f297aab": {
+      "file": "weak",
+      "note": "coverage-padding test: defaults only toBeDefined, history only Array.isArray, readiness only echoes campaignId; only configure mode is a real check",
+      "tests": {
+        "AiDmService unit coverage tests > manages AI DM seat configuration, defaults, and readiness": {}
+      }
+    },
+    "awsomefox-campfire-8d7da00e07e6": {
+      "file": "weak",
+      "note": "coverage-padding: totalBytes >= 0 and dryRun echoing its input cannot catch much; empty list is the only real check",
+      "tests": {
+        "AttachmentsService unit coverage tests > manages attachment storage stats and listing": {}
+      }
+    },
+    "bamr87-zer0-mistakes-229c2fcb2dd3": {
+      "file": "good",
+      "tests": {
+        "Feature registry provenance (/features/) > reference table has a Provenance column": {},
+        "Feature registry provenance (/features/) > a known feature exposes a PR link with the correct GitHub href": {},
+        "Feature registry provenance (/features/) > commit links point at the repo commit endpoint": {},
+        "Feature registry provenance (/features/) > feature cards render a provenance line": {}
+      }
+    },
+    "braian-io-braian-14af8aa389d3": {
+      "file": "good",
+      "tests": {
+        "Products create dialog": {},
+        "Articles create dialog": {},
+        "Suppliers create dialog": {},
+        "From type select stays readable in dark theme": {},
+        "Object types create dialog": {},
+        "Link types create dialog": {
+          "yes": ["integrity/assertions-dropped"],
+          "reason": {
+            "integrity/assertions-dropped": "inlining exercise() dropped the held-save step: create-object toBeDisabled during a pending save and Escape mid-save are no longer checked"
+          }
+        },
+        "Value lists create dialog": {},
+        "List values create dialog": {},
+        "Units create dialog": {},
+        "Attribute definitions create dialog": {},
+        "Type attributes create dialog": {},
+        "Structures create dialog": {}
+      }
+    },
+    "braian-io-braian-42116ca27b25": {
+      "file": "good",
+      "tests": {
+        "pairs with links two cheeses from the keyboard and the link type can be deleted": {},
+        "removing a link with values opens a plain confirm with no text input": {},
+        "removing a link updates the peer list at once and Undo brings the row back": {}
+      }
+    },
+    "brendadeeznuts1111-project-r-score-b2c7e90feaa1": {
+      "file": "good",
+      "note": "T2 and T3 assert on substrings of JS source text rather than behaviour",
+      "tests": {
+        "domain glossary portal > registry projection is integral, bounded, and color-normalized": {},
+        "domain glossary portal > portal vocabulary separates concept kind, semantic type, and UI role": {},
+        "domain glossary portal > board uses URLPattern.hash deep links and shared portal chrome": {},
+        "domain glossary portal > shared glossary UX keeps DOM, fragments, focus, and telemetry bounded": {},
+        "domain glossary portal > route, chrome, and weave make the glossary discoverable": {},
+        "domain glossary portal > registered limits sections and rendered concept references stay aligned": {},
+        "domain glossary portal > committed projection stays aligned with the canonical dump": {}
+      }
+    },
+    "broomva-genesis-4a39a355b7a9": {
+      "file": "good",
+      "tests": {
+        "DoD 1 — an ask survives a process restart and is still ackable > a subprocess writes; this process reads it back": {},
+        "DoD 1 — an ask survives a process restart and is still ackable > a THIRD process answers it, and the ask is individually ackable": {},
+        "DoD 1 — an ask survives a process restart and is still ackable > the bytes are on disk before the writing process exits": {},
+        "DoD 2 — answering twice is a no-op, not a double effect > two identical answers leave one answered ask": {},
+        "DoD 2 — answering twice is a no-op, not a double effect > a CHANGED answer for the same ask takes the later one": {},
+        "DoD 2 — answering twice is a no-op, not a double effect > a duplicate ASK collapses too — a retried tool call yields a stable id": {},
+        "DoD 5 — the ask log and queue.jsonl are separate stores > an ask never lands in the voice intake queue": {},
+        "DoD 5 — the ask log and queue.jsonl are separate stores > a voice ticket in the same directory is not read as an ask": {},
+        "reading is tolerant, and says when it is not > no files yet is a healthy empty, not a degradation": {},
+        "reading is tolerant, and says when it is not > a torn final line is skipped, not fatal": {},
+        "reading is tolerant, and says when it is not > a row with no question is not an ask": {},
+        "reading is tolerant, and says when it is not > filtering by thread returns only that thread's asks": {},
+        "reading is tolerant, and says when it is not > oldest first — an operator answers the longest-waiting question": {},
+        "findings from the P20 review > a short write is COMPLETED — every byte of the record reaches the file": {},
+        "findings from the P20 review > a NON-ASCII record survives a short write — bytes, not code units": {},
+        "findings from the P20 review > a write making no progress throws instead of spinning forever": {},
+        "findings from the P20 review > the fd is closed even when a short write throws": {},
+        "findings from the P20 review > two asks sharing an id in different threads do not mask each other": {},
+        "findings from the P20 review > malformed options are dropped, not handed to the client as AskOption[]": {},
+        "findings from the P20 review > a non-string threadId is SKIPPED, not coerced to thread \"\"": {},
+        "findings from the P20 review > both journals unreadable reports BOTH, not just the last": {},
+        "answeredAt is typed, not trusted > a numeric answeredAt does not round-trip as a string field": {},
+        "answeredAt is typed, not trusted > a well-formed answeredAt still works": {},
+        "readAsks accounts for malformed records > a record with no id is counted, not silently dropped": {},
+        "readAsks accounts for malformed records > a record with no question is counted": {},
+        "readAsks accounts for malformed records > the count is the number of bad records, not a boolean": {},
+        "readAsks accounts for malformed records > the exact shape dogfooding produced: askedAt instead of createdAt": {},
+        "readAsks accounts for malformed records > sessionId present, createdAt missing — still counted": {},
+        "readAsks accounts for malformed records > createdAt present, sessionId missing — still counted": {},
+        "readAsks accounts for malformed records > a line that is valid JSON but not an object is counted": {},
+        "readAsks accounts for malformed records > a record missing BOTH sessionId and createdAt counts once, not twice": {},
+        "readAsks accounts for malformed records > a well-formed log reports NOTHING degraded": {},
+        "readAsks accounts for malformed records > both counters travel together, and the unreadable-file message survives": {},
+        "readAsks accounts for malformed records > a filtered read still reports records the filter never reached": {},
+        "readBounded > a body at exactly the cap is returned": {},
+        "readBounded > one byte over the cap returns null": {},
+        "readBounded > the cap counts BYTES, not characters": {},
+        "readBounded > an empty body is an empty string, not null": {},
+        "readBounded > the stream is CANCELLED past the cap, not merely abandoned": {}
+      }
+    },
+    "cbrown564-alt-unitedstats-0265770b5432": {
+      "file": "good",
+      "tests": {
+        "revalidationPathsForMatches covers shared surfaces and per-match paths": {},
+        "revalidationPathsForMatches adds enriched player and manager pages": {},
+        "revalidationPathsForMatches dedupes paths across multiple matches": {}
+      }
+    },
+    "cbrown564-alt-unitedstats-0b34131ac5a1": {
+      "file": "good",
+      "tests": {
+        "buildProfile defaults to full outside Vercel preview": {
+          "unsure": ["integrity/assertions-dropped"],
+          "reason": {
+            "integrity/assertions-dropped": "staticBuildDynamicParams assertion deleted with no replacement; probably the export was removed, which the file alone cannot confirm"
+          }
+        },
+        "buildProfile follows VERCEL_ENV=preview": {
+          "unsure": ["integrity/assertions-dropped"],
+          "reason": {
+            "integrity/assertions-dropped": "staticBuildDynamicParams assertion deleted with no replacement; probably the export was removed, which the file alone cannot confirm"
+          }
+        },
+        "sampleStaticIds returns a stable preview subset": {},
+        "sampleStaticIds returns all ids on full builds": {}
+      }
+    },
+    "che-incubator-che-code-ce05745f51a7": {
+      "file": "good",
+      "tests": {
+        "SessionsWindowNotifier > uses confirmation setting for needs-input transitions": {},
+        "SessionsWindowNotifier > uses response setting for completed and failed transitions": {},
+        "SessionsWindowNotifier > does not notify for initial or duplicate state and respects focus": {},
+        "SessionsWindowNotifier > opens the exact session when the toast is activated": {},
+        "SessionsWindowNotifier > debounces completion notifications until the session stays completed": {},
+        "SessionsWindowNotifier > notifies for a question waiting in an inactive visible pane while the window is focused": {},
+        "SessionsWindowNotifier > does not notify an inactive ordinary pane while the window is focused": {},
+        "SessionsWindowNotifier > does not notify an inactive pane of an archived comparison while the window is focused": {},
+        "SessionsWindowNotifier > falls back to session status when a live model misses its needs-input state": {},
+        "SessionsWindowNotifier > stays silent when a live chat model exists for the session": {}
+      }
+    },
+    "christopher-buss-bedrock-0561a60e8083": {
+      "file": "good",
+      "tests": {
+        "deploy under a locking backend > should take the hold before dispatching any driver": {},
+        "deploy under a locking backend > should report a contended wait through the progress port before applying anything": {},
+        "deploy under a locking backend > should surface a lease the backend could not keep": {},
+        "deploy under a locking backend > should tell the backend which operation the hold is for": {},
+        "deploy under a locking backend > should give the hold up once the state write has been attempted": {},
+        "deploy under a locking backend > should give the hold up when the state write fails": {},
+        "deploy under a locking backend > should give the hold up when the deploy throws": {},
+        "deploy under a locking backend > should abort with lockAcquireFailed before dispatching any driver when the hold is refused": {},
+        "deploy under a locking backend > should keep the deploy result when the hold cannot be given up": {},
+        "deploy under a locking backend > should keep the deploy result when giving the hold up throws": {},
+        "deploy under a locking backend > should take the hold the configured backend supplies": {},
+        "deploy under a locking backend > should take the hold the caller supplies over the one the backend declares": {},
+        "deploy under a locking backend > should take the hold a caller supplies even where the config turned locking off": {},
+        "deploy under a locking backend > should deploy without taking a hold when the config turned locking off": {},
+        "deploy under a locking backend > should report that locking is off when the config turned it off": {},
+        "deploy under a locking backend > should say nothing about locking when the configured backend offers none": {},
+        "deploy under a locking backend > should say nothing about locking when the backend offers none to turn off": {},
+        "deploy under a locking backend > should take the hold for a provision, which shares the deploy's lifetime": {},
+        "deploy under a locking backend > should deploy without taking a hold when the backend declares no locking": {},
+        "$name release reporting > after reconcile $outcome > should report a $release release failure": {}
+      }
+    },
+    "christopher-buss-bedrock-2137ed581feb": {
+      "file": "good",
+      "tests": {
+        "createClackProgressAdapter > should warn that a failed release may need lock recovery": {},
+        "createClackProgressAdapter > should identify a created product by its marketplace ID": {},
+        "createClackProgressAdapter > should identify an adopted universe by its root place ID": {},
+        "createClackProgressAdapter > should render a deploySuccess event as the existing per-env summary line": {},
+        "createClackProgressAdapter > should delegate a deployFailure event to renderDeployError": {},
+        "createClackProgressAdapter > should stay silent on resourceOpStarted (no spinner, no line)": {},
+        "createClackProgressAdapter > should render resourceOpSucceeded (create form) with the per-kind Roblox ID": {},
+        "createClackProgressAdapter > should render resourceOpSucceeded (create form) without an ID for places": {},
+        "createClackProgressAdapter > should render resourceOpSucceeded (update form) listing the changed fields": {},
+        "createClackProgressAdapter > should render resourceOpNoop as an unchanged line": {},
+        "createClackProgressAdapter > should render resourceOpFailed with the driverFailure cause message": {},
+        "createClackProgressAdapter > should follow a failed resource line with diagnostics only when verbose is $verbose": {},
+        "createClackProgressAdapter > should print a failed resource's diagnostics once when the deploy then fails on it": {},
+        "createClackProgressAdapter > should follow a deploy failure with its cause chain when verbose": {},
+        "createClackProgressAdapter > should expand a network driverFailure with its transport code and failing call": {},
+        "createClackProgressAdapter > should render resourceOpFailed for the unexpectedThrow ApplyError": {},
+        "createClackProgressAdapter > should render resourceOpFailed for a permission driverFailure with the scope guidance": {},
+        "createClackProgressAdapter > should render resourceOpFailed for the updateUnsupported ApplyError": {},
+        "createClackProgressAdapter > should render applySummary as the aggregate footer with one-decimal seconds": {},
+        "createClackProgressAdapter > should render applySummary with failed ops as an error that does not claim success": {},
+        "createClackProgressAdapter > should render locking being off as a warning naming the environment": {},
+        "createClackProgressAdapter > should render a contended lock wait naming the holder and the time left": {},
+        "createClackProgressAdapter > should render a contended lock wait without a holder when the record was unreadable": {},
+        "createClackProgressAdapter > should render a lease the backend could not keep as an error": {},
+        "createClackProgressAdapter > should render stateWritten with the gist backend label resolved from the config": {},
+        "createClackProgressAdapter > should render stateWritten with the generic 'state' label when no config is provided": {},
+        "createClackProgressAdapter > should render stateWritten with the generic 'state' label when state config is absent for the environment": {},
+        "createClackProgressAdapter > should render stateWritten with the raw backend tag for non-gist backends": {},
+        "createClackProgressAdapter > should count state-only untrack operations in the summary": {}
+      }
+    },
+    "civio-butterbot-7a48529f65f7": {
+      "file": "good",
+      "tests": {
+        "buildSystemPrompt > lists an unrestricted skill everywhere": {},
+        "buildSystemPrompt > lists a restricted skill only in its channels": {},
+        "buildSystemPrompt > hides restricted skills in a DM": {},
+        "buildSystemPrompt > omits the skills section entirely when nothing is visible": {},
+        "buildSystemPrompt > describes the sandbox the tools actually run in": {},
+        "trimHistory > leaves a short transcript alone": {},
+        "trimHistory > drops the oldest turns once over the cap, and starts on a user message": {}
+      }
+    },
+    "cogvera-labs-next-expo-supabase-agent-harness-5b7d33a22ec8": {
+      "file": "good",
+      "note": "tests titled name are the treeTest wrapper (L54-55); the real bodies are the treeTest callbacks, which assert. Removed tests T34-T46 were re-registered through treeTest or retired with the regex scanner and site entries in 2.0.0",
+      "tests": {
+        "name": {},
+        "name #2": {},
+        "name #3": {},
+        "name #4": {},
+        "name #5": {},
+        "name #6": {},
+        "name #7": {},
+        "name #8": {},
+        "name #9": {},
+        "i18n: a DEAD catalog key reds — copy nothing renders is copy that rots": {},
+        "i18n: a dynamically-built key resolves by its static PREFIX (no false dead-key)": {},
+        "i18n: an EMPTY catalog fails — the seam cannot be adopted and vacuous at once": {},
+        "name #10": {},
+        "name #11": {},
+        "i18n: the gate SELF-DISABLES when the locale seam is not adopted": {},
+        "i18n: NO product surface at all — loud local skip, CI fail-closed": {},
+        "i18n: LOCALES unparseable (or index.ts absent) FAILS CLOSED — the closure cannot be checked": {},
+        "i18n: an installed data-consuming polyfill without locale-data for a catalog language reds": {},
+        "i18n: polyfill + matching locale-data closes the loop — green": {},
+        "i18n: locale-data no catalog locale resolves to is dead bundle weight — reds the other way": {},
+        "i18n: a pseudo-locale (en-XA) resolves through its BASE language — /en data suffices": {},
+        "i18n: data-free polyfills (getcanonicallocales, intl-locale) need no locale-data": {},
+        "i18n: a polyfill inlined into app/_layout.tsx is still seen — the closure covers the root layout": {},
+        "i18n: a clean tree passes and reports what it scanned": {},
+        "name #12": {},
+        "name #13": {},
+        "name #14": {},
+        "name #15": {},
+        "name #16": {},
+        "name #17": {},
+        "name #18": {},
+        "i18n: 2.0.0 — a 1.0.x {\"site\"} entry is malformed on every install, a 1.0.3 vintage included, and names what replaces it": {},
+        "i18n: with the parser ABSENT, checks 1 and 2 are not judged, the output says so, and CI fails closed": {},
+        "name #19": {},
+        "i18n: a hardcoded JSX text child reds, naming the string": {},
+        "i18n: the expo-router app/ tree is scanned too — copy in a screen file reds": {},
+        "i18n: a hardcoded user-facing ATTRIBUTE reds — the RN a11y names included": {},
+        "i18n: copy in an OBJECT literal reds — data modules and navigator options hold copy too": {},
+        "i18n: machine-facing literals are NOT copy (a path, a token, a kebab id)": {},
+        "i18n: TypeScript generics are not JSX — a .ts file with <T> reds nothing": {},
+        "i18n: an arrow function is not a tag — `=>` never opens JSX text": {},
+        "i18n: Intl / toLocale* / toFixed outside apps/mobile/src/i18n reds": {},
+        "i18n: .toFixed(2) reds with the reason — it hardcodes the decimal mark": {},
+        "i18n: the reviewed allowlist mutes findings by content KEY (copy AND boundary); malformed FAILS CLOSED": {},
+        "i18n: a content key stays on its string when a line is inserted above it; a site entry does not": {},
+        "i18n: one key mutes a finding whichever scanner reports it — the regular expressions alone included": {},
+        "i18n: with the parser ABSENT the regular expressions still judge and the output says the walk did not run; CI fails closed": {}
+      }
+    },
+    "commandershadow9-sicherheitsdienst-tool-adc2482e6625": {
+      "file": "good",
+      "tests": {
+        "listParams mapping > toSearchParams maps all fields including filters": {},
+        "listParams mapping > fromSearchParams reads values and defaults pageSize 25": {},
+        "listParams mapping > respects provided defaults": {}
+      }
+    },
+    "danielszabo92-pbibrain-82f55a53c16d": {
+      "file": "good",
+      "tests": {
+        "StatusBadge refuses a tone with no label": {},
+        "StatusBadge refuses a tone that is not known": {},
+        "StatusBadge accepts each tone with a word": {}
+      }
+    },
+    "decdn-sdk-typescript-1e28f9fd2141": {
+      "file": "good",
+      "note": "removed token tests follow removal of token auth; replacements exist for allowance/pool/empty-blob cases",
+      "tests": {
+        "DecdnClient.open > picks the context from the gateway URL": {},
+        "DecdnClient.open > opens a loopback client on %s": {},
+        "DecdnClient.open > normalises an IPv6 loopback spelling to [::1]": {},
+        "DecdnClient.open > opens a public client on %s": {},
+        "DecdnClient.open > refuses no gateway outside a site page, and a URL that does not parse": {},
+        "public context > streams a blob from the bare host and verifies it": {},
+        "public context > fails a tampered blob with HASH_MISMATCH, as a stream error and on bytes()": {},
+        "public context > still hashes a whole-body request the gateway answers with a window": {},
+        "public context > fails a body the gateway cuts with TRUNCATED": {},
+        "public context > fetches an entry through its site and verifies it against the manifest": {},
+        "public context > fetches a page or a stylesheet by its entry hash, unrewritten": {},
+        "public context > reads the manifest with the URI's namespace hint": {},
+        "public context > reads a directory's index.html by the directory's path, as its site does": {},
+        "public context > cuts the window from a whole body the gateway answers a range with": {},
+        "public context > refuses a window past the end of a whole body, as the gateway's 416": {},
+        "public context > answers a range of an empty whole body empty": {},
+        "public context > fails a whole body that ends before its window with TRUNCATED": {},
+        "public context > drops a manifest read every caller gave up on": {},
+        "public context > starts a fresh manifest read after an abort, and keeps the old one for its waiters": {},
+        "public context > keeps a settled manifest cached when a later caller aborts": {},
+        "public context > leaves a newer read of a key alone when an evicted one is abandoned": {},
+        "public context > sends nothing for a caller that has already given up": {},
+        "public context > takes a body shorter than its Content-Length when it was decoded on the way": {},
+        "public context > still bounds an encoded entry by its manifest size": {},
+        "public context > checks and normalises a URI given as an object": {},
+        "public context > fails a tampered entry with HASH_MISMATCH": {},
+        "public context > skips the manifest when verification is off": {},
+        "public context > answers a range with 206 and no verification": {},
+        "public context > refuses a range on a blob before any request": {},
+        "public context > keeps one caller's abort out of another's manifest read": {},
+        "public context > maps a range past the end to RANGE_NOT_SATISFIABLE with the size": {},
+        "public context > maps a public gateway nothing can pay for to PAYMENT_REQUIRED with the fallback URI": {},
+        "public context > maps a 503 that names no fallback URI, and a 401, to HTTP": {},
+        "public context > pays with a namespace-scoped capability only on its pointer's host, for the pointer's bundle": {},
+        "public context > serves a blob its cache holds whole when nothing can pay": {},
+        "public context > maps a pool that cannot pay to PAYMENT_REQUIRED": {},
+        "public context > retries once after Retry-After when asked": {},
+        "public context > does not wait out Retry-After once the caller has aborted": {},
+        "public context > fails a body aborted mid-stream with the signal's reason": {},
+        "public context > fails a window that runs past its declared length with TRUNCATED": {},
+        "public context > fails a whole entry that runs past its manifest size with TRUNCATED": {},
+        "public context > takes a body longer than its Content-Length, as one decoded on the way": {},
+        "public context > fetches an entry by its hash when its site serves it as %s": {},
+        "public context > fetches by hash without waiting on a page whose clone is kept unread": {},
+        "public context > takes a rewritten type as served when verification is off": {},
+        "public context > retries the fetch by hash after Retry-After when asked": {},
+        "public context > knows an entry the manifest lacks is not found without asking for it": {},
+        "public context > caches a manifest by hash": {},
+        "public context > keeps a manifest read again after an evicted read of it fails": {},
+        "public context > refuses a blob that is not a manifest": {},
+        "public context > resolves an entry to its hash and URLs": {},
+        "public context > builds site and namespace URLs": {},
+        "public context > reads an entry's size and hash from HEAD": {},
+        "public context > reads a raw blob's size and hash from HEAD": {},
+        "public context > maps a raw blob's HEAD refusals as its GET's": {},
+        "public context > pays a raw blob's proof once, under a site's /_decdn/ too": {},
+        "public context > redirects HEAD of bundle content under a site's /_decdn/ to its site, a directory to the directory, with no pull": {},
+        "public context > keeps the query on a site directory's redirect, and answers 404 for a directory with no index.html under /_decdn/": {},
+        "public context > redirects a navigation of bundle content under a site's /_decdn/ to its site, with no pull": {},
+        "public context > answers the empty blob with no proof and nothing that pays": {},
+        "public context > serves a bundle as its site index, unverified": {},
+        "public context > maps a failed fetch to NETWORK": {},
+        "public context > rejects a bad URI before any request": {},
+        "loopback context > sends no credential and verifies a blob": {},
+        "loopback context > refuses a page on another site or origin, and a browser that sends no Sec-Fetch-Site": {},
+        "loopback context > spends on a site origin only for its own pages, the user, and a top-level navigation": {},
+        "loopback context > does not read a directory's index.html by the directory's path, as the bare host does not": {},
+        "loopback context > fetches an entry on the bare host, byte-exact, and verifies it": {},
+        "loopback context > maps no usable capability to PAYMENT_REQUIRED": {},
+        "loopback context > answers HEAD from the manifest, since a loopback gateway refuses HEAD": {},
+        "loopback context > does not refetch by hash, where the bare host serves entries unrewritten": {},
+        "loopback context > builds site URLs under localhost on the gateway's port": {},
+        "site context > is detected on a site origin and reads its own entries same-origin": {},
+        "site context > reads a directory of its own bundle by the directory's path": {},
+        "site context > reads its own bundle under its host's namespace, whatever the call": {},
+        "site context > leaves a URI object it is given unchanged": {},
+        "site context > reads other content through /_decdn/": {},
+        "site context > is detected on a namespace host under the configured gateway, where the manifest is unknown": {},
+        "site context > keeps the page's query on its own entries and leaves the namespace to the host": {},
+        "site context > fetches its own entry by hash through /_decdn/ when the site serves it as a rewritten type": {},
+        "site context > opens the site on a loopback site page, whatever gateway URL it names": {},
+        "site context > opens a loopback gateway named by URL on a page that is not a site": {},
+        "site context > opens the site without a gateway URL": {},
+        "site context > does not take an arbitrary numeric subdomain for a namespace host": {},
+        "DecdnClient.open > picks the context from the gateway URL and token": {},
+        "DecdnClient.open > refuses a token without a host, and no gateway outside a site page": {},
+        "public context > maps a spent allowance to PAYMENT_REQUIRED with the fallback URI": {},
+        "public context > maps a pool that cannot pay to POOL_UNFUNDED": {},
+        "public context > answers the empty blob with no proof": {},
+        "public context > admits a window of a raw blob by its chunk-group span": {},
+        "loopback context > sends the token and host and verifies a blob": {},
+        "loopback context > refuses content without the token, before any request": {},
+        "loopback context > maps a wrong token to UNAUTHORIZED and an uncovered host to PAYMENT_REQUIRED": {},
+        "site context > opens a loopback gateway named by URL, for its delegate API": {},
+        "site context > opens the gateway a token names, and the site without a gateway URL": {}
+      }
+    },
+    "dotnet-skills-c1acda4fb74b": {
+      "file": "weak",
+      "note": "deliberately shallow fixture for an assertion-quality skill; the problems are real, so labelled as they stand",
+      "tests": {
+        "OrderService > creates an order": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "only toBeDefined on the created order"
+          }
+        },
+        "OrderService > creates returns truthy": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "only toBeTruthy on the created order"
+          }
+        },
+        "OrderService > creates returns not null": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "only not.toBeNull on the created order"
+          }
+        },
+        "OrderService > list returns array": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "only checks list() is an array, not its contents"
+          }
+        },
+        "OrderService > always true": {
+          "yes": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "expect(true).toBe(true)"
+          }
+        },
+        "OrderService > confirms order resolves": {
+          "yes": ["oracle/swallowed-async", "oracle/weak-matcher"],
+          "reason": {
+            "oracle/swallowed-async": "expect(...).resolves not awaited or returned",
+            "oracle/weak-matcher": "resolves.toBeDefined only proves a value exists"
+          }
+        },
+        "OrderService > does not equal something irrelevant": {
+          "unsure": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "not.toBe against an unrelated literal can practically never fail, though not literally the same expression"
+          }
+        },
+        "OrderService > round trip identity": {
+          "yes": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "expect(o.id).toBe(o.id), same expression on both sides"
+          }
+        },
+        "OrderService > legitimate equality on returned customer": {},
+        "OrderService > legitimate exception assertion": {}
+      }
+    },
+    "egeominotti-bunqueue-009b932c328e": {
+      "file": "good",
+      "note": "mostly real state checks; a handful of tests only check types or tautologies",
+      "tests": {
+        "Push Operation Edge Cases > push with invalid priority should handle gracefully": {},
+        "Push Operation Edge Cases > push with dependency on completed job should be immediately ready": {},
+        "Pull Operation Edge Cases > pull with zero timeout should return immediately when empty": {},
+        "Pull Operation Edge Cases > pull with timeout should return job pushed during wait": {},
+        "Pull Operation Edge Cases > pull should skip expired jobs": {},
+        "Pull Operation Edge Cases > concurrent pulls should not duplicate jobs": {},
+        "Pull Operation Edge Cases > pull from paused queue should return null": {},
+        "Pull Operation Edge Cases > pullBatch should respect batch size limit": {},
+        "Ack Operation Edge Cases > ack already completed job should throw": {},
+        "Ack Operation Edge Cases > concurrent ack and fail on same job": {},
+        "Ack Operation Edge Cases > ack with removeOnComplete should delete job": {},
+        "Ack Operation Edge Cases > fail should respect maxAttempts and move to DLQ": {},
+        "Ack Operation Edge Cases > fail with retry should requeue job": {
+          "unsure": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "title says requeue but besides dlq 0 the only other check, waiting+active >= 0, can never fail"
+          }
+        },
+        "Query Operation Edge Cases > getJob for job in different states": {},
+        "Query Operation Edge Cases > getJobState returns correct states": {},
+        "Query Operation Edge Cases > getJobByCustomId returns null for non-existent": {},
+        "Query Operation Edge Cases > getResult returns stored result": {},
+        "Query Operation Edge Cases > getProgress returns correct progress": {},
+        "Query Operation Edge Cases > getProgress returns null for non-active job": {},
+        "Queue Control Edge Cases > concurrent pause/resume should handle correctly": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "only checks typeof isPaused is boolean after the race, not the resulting state"
+          }
+        },
+        "Queue Control Edge Cases > drain should not affect active jobs": {},
+        "Queue Control Edge Cases > obliterate should remove waiting jobs": {},
+        "Queue Control Edge Cases > clean should remove old completed jobs": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "only Array.isArray on the clean result; nothing checks the completed jobs were removed"
+          }
+        },
+        "Queue Control Edge Cases > listQueues returns all queue names": {},
+        "Job Management Edge Cases > cancel waiting job should succeed": {},
+        "Job Management Edge Cases > cancel active job should fail": {},
+        "Job Management Edge Cases > promote delayed job should make it ready": {},
+        "Job Management Edge Cases > changePriority should update job priority": {},
+        "Job Management Edge Cases > updateJobData should modify job data": {},
+        "Job Management Edge Cases > discard should move job to DLQ": {},
+        "Job Management Edge Cases > discard with concurrent pull race": {},
+        "Boundary Condition Tests > push with max integer priority": {},
+        "Boundary Condition Tests > push with zero delay should be immediately ready": {},
+        "Boundary Condition Tests > push with negative delay should be treated as zero": {},
+        "Boundary Condition Tests > ack with complex nested result": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "only toBeDefined on the stored complex result; its contents are never compared"
+          }
+        },
+        "Boundary Condition Tests > updateProgress with boundary values": {},
+        "Rate Limiting and Concurrency Edge Cases > pull should respect rate limit": {},
+        "Rate Limiting and Concurrency Edge Cases > pull should respect concurrency limit": {},
+        "Rate Limiting and Concurrency Edge Cases > pullBatch should respect rate limit partially": {},
+        "FIFO Group Blocking > jobs in same group should process sequentially (FIFO)": {},
+        "FIFO Group Blocking > jobs in different groups should process in parallel": {},
+        "Batch Ack with Results > ackBatchWithResults should store individual results": {},
+        "Batch Ack with Results > ackBatchWithResults with small batch uses fast path": {},
+        "Job Lifecycle Edge Cases > fail with removeOnFail should delete job": {},
+        "Job Lifecycle Edge Cases > moveToDelayed should move active job back to delayed": {},
+        "Job Lifecycle Edge Cases > discard from waiting queue should work": {},
+        "Job Lifecycle Edge Cases > updateJobData on active job should work": {},
+        "Job Lifecycle Edge Cases > customId should be reusable after job completion": {},
+        "Query Operations Extended > getJob for job in DLQ should work": {},
+        "Query Operations Extended > getJobState for delayed job should return delayed": {},
+        "Query Operations Extended > count should return correct queue count": {},
+        "Query Operations Extended > getJobByCustomId for job in processing": {},
+        "Progress Clamping > progress above 100 should be clamped to 100": {},
+        "Progress Clamping > progress below 0 should be clamped to 0": {},
+        "Dependency Waiting > job with pending dependency should wait": {},
+        "Promote Edge Cases > promote non-delayed job should return false": {},
+        "Promote Edge Cases > promote non-existent job should return false": {},
+        "Promote Edge Cases > changePriority on non-existent job should return false": {},
+        "Promote Edge Cases > cancel non-existent job should return false": {},
+        "Empty Input Edge Cases > ackBatch with empty array should succeed": {
+          "yes": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "expect(true).toBe(true) is the only assertion"
+          }
+        },
+        "Empty Input Edge Cases > ackBatchWithResults with empty array should succeed": {
+          "yes": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "expect(true).toBe(true) is the only assertion"
+          }
+        },
+        "Empty Input Edge Cases > pushBatch with empty array should return empty": {},
+        "Empty Input Edge Cases > listQueues on fresh manager should return empty": {},
+        "Empty Input Edge Cases > drain empty queue should return 0": {},
+        "Deduplication Edge Cases > dedup replace when original job completed should insert new": {},
+        "Deduplication Edge Cases > dedup extend when original job completed should insert new": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "toBeDefined and not.toBeNull only; the new job's data or version is never checked"
+          }
+        },
+        "Clean Operation Edge Cases > clean with limit should respect max jobs": {},
+        "Clean Operation Edge Cases > clean with state filter should only affect that state": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "Array.isArray and length >= 0 only; nothing checks the state filter"
+          }
+        },
+        "Query Edge Cases - Storage Paths > getJobByCustomId returns null for completed job": {},
+        "Query Edge Cases - Storage Paths > getResult for job without result returns undefined or null": {},
+        "Query Edge Cases - Storage Paths > getJobState for unknown job returns unknown": {},
+        "Job Management - Not Found Paths > updateJobData on non-existent job returns false": {},
+        "Job Management - Not Found Paths > updateProgress on non-existent job returns false": {},
+        "Job Management - Not Found Paths > discard non-existent job returns false": {},
+        "Job Management - Not Found Paths > moveToDelayed on waiting job moves it to delayed": {},
+        "Job Management - Not Found Paths > changePriority on active job returns false": {},
+        "Batch Operations - Race Conditions > ackBatch with some invalid job IDs should handle gracefully": {
+          "unsure": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "with one job, stats.active <= 1 cannot fail whatever ackBatch does"
+          }
+        },
+        "Batch Operations - Race Conditions > concurrent pushBatch and pull should not conflict": {},
+        "Progress Message Edge Cases > updateProgress with message should store message": {},
+        "Progress Message Edge Cases > updateProgress without message should preserve null": {},
+        "Job Management - Not Found Paths > moveToDelayed on waiting job returns false": {}
+      }
+    },
+    "frkim-japon2027-13j-5175805aefc3": {
+      "file": "good",
+      "tests": {
+        "markers have unique valid IDs, names, descriptions and Japan coordinates": {},
+        "categories and itinerary day references are valid": {},
+        "geographic markers match all itinerary stops and their days": {},
+        "five separate stays reference existing hotels and allocate every hotel night once": {},
+        "flight nights and arrival home are not hotel stays or foreign map markers": {},
+        "route references geographic markers in order and preserves the Kyoto return": {}
+      }
+    },
+    "gambitnl-aralia-6e43db7b7afc": {
+      "file": "good",
+      "tests": {
+        "MOVE_PLAYER cell-native arrival > lands the EXACT destination cell, resets Locale feet, and stamps the entry anchor": {
+          "unsure": ["integrity/assertions-dropped"],
+          "reason": {
+            "integrity/assertions-dropped": "dropped the check that the destination cell differs from the location-derived one; newLocationId and destinationCell are now both 562, so the test cannot tell which the reducer used"
+          }
+        },
+        "MOVE_PLAYER cell-native arrival > without destinationCell reads the cell from the cell_<id> location id": {},
+        "Stage 4 — MOVE_PLAYER cell-native arrival > lands the EXACT destination cell, resets Locale feet, and stamps the entry anchor": {},
+        "Stage 4 — MOVE_PLAYER cell-native arrival > without destinationCell is unchanged: Stage-2 tile-derived cell + null entry anchor": {}
+      }
+    },
+    "getsentry-sentry-59d4566a5f45": {
+      "file": "good",
+      "tests": {
+        "useCurrentProjectState > should return currentProject=undefined when currentPanel != targetPanel": {},
+        "useCurrentProjectState > should return currentProject=undefined when project query parameter is present and currentPanel != targetPanel": {},
+        "useCurrentProjectState > should return the currentProject when currentPanel = targetPanel": {},
+        "useCurrentProjectState > uses the project query parameter when no selected projects are loaded": {},
+        "useCurrentProjectState > should return the first project if global selection does not have onboarding": {},
+        "useCurrentProjectState > should return the first onboarding project": {},
+        "useCurrentProjectState > should return the first project if no selection": {},
+        "useCurrentProjectState > should return the first project if no selection and no projects have onboarding": {},
+        "useCurrentProjectState > should override current project if setCurrentProjects is called": {},
+        "useCurrentProjectState > should update when the page filters store changes": {},
+        "useCurrentProjectState > should return currentProject=undefined when project url param is present and currentPanel != targetPanel": {},
+        "useCurrentProjectState > should return the currentProject when project url param is present and currentPanel = targetPanel": {}
+      }
+    },
+    "getsentry-sentry-8f76b130aa5a": {
+      "file": "good",
+      "tests": {
+        "SeerProjectTable > blocks coding-agent handoff and warns for a project with a non-GitHub repo": {},
+        "SeerProjectTable > blocks handoff when a non-GitHub repo is only on a later page": {},
+        "SeerProjectTable > allows coding-agent handoff for a GitHub-only project": {
+          "yes": ["oracle/interaction-only"],
+          "reason": {
+            "oracle/interaction-only": "only checks settingsPut was called (no arguments) and the error spy was not; neither the saved value nor the rendered selection is checked"
+          }
+        },
+        "SeerProjectTable > saves the PR iteration dropdown for a project": {},
+        "SeerProjectTable > sets PR iteration for all selected projects": {},
+        "SeerProjectTable > updates a PR iteration dropdown that was already changed when the bulk menu is used": {},
+        "SeerProjectTable > updates an automation steps dropdown that was already changed when the bulk menu is used": {},
+        "SeerProjectTable > marks a row PR iteration dropdown invalid when its save fails": {},
+        "SeerProjectTable > keeps a row PR iteration dropdown in place while its own save is in flight": {},
+        "SeerProjectTable > disables the bulk controls while a row is saving": {},
+        "SeerProjectTable > disables the bulk controls while a bulk edit is saving": {},
+        "SeerProjectTable > disables the row controls while a bulk edit is saving": {},
+        "SeerProjectTable > leaves the built-in repos filter out of the selection banner": {},
+        "SeerProjectTable > disables adding a project without organization write access": {}
+      }
+    },
+    "githubnext-ado-aw-06e5b81353f6": {
+      "file": "good",
+      "tests": {
+        "parseArgs > parses mode and per-repository source/target triples": {},
+        "parseArgs > allows target-worktree entries without a source ref": {},
+        "parseArgs > rejects unknown modes": {},
+        "prepare-pr-base main > uses ADO metadata to fetch exact shallow source and target ranges": {},
+        "prepare-pr-base main > falls back to bounded dual-ref fetch when ADO REST is unavailable": {},
+        "prepare-pr-base main > prefers the self resource ref over the triggering repository branch": {},
+        "prepare-pr-base main > target-worktree fetches only the target tip at depth one": {},
+        "prepare-pr-base main > does not send the ADO bearer to a non-Azure origin": {},
+        "prepare-pr-base main > isolates a checkout-directory failure and processes later repos": {},
+        "prepare-pr-base main > uses BUILD_SOURCESDIRECTORY and BUILD_SOURCEBRANCH for legacy no-arg calls": {}
+      }
+    },
+    "goosy-benchmark-sentry-graphite-3558d7b474b8": {
+      "file": "good",
+      "tests": {
+        "projectPerformance > renders the fields": {},
+        "projectPerformance > updates the field": {},
+        "projectPerformance > keeps sampling priority forms synchronized after saves": {},
+        "projectPerformance > shows sampling priority save errors": {},
+        "projectPerformance > resets threshold settings": {},
+        "projectPerformance > serializes metric and threshold updates": {},
+        "projectPerformance > prevents threshold edits from racing with reset": {},
+        "projectPerformance > renders detector threshold configuration - admin ui": {},
+        "projectPerformance > disables admin detector settings without project write access": {},
+        "projectPerformance > renders configured detector thresholds and updates a threshold": {},
+        "projectPerformance > positions detector sliders at nonstandard configured values": {},
+        "projectPerformance > resets configurable detector settings": {},
+        "projectPerformance > allows project admins to disable detectors": {},
+        "projectPerformance > disables detector thresholds while the detector update is pending": {},
+        "projectPerformance > serializes detector updates that share the settings resource": {},
+        "projectPerformance > does not allow non-admins to manage detectors": {},
+        "projectPerformance > renders detector thresholds settings for $title issue": {
+          "unsure": ["integrity/test-removed"],
+          "reason": {
+            "integrity/test-removed": "folded into one test that checks every threshold renders but updates only one; the per-threshold PUT payload and analytics are no longer checked"
+          }
+        },
+        "projectPerformance > allows project admins to manage $label": {
+          "unsure": ["integrity/test-removed"],
+          "reason": {
+            "integrity/test-removed": "folded into a loop that only disables each detector; the re-enable PUT with true is no longer checked"
+          }
+        },
+        "projectPerformance > does not allow non-admins to manage $label": {}
+      }
+    },
+    "gregmeyer-some-useful-agents-e4382387c1ca": {
+      "file": "good",
+      "tests": {
+        "GET /inbox/:id/events (SSE) > returns 404 when the inbox message does not exist": {},
+        "GET /inbox/:id/events (SSE) > requires auth (no cookie → 401)": {},
+        "GET /inbox/:id/events (SSE) > opens with the SSE content-type and an initial open frame": {},
+        "GET /inbox/:id/events (SSE) > replays buffered events newer than Last-Event-ID": {},
+        "GET /inbox/events (global SSE) > requires auth (no cookie → 401)": {},
+        "GET /inbox/events (global SSE) > is not shadowed by /inbox/:id/events (no 404 for the literal \"events\")": {},
+        "GET /inbox/events (global SSE) > a resolve mutation fans a coarse event onto the global channel": {},
+        "GET /inbox/events (global SSE) > receives events published via publishInboxChanged on the global channel": {}
+      }
+    },
+    "hitesh2912-arvr-project-54c0042b602e": {
+      "file": "good",
+      "tests": {
+        "Flow Graph Data Nodes > Variable Block": {},
+        "Flow Graph Data Nodes > Values are cached for the same execution id": {}
+      }
+    },
+    "horusgoul-trizum-0793eb78b2a7": {
+      "file": "good",
+      "tests": {
+        "waits for completed sign-in and the matching provider account before native Premium": {},
+        "completes optional account sign-in without opening Premium": {},
+        "cancels pending sign-in, ignores late completion, and allows a fresh attempt": {},
+        "can sign in to the same account and open Premium on successive attempts": {},
+        "does not let a stale paywall completion close a newer request": {},
+        "opens browser help without sign-in or native commerce": {},
+        "clears a failed request and allows retry": {},
+        "ignores callbacks from a cancelled sign-in after starting another attempt": {}
+      }
+    },
+    "hypothetical-money-machine-hype-comms-192d39253d13": {
+      "file": "good",
+      "note": "pins CI workflow text with regexes; a change detector rather than behaviour, but it would catch the regressions it names",
+      "tests": {
+        "isolates a workflow job from neighboring jobs": {},
+        "runs public PostgreSQL CI on disposable GitHub-hosted infrastructure": {},
+        "runs the display-server-free demo smokes on Ubuntu x64": {}
+      }
+    },
+    "iblai-os-23a6bf03bf57": {
+      "file": "weak",
+      "note": "the absence checks use try { waitFor visible; expect(true).toBe(false) } catch {}, and the catch swallows the failing expect, so the absence tests cannot fail on the thing their titles claim",
+      "tests": {
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Appears With Bounce Dots During Streaming and Settles After": {},
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Expands to Show Tool Names and Query Detail": {},
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Header Counts Unique Tool Types Not Total Calls": {},
+        "Journey 52: Tool Call Indicator and Reasoning Section > Web Search Button is NOT Visible When Tool is Disabled on Mentor": {
+          "yes": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "expect(true).toBe(false) sits inside a try whose catch swallows it, so the button-absence check can never fail; only isToolEnabled is real"
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Does Not Appear When Web Search is Enabled But Not Activated": {
+          "yes": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "the only absence check, expect(true).toBe(false), is caught by its own catch; the rest only checks that elements are visible"
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Renders and Auto-Collapses to Thought After Streaming": {},
+        "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Does Not Appear When Model Does Not Produce Reasoning Tokens": {
+          "yes": ["oracle/weak-matcher"],
+          "reason": {
+            "oracle/weak-matcher": "only asserts the last message is visible; the absence of a reasoning section is only console.warn'd, never asserted"
+          }
+        },
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator and Reasoning Section Both Render in the Same Message": {},
+        "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Is Hidden When Verbose Reasoning Is Off": {
+          "yes": ["oracle/tautological-assertion"],
+          "reason": {
+            "oracle/tautological-assertion": "the hidden-indicator check, expect(true).toBe(false), is swallowed by its catch; only the setting toggle is really checked"
+          }
+        }
+      }
+    },
+    "itsomidkarami-kraft-5f727fb34e3a": {
+      "file": "good",
+      "tests": {
+        "theme.css > has 30 neutral blocks and 36 accent blocks": {},
+        "theme.css > %s %s %s accent %s clears every floor": {}
+      }
+    },
+    "jarrettmeyer-databricks-mcp-395ce908cdeb": {
+      "file": "good",
+      "tests": {
+        "executeDatabricksCommand > uses 'databricks' by default when DATABRICKS_PATH is not set": {},
+        "executeDatabricksCommand > uses DATABRICKS_PATH when set": {},
+        "executeDatabricksCommand > strips pipe suffix so only the databricks portion is spawned": {},
+        "executeDatabricksCommand > strips redirect suffix so only the databricks portion is spawned": {},
+        "executeDatabricksCommand > strips everything after the first pipe in a multi-stage pipeline": {},
+        "executeDatabricksCommand > preserves quoted redirect inside a SQL string": {}
+      }
+    },
+    "jeanlorencini-herdr-web-ui-40bc62e2774c": {
+      "file": "good",
+      "tests": {
+        "parseMarkdown > renders inline and display math while leaving fenced code untouched": {},
+        "parseMarkdown > parses level one through three headings": {},
+        "parseMarkdown > parses unordered, ordered, and one-level nested lists": {},
+        "parseMarkdown > keeps fenced code and its language": {},
+        "parseMarkdown > recognizes display math without parsing its contents as markdown": {},
+        "parseMarkdown > keeps later markdown and code intact after an unclosed display formula": {},
+        "parseMarkdown > parses a GFM table": {},
+        "inline markdown > parses links and rejects unsafe protocols": {},
+        "inline markdown > keeps a link to a local file as that file, not only its label": {},
+        "inline markdown > links an address written without its scheme, and leaves files and non-addresses alone": {},
+        "inline markdown > parses inline code, bold, italic, and strikethrough": {},
+        "inline markdown > renders inline math in prose but not in code spans": {},
+        "inline markdown > preserves underscores in identifiers while retaining standalone emphasis": {},
+        "autolinks > links a bare http(s) URL and keeps the text around it": {},
+        "autolinks > leaves the sentence's punctuation out, and keeps parentheses the URL opened": {},
+        "autolinks > links an <angle> URL, and nothing inside code, a markdown link, or another scheme": {},
+        "autolinks > links inside emphasis": {},
+        "foldCode > shows blocks up to the limit whole": {},
+        "foldCode > folds a longer block to its first lines and counts all of them": {},
+        "numbered lists as agents write them > keeps one list across blank lines between its items": {},
+        "numbered lists as agents write them > goes on from its own number after a code block or other break, and starts where it says": {},
+        "numbered lists as agents write them > reads an item's indented lines as its own text, and an indented fence as code": {},
+        "numbered lists as agents write them > shows a table indented under an item as a table in that item, not as the item's text": {},
+        "numbered lists as agents write them > goes on counting after a table in an item, the way agents number every item 1.": {},
+        "numbered lists as agents write them > keeps a table and a nested list under one item in the order they were written": {},
+        "numbered lists as agents write them > keeps an item's text after its table below the table": {},
+        "numbered lists as agents write them > ends the list at a quote after an item's table, as before tables nested": {},
+        "numbered lists as agents write them > ends an item's table at the next item or a line outside the item": {},
+        "numbered lists as agents write them > keeps both of two nested lists under one item": {},
+        "numbered lists as agents write them > escapes markup in a table cell inside a list item": {},
+        "numbered lists as agents write them > shows a table indented under an item as a table, not as the item's text": {}
+      }
+    },
+    "jkalasas-lightdash-02ccbbc41001": {
+      "file": "good",
+      "tests": {
+        "AppGenerateService.getAppCode > returns a DataAppCode with manifest and extracted source files for the latest ready version": {},
+        "AppGenerateService.getAppCode > emits spaceSlug as a content-as-code path for an in-space app": {},
+        "AppGenerateService.getAppCode > resolves the app via the uuid-or-slug lookup when given a slug": {},
+        "AppGenerateService.getAppCode > uses the resolved app_id — never the raw uuid-or-slug ref — for the S3 source key": {},
+        "AppGenerateService.getAppCode > includes the version viz schema in the manifest for a data app viz": {},
+        "AppGenerateService.getAppCode > omits vizSchema from the manifest when the version has no schema": {},
+        "AppGenerateService.getAppCode > emits app external-connection links as {alias, connectionSlug} in the manifest": {},
+        "AppGenerateService.getAppCode > uses the provided version number instead of latest ready": {},
+        "AppGenerateService.getAppCode > throws NotFoundError when no ready version exists and version is omitted": {},
+        "AppGenerateService.getAppCode > throws NotFoundError when the source.tar object does not exist in S3": {},
+        "AppGenerateService.getAppCode > throws ForbiddenError when the user cannot view the app": {},
+        "AppGenerateService.getAppCode > resolves with manifest and files intact when semanticLayer fetch fails (degraded context)": {},
+        "AppGenerateService.getAppCode > passes limit: 100 to getAppWithVersions when assembling prompt history": {
+          "yes": ["oracle/interaction-only"],
+          "reason": {
+            "oracle/interaction-only": "only asserts getAppWithVersions was called with limit 100 (arguments checked); the returned prompt history in the result is not checked"
+          }
+        },
+        "AppGenerateService.getAppCode > assembles context: semantic layer, null parameters (empty), prompt history, and empty theme": {},
+        "AppGenerateService.getDataAppAuthoringContext > returns project context with empty prompt history for a new local app": {},
+        "AppGenerateService.getDataAppAuthoringContext > rejects a slug already reserved in the project": {},
+        "AppGenerateService.getDataAppAuthoringContext > rejects an invalid local app slug": {}
+      }
+    },
+    "kenastark-provenance-0104572e2a7d": {
+      "file": "good",
+      "tests": {
+        "`${route.name} has no critical accessibility violations (dark)`": {},
+        "`${route.name} has no critical accessibility violations (light)`": {},
+        "admin screen (admin role) > has no critical accessibility violations (dark)": {},
+        "admin screen (admin role) > has no critical accessibility violations (light)": {},
+        "admin screen (admin role) > a role below admin sees the block stated in words, not a wall of request errors": {},
+        "sign-in screen > has no critical accessibility violations (dark)": {},
+        "sign-in screen > has no critical accessibility violations (light)": {},
+        "sign-in screen > every role card is reachable with the keyboard and shows a visible focus ring": {},
+        "sign-in screen > focus lands on the main landmark once sign-in completes": {},
+        "keyboard traversal > the skip link is the first tab stop and lands on the content": {},
+        "keyboard traversal > every screen is reachable with the keyboard alone": {},
+        "keyboard traversal > a station can be opened from the quality table without a mouse": {},
+        "keyboard traversal > focus is visible wherever it lands": {},
+        "keyboard traversal > the layer toggle that is not ready is disabled and explained": {},
+        "reduced motion > is respected": {}
+      }
+    },
+    "kevin-taha-scriptorium-03f12195b790": {
+      "file": "good",
+      "tests": {
+        "the build enforces a strict Content-Security-Policy that reading, notes and focus mode stay within": {}
+      }
+    },
+    "kgoggin-facts-checker-7329f6f9c7f4": {
+      "file": "good",
+      "tests": {
+        "token prints only the refresh token to stdout and progress to stderr, logging in once": {},
+        "token --json prints the token set, ISO expiry and shared OAuth/API configuration": {},
+        "config prints the shared constants without credentials, prompts or login": {},
+        "missing configuration without a TTY uses the existing FACTS_CONFIG error (%j)": {},
+        "missing credentials on a TTY are prompted for and passed to login without changing env": {},
+        "a TTY prompts only for missing values and does not retry empty answers": {},
+        "a blank authenticator secret lets a TTY answer authenticator MFA interactively": {},
+        "email destination and email code requests use the interactive OTP callback even with a TOTP secret": {},
+        "invalid TOTP configuration fails before login": {},
+        "FactsError prints only code and message, with no cause or stack, and never retries": {},
+        "unexpected failures do not disclose exception messages or stacks": {},
+        "cancelled input fails with FACTS_CONFIG before login": {},
+        "help (%j) prints usage to stderr without login": {},
+        "invalid arguments (%j) print usage to stderr and exit 2": {}
+      }
+    },
+    "kingithegreat-sadie-2e6ffe236302": {
+      "file": "good",
+      "tests": {
+        "rejects a same-prefix sibling via %s path before indexing": {},
+        "indexes and retrieves a real document inside home using the Documents shortcut": {},
+        "uses the Windows profile boundary when HOME differs": {},
+        "a filesystem-root profile (D:\\ on Windows, / on POSIX) still indexes a document under it": {}
+      }
+    },
+    "learn-ukrainian-learn-ukrainian-github-io-434e9d71904c": {
+      "file": "good",
+      "note": "T8 compares the same call on both sides on purpose (determinism); fine on its own, but a constant function would pass",
+      "tests": {
+        "dateSeed > uses the local calendar date": {},
+        "pickDaily > is deterministic for a fixed pool, seed, and count": {},
+        "pickDaily > caps the count at the pool length": {},
+        "deckSeed > is deterministic and varies by deck id": {},
+        "deckSeed > combined with dateSeed, draws different sets for different decks on the same day": {},
+        "deckSeed > combined with dateSeed, is stable for the same deck and day but rotates across days": {},
+        "reRollSeed > is zero for the default (un-re-rolled) draw": {},
+        "reRollSeed > #6132: re-rolling draws a different set without changing the day": {},
+        "reRollSeed > is deterministic for a given count, so the same re-roll replays identically": {}
+      }
+    },
+    "learn-ukrainian-learn-ukrainian-github-io-902e29730ad0": {
+      "file": "good",
+      "tests": {
+        "lexicon SRS facade > parses legacy no-separator card keys as flashcards": {},
+        "lexicon SRS facade > parses known card-key modes and schedules backed wave-1 drills": {},
+        "lexicon SRS facade > emits heritage candidates from published items in mixed and focus modes": {},
+        "lexicon SRS facade > classify rotates outcome sets while keeping one SRS card key": {},
+        "lexicon SRS facade > quarantines explicit unknown card-key modes without rewriting stored state": {},
+        "lexicon SRS facade > stability counters and selector debt skip quarantined unknown-mode cards": {},
+        "lexicon SRS facade > practice mode set is coupled to the deck-version sentinel": {},
+        "lexicon SRS facade > schedules deterministically with FSRS defaults": {},
+        "lexicon SRS facade > keys cards by lemmaId and mode": {},
+        "lexicon SRS facade > migrates legacy storage into flashcard card keys and writes backup": {},
+        "lexicon SRS facade > backs up existing raw state before save overwrites": {},
+        "lexicon SRS facade > writes the primary state before the best-effort backup": {},
+        "lexicon SRS facade > keeps a successful primary state when the backup write fails": {},
+        "lexicon SRS facade > recovers a rating by dropping the backup when it is the quota blocker": {},
+        "lexicon SRS facade > keeps the rating in memory and exposes a storage-full state after exhausted recovery": {},
+        "lexicon SRS facade > migrates and compacts oversized review history without changing card schedules": {},
+        "lexicon SRS facade > bounds persisted review-state size across simulated long-term sessions": {},
+        "lexicon SRS facade > keeps corrupt storage and surfaces fallback flag": {},
+        "lexicon SRS facade > detects clock jumps beyond seven days": {},
+        "lexicon SRS facade > due queue includes new cards and excludes future reviews per mode": {},
+        "lexicon SRS facade > counts mastered cards for the requested mode": {},
+        "lexicon SRS facade > selector keeps lapsed cards ahead of hard variety drops": {},
+        "lexicon SRS facade > selector applies soft variety across realistic due-time spread": {},
+        "lexicon SRS facade > soft variety never overtakes a genuinely more-due card (no penalty leak across urgency buckets)": {},
+        "lexicon SRS facade > selector never borrows not-due cards while overdue cards exist": {},
+        "lexicon SRS facade > selector widens the due window before borrowing farther not-due cards": {},
+        "lexicon SRS facade > selector mode debt surfaces a starved due mode": {},
+        "lexicon SRS facade > selector uses the session seed only as a stable tied-new-card tiebreak": {},
+        "lexicon SRS facade > selector returns immutable snapshots of cached candidates": {},
+        "lexicon SRS facade > due and lapsed cards beat tied new cards regardless of seed": {},
+        "lexicon SRS facade > B1 decks introduce B1 new cards before same-urgency lower-level cards": {},
+        "lexicon SRS facade > B1 sessions prefer B1 due reviews over same-urgency lower-level reviews": {},
+        "lexicon SRS facade > A2 sessions prefer A2 due reviews over same-urgency A1 reviews": {},
+        "lexicon SRS facade > urgency still beats level bias for lower-level overdue cards": {},
+        "lexicon SRS facade > seeded answer placement varies correct-answer positions across a session": {},
+        "lexicon SRS facade > selector handles a warmed 18k-candidate transition under the perf budget": {},
+        "lexicon SRS facade > explicit cloze mode reaches authored cloze before recognition mastery": {},
+        "lexicon SRS facade > cloze soft cap yields to lapsed cloze pressure": {},
+        "lexicon SRS facade > cloze soft cap exempts overdue non-lapsed cloze": {},
+        "lexicon SRS facade > validates cloze option sets and Ukrainian plural forms": {},
+        "recentSessionHistory (#6132 cross-session anti-repeat) > seeds from the same-day tail of the persisted review log": {},
+        "recentSessionHistory (#6132 cross-session anti-repeat) > drops reviews from a different local calendar day": {},
+        "recentSessionHistory (#6132 cross-session anti-repeat) > caps to the most recent `limit` entries, keeping chronological order": {},
+        "recentSessionHistory (#6132 cross-session anti-repeat) > an empty review log seeds an empty history (first-ever session)": {},
+        "daily practice deck (K3 chunk 1) > daily deck size is 12 for viewport density (#5502)": {},
+        "daily practice deck (K3 chunk 1) > selects exactly DAILY_PRACTICE_DECK_SIZE unique lemmas when enough data exists": {},
+        "daily practice deck (K3 chunk 1) > orders due before new and applies deterministic tie-breakers": {},
+        "daily practice deck (K3 chunk 1) > multiple due modes for one lemma consume one daily slot": {},
+        "daily practice deck (K3 chunk 1) > reviewed-but-not-due lemmas do not displace due or new candidates": {},
+        "daily practice deck (K3 chunk 1) > uses the actual eligible count as denominator when fewer than daily size lemmas exist": {},
+        "daily practice deck (K3 chunk 1) > published levels stay A1 through C1 and C2 is not added": {},
+        "daily practice deck (K3 chunk 1) > a valid snapshot is stable after SRS mutations and page reload": {},
+        "daily practice deck (K3 chunk 1) > invalidates snapshot on date, level, or deckVersion mismatch": {},
+        "daily practice deck (K3 chunk 1) > corrupt JSON falls back to null without blocking": {},
+        "daily practice deck (K3 chunk 1) > refill drops missing IDs and deterministically replaces them": {},
+        "daily practice deck (K3 chunk 1) > refill reuses valid IDs when deck version changes": {},
+        "daily practice deck (K3 chunk 1) > again moves a completed lemma back to pending due; success moves it back to done": {},
+        "daily practice deck (K3 chunk 1) > deriveDailyPracticeRows groups done rows after pending due and pending new": {}
+      }
+    },
+    "leozhengliu-pixel-flow-8833ea3282e8": {
+      "file": "good",
+      "note": "pixel-position layout tests; the diff swaps absolute x positions for relative insets, equally specific",
+      "tests": {
+        "mobile cycles timeline > `cycle cards, cooldown, chart and navigation at ${width}px`": {},
+        "mobile cycle detail > `grouped estimate rows match the phone chrome at ${width}px`": {},
+        "mobile initiative overview > `closed details preserve the overview and latest update at ${width}px`": {},
+        "mobile initiatives list > `All initiatives keeps its phone header and on-track row at ${width}px`": {},
+        "mobile projects list > phone All projects rows show the icon, name, milestone, health and progress": {},
+        "mobile project overview > phone project overview shows the header tabs, property pills and sections": {},
+        "mobile project properties panel > phone project details panel sits at the right edge over the overview with split date rows": {},
+        "mobile project activity > phone project activity shows the comment composer, a month heading and the framed comment card": {},
+        "mobile project update composer > phone project updates show the changed properties and post-update footer": {},
+        "mobile project issues empty state > phone issues tab shows the centred empty state, shortcut keycaps and the display dot": {},
+        "mobile project milestones section > phone overview scrolls to the description goals and milestone card": {},
+        "mobile project milestones section > `phone descriptions keep wrapped, ordered and nested list text unclipped at ${width}px`": {}
+      }
+    },
+    "linuxfoundation-lfx-self-serve-edf59d04c79d": {
+      "file": "good",
+      "tests": {
+        "WG Weekly Brief card — feature-flag gating > card is NOT rendered when wg-weekly-brief flag is OFF": {},
+        "WG Weekly Brief card — feature-flag gating > card IS rendered for the same fixture when LaunchDarkly is reachable": {},
+        "WG Weekly Brief card — empty state (flag ON) > renders empty state with Generate enabled and the \"No brief yet\" copy": {},
+        "WG Weekly Brief card — empty state (flag ON) > Generate is disabled once the weekly generate quota is exhausted": {},
+        "WG Weekly Brief card — generated state (flag ON) > renders brief text, week label, throttle badge, and primary actions": {},
+        "WG Weekly Brief card — Edit → Save round-trip > PUT request carries the modified brief text, and UI re-renders with the \"Edited\" badge": {},
+        "WG Weekly Brief card — Generate from empty > clicking Generate fires POST, polls until terminal, and the UI re-renders to the generated state": {},
+        "WG Weekly Brief card — loads directly into the generating state > a page load landing on an already-generating brief polls to terminal on its own, without a Generate click": {},
+        "WG Weekly Brief card — read failure (flag ON) > shows a retryable unavailable state when GET current fails, then recovers on retry": {}
+      }
+    },
+    "ljcl-intervals-mcp-5f27b9fa475a": {
+      "file": "good",
+      "tests": {
+        "createActivityTool input schema > rejects a sport type Strava does not define, before any write (#244)": {},
+        "createActivityTool input schema > accepts every sport type it advertises": {},
+        "createActivityTool.execute > creates a manual activity from the required fields": {},
+        "createActivityTool.execute > passes optional fields through and reports the distance": {},
+        "createActivityTool.execute > adds a scope hint on a 401 error": {},
+        "createActivityTool.execute > adds a duplicate hint on a 409 conflict": {},
+        "createActivityTool.execute > reports other failures without a hint": {},
+        "create-activity input schema > accepts local ISO datetimes with and without an offset": {},
+        "create-activity input schema > rejects a non-datetime start and a non-positive duration": {}
+      }
+    },
+    "lopes-felipe-f5-cef748444718": {
+      "file": "good",
+      "tests": {
+        "Antigravity native tools > locates native replacement hunks and never presents unknown snippets as whole files": {},
+        "Antigravity native tools > decodes the short Target/Replacement argument names on the snippet path": {},
+        "Antigravity native tools > diffs the full before/after texts current releases send on completion": {},
+        "Antigravity native tools > diffs only the completed update, never a cached preview": {},
+        "Antigravity native tools > keeps snippet-shaped texts off the full-file path": {},
+        "Antigravity native tools > shares one patch budget across the entries of an update": {},
+        "Antigravity native tools > whole-file writes against the pre-write snapshot > diffs a new file against /dev/null and an existing one against its old text": {},
+        "Antigravity native tools > whole-file writes against the pre-write snapshot > keeps the path when the snapshot is unknown, already matches, or names another file": {},
+        "Antigravity native tools > whole-file writes against the pre-write snapshot > snapshots once per call, again after a failure, and evicts beyond 32 calls": {},
+        "Antigravity native tools > shows a new-file write as an addition and an overwrite as a path-only change": {},
+        "Antigravity native tools > uses Antigravity's tool summary as the command description": {},
+        "Antigravity native tools > shows writes into the brain directory as artifacts, not file changes": {}
+      }
+    },
+    "lucent-financial-group-zeta-3bb878cde226": {
+      "file": "good",
+      "tests": {
+        "package.json wiring > keeps the package wiring pointed at the enforcing inventory guard": {},
+        "buildInventoryReport > accepts the retained shell allowlist": {},
+        "buildInventoryReport > flags new post-install shell files as drift": {},
+        "buildInventoryReport > flags repo-wide shell files outside the allowlist as drift": {},
+        "buildInventoryReport > flags missing retained shell scripts": {},
+        "buildInventoryReport > flags duplicate allowlist entries before classifying repo shell drift": {},
+        "buildInventoryReport > flags unsorted allowlist entries before classifying repo shell drift": {},
+        "buildInventoryReport > flags category metadata entries that are no longer retained": {},
+        "buildInventoryReport > flags retained allowlist entries without category metadata": {},
+        "buildInventoryReport > summarizes retained shell files by explicit category": {},
+        "buildInventoryReport > matches the current tracked repo shell inventory": {},
+        "buildInventoryReport > enumerates tracked shell-family files while excluding Lean vendor scripts": {},
+        "renderReport > renders an OK summary for a matching inventory": {},
+        "renderReport > renders drift sections": {},
+        "renderReport > renders allowlist integrity errors before drift sections": {},
+        "renderReport > renders out-of-order allowlist entries as allowlist integrity errors": {},
+        "renderReport > renders stale category map entries as allowlist integrity errors": {},
+        "renderReport > renders uncategorized allowlist entries as allowlist integrity errors": {}
+      }
+    },
+    "maheidem-openstyle-0501f5438d4d": {
+      "file": "good",
+      "tests": {
+        "buildChoices > ranks people by word overlap with the question": {},
+        "buildChoices > lists open items first, then done items marked [done], with the item key as id": {},
+        "buildChoices > an unfiled meeting has open items in scope all": {},
+        "buildChoices > ranks meetings by title and by date words": {},
+        "buildChoices > uses earlier questions of the thread to rank": {},
+        "buildChoices > respects the scope": {},
+        "buildChoices > lists the folders": {},
+        "buildChoices > caps the lists": {},
+        "buildChoices > gold choice is listed: %s": {},
+        "nativeToolDefs > builds OpenAI function tools with closed labels and no date field": {},
+        "nativeToolDefs > shows at most 8 tools": {},
+        "nativeToolDefs > leaves out a tool whose closed list is empty": {},
+        "validateNativeCall > maps a label to the meeting id and parses with the zod schema": {},
+        "validateNativeCall > rejects an unknown label and does not repair it": {},
+        "validateNativeCall > rejects a raw meeting id that is not a label": {},
+        "validateNativeCall > rejects a tool outside the plan and an unknown tool": {},
+        "validateNativeCall > ignores a model date and uses the date of the question": {},
+        "validateNativeCall > sets no date when the question has none": {},
+        "validateNativeCall > uses the question for an empty query and cuts a long one": {},
+        "validateNativeCall > a meeting outside the scope is an error": {},
+        "validateNativeCall > maps a person id and rejects an unknown person": {},
+        "validateNativeCall > builds write proposals from labels": {},
+        "validateNativeCall > retag without a meeting uses the meetings in the date range of the question": {}
+      }
+    },
+    "martinez-media-meal-planner-6b1069b56c6a": {
+      "file": "good",
+      "note": "success-path tests titled with X (201s with the created meal, 200s with the meal) check only the status code, never the body",
+      "tests": {
+        "GET /:familyId/meals (list) > 200s and forwards the optional search filter": {},
+        "GET /:familyId/meals (list) > forwards the recent-scheduling fields in the response body": {
+          "unsure": ["oracle/tautological-mock"],
+          "reason": {
+            "oracle/tautological-mock": "service mocked to return the fields and the test checks the route forwards them unchanged; forwarding is the stated behaviour, so this is the thin-wrapper case"
+          }
+        },
+        "GET /:familyId/meals (list) > 500s when the service throws": {},
+        "POST /:familyId/meals (create) > 201s with the created meal": {},
+        "POST /:familyId/meals (create) > 400s on Zod failure (missing name)": {},
+        "POST /:familyId/meals (create) > 400s on an invalid difficulty enum": {},
+        "POST /:familyId/meals (create) > 500s when the service throws": {},
+        "POST /:familyId/meals/import (bulk) > 200s with the import result": {},
+        "POST /:familyId/meals/import (bulk) > 400s on Zod failure (empty meals array)": {},
+        "POST /:familyId/meals/import (bulk) > 500s when the service throws": {},
+        "GET /:familyId/meals/:mealId (detail) > 200s with the meal": {},
+        "GET /:familyId/meals/:mealId (detail) > 404s when the meal is not found": {},
+        "GET /:familyId/meals/:mealId (detail) > 500s when the service throws": {},
+        "PUT /:familyId/meals/:mealId (update) > 200s with the updated meal": {},
+        "PUT /:familyId/meals/:mealId (update) > 400s on Zod failure (empty name)": {},
+        "PUT /:familyId/meals/:mealId (update) > 404s when the service reports the meal is missing": {},
+        "PUT /:familyId/meals/:mealId (update) > 500s on an unexpected error": {},
+        "DELETE /:familyId/meals/:mealId (parents only) > 204s on success": {},
+        "DELETE /:familyId/meals/:mealId (parents only) > 404s when the meal is missing": {},
+        "DELETE /:familyId/meals/:mealId (parents only) > 409s when the meal still has approved suggestions": {},
+        "DELETE /:familyId/meals/:mealId (parents only) > 500s on an unexpected error": {}
+      }
+    },
+    "matidegli-oversight-b22064cdedeb": {
+      "file": "good",
+      "tests": {
+        "retains the last count as a prop across cone card unmount and remount, without another event": {}
+      }
+    },
+    "mattbalza-buzz-dd821639a04a": {
+      "file": "good",
+      "tests": {
+        "create channel and verify in sidebar": {},
+        "two users see the same channel": {},
+        "message delivery across users": {},
+        "live mentions refetch the home feed without waiting for polling": {},
+        "live forum mentions refetch the home feed without waiting for polling": {},
+        "DM channel appears in sidebar": {},
+        "send message to DM": {},
+        "forum channel appears in sidebar": {},
+        "create channel with description": {},
+        "multiple channels independent": {},
+        "manage sheet updates channel details through the relay": {},
+        "manage sheet archive and unarchive survives a reload through the relay": {}
+      }
+    },
+    "mgrin-scani-oss-4239d4f32525": {
+      "file": "good",
+      "tests": {
+        "IDOR — payments router > update refuses to modify another user's payment": {},
+        "IDOR — payments router > settleOccurrence refuses to settle another user's occurrence": {},
+        "IDOR — vendors router > create derives the owner from ctx.userId, never from a client-supplied field": {},
+        "IDOR — vendors router > addAlias refuses to attach an alias to another user's vendor": {},
+        "IDOR — vendors router > addAlias lets the owner through — the control that makes the refusal above a decision": {},
+        "IDOR — vendors router > merge passes ctx.userId to the enforcement boundary, never a client field": {},
+        "IDOR — vendors router > merge lets the owner through — the control that makes the refusal above a decision": {},
+        "IDOR — documents router > acceptExtraction refuses to accept another user's extraction and leaves review_state untouched": {}
+      }
+    },
+    "modelcontextprotocol-inspector-02c8c865e1d1": {
+      "file": "good",
+      "note": "T48 only checks that the CLI failed for any reason; the comment claims the ad-hoc path ran but nothing shows it",
+      "tests": {
+        "daemon coverage > handle() covers invalid connect / connections/use / unknown op": {},
+        "daemon coverage > rejects a second daemon while a live one holds the lock": {},
+        "daemon coverage > reclaims a lock left by a dead pid": {},
+        "daemon coverage > does not delete a lock it no longer owns on stop": {},
+        "daemon coverage > restores a live lock created between the dead-pid read and the rename": {},
+        "daemon coverage > treats a young pidless lock as held instead of stealing it": {},
+        "daemon coverage > reclaims a pidless lock older than the write grace period": {},
+        "daemon coverage > restores a young pidless lock renamed aside mid-reclaim": {},
+        "daemon coverage > stop() force-destroys sockets whose shutdown flush never drains": {},
+        "daemon coverage > removes a stale socket before binding": {},
+        "daemon coverage > daemon/stop responds then shuts down": {},
+        "daemon coverage > accepts malformed NDJSON lines without crashing": {},
+        "daemon coverage > resolves the daemon.token directory without deriving it from pipe paths": {},
+        "daemon coverage > callDaemon rejects immediately on a pre-aborted signal instead of hanging": {},
+        "daemon coverage > callDaemon maps error responses and unreachable sockets": {},
+        "daemon coverage > callDaemon reassembles a multi-byte UTF-8 character split across chunks": {},
+        "daemon coverage > callDaemon with an already-aborted signal rejects without dialing": {},
+        "daemon coverage > callDaemon rejects malformed response JSON": {},
+        "daemon coverage > callDaemon ignores mismatched response ids then accepts a match": {},
+        "daemon coverage > callDaemon skips blank lines and defaults missing exitCode": {},
+        "daemon coverage > stop() without start and with missing lock files is safe": {},
+        "daemon coverage > repeated stop() returns the same in-flight cleanup promise": {},
+        "daemon coverage > rejects new ops while stopping but keeps status ops answerable": {},
+        "daemon coverage > stop() quiesces in-flight ops before disconnecting connections": {},
+        "daemon coverage > callDaemon times out a hung server": {},
+        "daemon coverage > callDaemon with timeoutMs 0 arms no local deadline; daemon close still fails it": {},
+        "daemon coverage > connections/use and reconnect replace an existing connection": {},
+        "daemon coverage > idle handler fires after last disconnect when idleMs > 0": {},
+        "daemon coverage > covers touch/auth/oauth-setup/disconnect-swallow/reconnect-before-idle": {},
+        "daemon coverage > ensureDaemon reuses a running daemon and resolveDaemonScriptPath finds build": {},
+        "daemon coverage > ensureDaemon auto-spawns when no daemon is present": {},
+        "daemon coverage > ping and daemon/status report stopping during shutdown": {},
+        "daemon coverage > waitForDaemonExit resolves for a dead pid and times out on a live one": {},
+        "daemon coverage > waitForDaemonExit falls back to socket reachability without a pid": {
+          "unsure": ["oracle/no-assertion"],
+          "reason": {
+            "oracle/no-assertion": "only awaits waitForDaemonExit; resolving instead of timing out is the implicit check, but the title does not frame it as does-not-throw"
+          }
+        },
+        "daemon coverage > ensureDaemon waits out a stopping daemon and spawns a fresh one": {},
+        "daemon coverage > start-timeout error quotes the daemon's stderr log": {},
+        "daemon coverage > start-timeout error stays clean when the daemon logged nothing": {},
+        "daemon coverage > readLogTail returns the last lines and empty string when unreadable": {},
+        "daemon coverage > ensureDaemon fails loudly when a live listener rejects ping (no takeover)": {},
+        "daemon coverage > ensureDaemon fails loudly on daemon_auth_failed (wrong token is not a stale socket)": {},
+        "daemon coverage > connection-less start arms idle and self-reaps": {},
+        "daemon coverage > connect failure for a dead stdio command is surfaced and re-arms idle": {},
+        "daemon coverage > re-arms idle when createConnectionClient fails before client.connect": {},
+        "daemon coverage > callDaemon fails immediately when the peer closes without a response": {},
+        "daemon coverage > connections/use via handle and blank IPC lines": {},
+        "mcp connection coverage > covers connections/use, daemon status, @connection connect, and stop no-op": {},
+        "mcp connection coverage > rejects connect with no target and invalid --format": {},
+        "mcp connection coverage > connects an ad-hoc stdio target": {},
+        "mcp connection coverage > treats a URL positional as ad-hoc": {},
+        "mcp connection coverage > requires explicit connection in non-interactive mode without opt-in": {}
+      }
+    },
+    "nampt102-devflow-912214a6755e": {
+      "file": "good",
+      "tests": {
+        "`typecheck cache restore and save: ${name}`": {},
+        "cache excludes workspace code and executable installs, and preserves full checks": {},
+        "the typecheck pin step is identical to the Runner writer's": {}
+      }
+    },
+    "neokapi-neokapi-ed1c6a19c2c3": {
+      "file": "good",
+      "tests": {
+        "Project Map > opens a new project on the Map with its counts, and Rules from the panel": {}
+      }
+    },
+    "nubbymong-ai-code-conductor-a70cabefd2c3": {
+      "file": "good",
+      "tests": {
+        "decideMultiSpawnIntro — once per upgrade > shows on an upgrade from an earlier build": {},
+        "decideMultiSpawnIntro — once per upgrade > does NOT show on the second start of the same build": {},
+        "decideMultiSpawnIntro — once per upgrade > treats a differently-formatted stamp as the same release": {},
+        "decideMultiSpawnIntro — once per upgrade > NEVER shows on a fresh install — and stamps, so it does not ambush them later on this build": {},
+        "decideMultiSpawnIntro — once per upgrade > no saved configs: stamps SILENTLY rather than showing an empty list": {},
+        "decideMultiSpawnIntro — once per upgrade > shows again after a LATER upgrade — the marker is per-build, not once-ever": {},
+        "decideMultiSpawnIntro — once per upgrade > a build with no version define shows nothing and stamps nothing": {},
+        "decideMultiSpawnIntro — once per upgrade > the stamp records the version RUNNING, never the changelog head (#369)": {},
+        "multiSpawnStartupRowState — where each toggle starts > c.name": {},
+        "multiSpawnStartupRowState — where each toggle starts > counts a resumable remote as a copy, like the migration does": {},
+        "resolveStartupRowSave — what Continue writes > un-ticking an AUTO-ENABLED row stores an explicit false, not undefined": {},
+        "resolveStartupRowSave — what Continue writes > un-ticking a row the migration ALREADY wrote also stores false": {},
+        "resolveStartupRowSave — what Continue writes > leaving an untouched never-chosen row alone keeps it undefined": {},
+        "resolveStartupRowSave — what Continue writes > ticking anything stores true": {},
+        "resolveStartupRowSave — what Continue writes > a standing decline left alone stays a decline": {},
+        "resumingSessionCount > adds restored sessions to registry entries": {},
+        "resumingSessionCount > never double-counts a remote whose session came back live": {},
+        "resumingSessionCount > skips the config-less Ask Conductor session": {},
+        "resumingSessionCount > is zero when nothing is coming back": {},
+        "groupConfigsForStartup — the sidebar's grouping > groups in the sidebar's order with Ungrouped last": {},
+        "groupConfigsForStartup — the sidebar's grouping > a stale groupId counts as loose, exactly as the sidebar treats it": {},
+        "groupConfigsForStartup — the sidebar's grouping > drops an empty group rather than showing a heading over nothing": {},
+        "MultiSpawnStartupPage — the real page > lists every saved config, grouped, with the hero and the safety note": {},
+        "MultiSpawnStartupPage — the real page > no resuming sessions: NO strip, and no counts derived from them": {},
+        "MultiSpawnStartupPage — the real page > sessions resuming: the strip says how many, and it is the number the counts came from": {},
+        "MultiSpawnStartupPage — the real page > singular strip copy for a single resuming session": {},
+        "MultiSpawnStartupPage — the real page > initial toggle states: stored-true on, migration-enable on + chip, undefined off, declined off with NO chip": {},
+        "MultiSpawnStartupPage — the real page > a row the migration enabled BEFORE the page mounted still gets its chip": {},
+        "MultiSpawnStartupPage — the real page > Continue persists the tri-state correctly across all four row kinds": {},
+        "MultiSpawnStartupPage — the real page > Skip persists NOTHING but the seen marker": {},
+        "MultiSpawnStartupPage — the real page > a flip survives a re-render — user decisions outrank the derived state": {},
+        "MultiSpawnStartupPage — the real page > reuses the sidebar's badges so a config is recognisable by eye": {}
+      }
+    },
+    "onyx-dot-app-onyx-7457d8390c95": {
+      "file": "good",
+      "tests": {
+        "shows nothing for a chat without requests, agents or files": {},
+        "a waiting approval leads the trigger and its row scrolls to the card": {},
+        "a request this client already decided leaves the card at once": {},
+        "an agent that a streaming reply starts shows while the reply streams": {},
+        "lists running agents on one line each and folds the finished ones": {},
+        "View all files shows the Files list even while a file is open": {}
+      }
+    },
+    "operately-operately-325cf7f01dc2": {
+      "file": "good",
+      "tests": {
+        "SearchPage > renders the initial state and keeps the search field focused": {},
+        "SearchPage > reports query changes without managing the request": {},
+        "SearchPage > renders loading, empty, and error states accessibly": {},
+        "SearchPage > renders result metadata, state, snippet, and navigation": {},
+        "SearchPage > uses the Resource Hub document icon and makes the resource hierarchy explicit": {},
+        "SearchPage > highlights matching query terms in titles and snippets without rendering HTML": {},
+        "SearchPage > renders all indexed resource labels and caps the visible list at 30 results": {}
+      }
+    },
+    "orange-case-joustmania-ac7ee3c04de0": {
+      "file": "good",
+      "tests": {
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 a live real game wins: no shadow game is followed": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 no real game live: the newest live shadow game is followed": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 a real game in ENDING still holds the stage": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 an ended real game does not hold the view": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 the followed shadow game is kept while live (no flicker)": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 an ended followed game hands over to the newest live one": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/A9 nothing live: nothing followed": {},
+        "UC-070: A9 BR-005 which game the dashboard follows > UC-070/BR-005 live states accept enum names and numbers": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/A9 following a shadow game adds its players; other shadow players stay hidden, nothing real is hidden": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 with a real game live, live shadow players are hidden from the grid": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 lobby with experiments running: real lobby controllers are never hidden": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 real game ENDING with a live shadow game: the real controllers stay": {},
+        "UC-070: A9 BR-005 controller tiles of the followed shadow game > UC-070/BR-005 unknown follow state (coordinator unreachable) shows every tile": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/BR-005 without follow information the newest real game still anchors (stage default)": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 the followed shadow game anchors the strip with its backend": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 no real game live and the followed game has no decide yet: newest shadow row": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/BR-005 no real game live, nothing followed: a newer real row beats an older shadow row": {},
+        "UC-070: A9 BR-005 current-backend strip anchors on the followed game > UC-070/A9 the decide store applies the follow state": {},
+        "UC-070: A9 BR-005 follow state across polls > UC-070/BR-005 a transient poll error keeps the followed game": {},
+        "UC-070: A9 BR-005 follow state across polls > UC-070/BR-005 a sustained outage resets to unknown, then resumes the same game": {}
+      }
+    },
+    "plow-pbc-tkmx-client-402de6675594": {
+      "file": "good",
+      "tests": {
+        "toIsoDate > converts YYYYMMDD to YYYY-MM-DD": {},
+        "toIsoDate > preserves single-digit months and days": {},
+        "parseAgentsviewOutput > tags each breakdown with the given source": {},
+        "parseAgentsviewOutput > computes totalTokens as sum of all token-type fields": {},
+        "parseAgentsviewOutput > preserves the cost field untouched": {},
+        "parseAgentsviewOutput > converts schema v3 microdollars to dollars": {},
+        "parseAgentsviewOutput > rejects invalid schema v3 microdollar costs": {},
+        "parseAgentsviewOutput > returns [] for empty daily": {},
+        "parseAgentsviewOutput > returns [] when daily field is missing": {},
+        "parseAgentsviewOutput > treats missing token fields as 0 when computing totalTokens": {},
+        "parseAgentsviewOutput > handles a day with no modelBreakdowns array": {},
+        "collectAgentsviewUsage WARP_DIR scoping > sets WARP_DIR=/var/empty on the syncing claude call but not the --no-sync codex call": {},
+        "resolveAgentsview > returns null when no candidate path exists": {},
+        "resolveAgentsview > returns the first existing executable candidate": {},
+        "resolveAgentsview > skips non-executable candidates": {},
+        "resolveAgentsview > skips candidates that are directories, not files": {},
+        "resolveAgentsview > respects AGENTSVIEW_BIN override": {},
+        "resolveAgentsview > ignores AGENTSVIEW_BIN override when it points at nothing": {},
+        "resolveAgentsview > falls back to PATH when no hard-coded candidate exists": {},
+        "resolveAgentsviewWith — Windows branch (host-independent) > finds agentsview.exe in the installer location under USERPROFILE": {},
+        "resolveAgentsviewWith — Windows branch (host-independent) > resolves agentsview.exe from a ;-separated PATH": {},
+        "resolveAgentsviewWith — Windows branch (host-independent) > never resolves a .cmd/.bat shim — execFileSync can't run one on Windows": {}
+      }
+    },
+    "rovaracli-rovara-234646e7cc82": {
+      "file": "good",
+      "tests": {
+        "auditPullRequestId > is one opaque id for one pull request however the repository is spelled, and differs between pull requests": {},
+        "tryAuditEvent > builds nothing on an install with no ledger": {},
+        "tryAuditEvent > returns the built event, from a builder or a lookup": {},
+        "tryAuditEvent > logs a builder that throws as audit.record_invalid with the error's name only, and lets the action go on": {},
+        "a publication callback records pull_request.opened > commits the event with the pull request record, then sends it": {},
+        "a publication callback records pull_request.opened > keeps the repository's name out of everything but the details": {},
+        "a publication callback records pull_request.opened > commits the record and the pending item together or not at all": {},
+        "a publication callback records pull_request.opened > R1-1: with SQS failing, the same callback twice succeeds both times and leaves exactly one pending item": {},
+        "a publication callback records pull_request.opened > records a replacement's opening in the same transaction as both pull request records": {},
+        "a publication callback records pull_request.opened > answers as today when the intake queue never answers": {},
+        "a publication callback records pull_request.opened > opens the pull request without an event when the workspace's org cannot be found, and says so without a value": {},
+        "a publication callback records pull_request.opened > opens the pull request without an event when the audit's own read of the earlier record fails, and logs the error's name only": {},
+        "a merge the webhook finds records pull_request.merged > commits the event with the task's move to MERGED, once, however often the merge is delivered": {},
+        "a merge the webhook finds records pull_request.merged > records the opening and the merge of one pull request under one target id": {},
+        "a merge the webhook finds records pull_request.merged > records the same event when the merge is found by the bounded merge polling": {},
+        "a merge the webhook finds records pull_request.merged > records nothing for a pull request that is still open": {},
+        "a merge the webhook finds records pull_request.merged > commits the task update and the pending item together or not at all, and the retry records one event": {},
+        "a merge the webhook finds records pull_request.merged > with SQS failing, leaves the event as a pending item and still completes the task": {},
+        "a merge the webhook finds records pull_request.merged > completes the task as today when the intake queue never answers": {},
+        "a task with several pull requests records each merge once > records the merge of each pull request when it happens, and never again for one already merged": {},
+        "a save that records landed fix pushes and merges together > commits the fix pushes, the task update and the merge events in one transaction within the item limit": {},
+        "a save that records landed fix pushes and merges together > commits them together or not at all: a cancelled transaction leaves no event, and the retry records each merge once": {},
+        "a budget change records budget.changed in writeBudgets' transaction > records a change of the org's limit from 500 to 800 with the old and new figures in cents": {},
+        "a budget change records budget.changed in writeBudgets' transaction > reads the cloud install's placeholder limits as the old figures of an org that never set any": {},
+        "a budget change records budget.changed in writeBudgets' transaction > leaves out the figure of a limit that was or becomes unset": {},
+        "a budget change records budget.changed in writeBudgets' transaction > records one event for each limit that changed, a member's included, and none for one that did not": {},
+        "a budget change records budget.changed in writeBudgets' transaction > records nothing when nothing changed": {},
+        "a budget change records budget.changed in writeBudgets' transaction > commits the settings and the pending items in one transaction": {},
+        "a budget change records budget.changed in writeBudgets' transaction > classifies a lost settings condition as a reloadable revision conflict": {},
+        "a budget change records budget.changed in writeBudgets' transaction > keeps the revision and actor transaction on an install with no ledger": {},
+        "a budget change records budget.changed in writeBudgets' transaction > answers as today when the intake queue never answers": {},
+        "a budget change records budget.changed in writeBudgets' transaction > records no event for a member limit set to, or put back to, the default figure": {},
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > commits a change of exactly 96 events with all of them": {},
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > counts events and not overrides: an org limit and 95 overrides are 96 events": {},
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > refuses 97 events with CONFIG_INVALID, writing and recording nothing, and names no value": {},
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > lets a change of any size through on an install with no ledger": {},
+        "a budget change records budget.changed in writeBudgets' transaction > a change that would record more events than one transaction holds is refused > refuses in changeBudgets before the settings are written or the proxy is told": {},
+        "the budget routes record the change > PUT /v1/dev/org/budget by an admin records budget.changed from 500 to 800 with the admin as actor": {},
+        "the budget routes record the change > refuses a member before any event is made": {},
+        "the budget routes record the change > PUT /v1/admin/org/budget by an operator records the change under the operator's pseudonymous id, never their subject": {},
+        "the budget routes record the change > answers the admin route as today when the intake queue never answers": {}
+      }
+    },
+    "sanity-io-react-rx-bb87463c9d1c": {
+      "file": "good",
+      "tests": {
+        "hidden Activity pre-render starts the source subscription without effects": {},
+        "promise that resolves while hidden appears without fallback on reveal": {},
+        "visible Activity hide/show preserves fulfilled value across toggles": {},
+        "entry evicted while hidden: reveal shows the cached value without fallback or refetch": {},
+        "long-lived source: share retention keeps the connection during ttl, so hidden emissions update the cache": {}
+      }
+    },
+    "sev7n4-pi-lnk-6bbcfdfac975": {
+      "file": "good",
+      "tests": {
+        "POST /sessions 幂等契约 > 首次 201 status=created；同键再次 200 status=resumed": {},
+        "POST /sessions 幂等契约 > 缺 sessionId 时生成并回显（不回显 undefined）": {},
+        "POST /sessions 幂等契约 > 空串 sessionId → 400（客户端错误，不该伪装成 503 下游故障）": {},
+        "POST /sessions 幂等契约 > 不同 userId 同键 → 409（不泄漏 provider/model）": {},
+        "POST /sessions 幂等契约 > 旧 Nest 兼容：attachments / mentionedKeys / refOrder / focusNodeId 仍写入首轮 toolContext": {},
+        "POST /sessions 幂等契约 > canvasSessionId 透传：toolContext.sessionId = 画布会话 id，而非 pi 会话键": {},
+        "POST /sessions 幂等契约 > 旧 Nest 兼容：不传 canvasSessionId 时回落 pi 会话键（行为不新增失败形态）": {},
+        "POST /sessions 幂等契约 > 畸形 llm → 400（不静默兜底）": {},
+        "POST /sessions/:key/prompt 契约 > turnContext 透传生效并返回 202": {},
+        "POST /sessions/:key/prompt 契约 > 旧 Nest 请求（无 turnContext）仍可用": {},
+        "POST /sessions/:key/prompt 契约 > 会话不存在 → 404": {},
+        "POST /sessions/:key/prompt 契约 > run 进行中 → 409 session busy": {},
+        "既有端点保持 > /healthz、/readyz、/metrics、/skills 可用": {},
+        "既有端点保持 > GET /sessions/:key/events 未知键 → 404；DELETE 未知键 → 404": {},
+        "既有端点保持 > DELETE /sessions/:key 删除后 204，再删 404": {},
+        "既有端点保持 > GET /sessions/:key/events?from=now 未知键 → 404（live 路径同样 fail-closed）": {},
+        "resolveEventsSubscribeMode 订阅起点裁决（P0-A 跨轮重放回归锁） > lastEventId（合法非负整数）最高优先 → 增量续传（P0-③ 不变）": {},
+        "resolveEventsSubscribeMode 订阅起点裁决（P0-A 跨轮重放回归锁） > 无 lastEventId 且 from=now → live（不重放缓冲）": {},
+        "resolveEventsSubscribeMode 订阅起点裁决（P0-A 跨轮重放回归锁） > 无参 / 畸形参数 → 全量重放（旧客户端兼容，行为不变）": {},
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 正常 resolve → 200 {ok:true,deduped:false}，阻塞中的 waitForUser 以 answered 交还": {},
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 未知 callId（已超时清理 / 从未注册）→ 仍 200 {ok:true,deduped:true}，业务路径不 404/500": {},
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 会话不存在 → 仍 200 deduped:true（getCanvasSessionId 回落键本身，registry 查不到无副作用）": {},
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > 缺 callId 或 answers 非对象 → 400（客户端错误）": {},
+        "POST /sessions/:key/answers（幂等 resolve，Review Focus 1） > registry 未装配 → 503（配置缺失，非业务路径）": {},
+        "GET /sessions/:key/pending > 有 pending → {pending:{callId,toolName}}；resolve 后 → {pending:null}": {},
+        "GET /sessions/:key/pending > 会话不存在 → {pending:null}（不给探测面）；registry 未装配 → 同样 {pending:null}": {}
+      }
+    },
+    "sinmentis-rummycube-6ab519ae3c0f": {
+      "file": "good",
+      "tests": {
+        "saveBugReport writes timestamped JSON with sanitized match/player ids": {},
+        "saveBugReport defaults under FLATFILE_DIR so reports persist with match data volume": {},
+        "enrichBugReport adds boardgame.io state, metadata, log and initialState": {},
+        "enrichBugReport records fetch errors without blocking snapshot save": {}
+      }
+    },
+    "sricharan-technoidentity-kody-2eda7024f897": {
+      "file": "good",
+      "note": "the two removed tests were merged into one test that keeps all their assertions",
+      "tests": {
+        "public form protection defaults closed, rejects honeypots, and verifies Turnstile": {},
+        "signup mode and Turnstile configuration default closed and degrade gracefully": {},
+        "configured Turnstile requires and verifies a token server-side": {}
+      }
+    },
+    "tamirarnesty-ploutizo-bcad87b3e0c0": {
+      "file": "good",
+      "note": "status moved from stored to derived; removed tests were renamed or rewritten for the derived model",
+      "tests": {
+        "import service > returns credit-card target accounts without owner enrichment": {},
+        "import service > persists a normalized draft and every parsed row in one transaction": {},
+        "import service > derives row status on GET without persisting recomputation": {},
+        "import service > resumes the active draft for an account without inserting a new batch": {},
+        "import service > returns the raced draft when concurrent uploads hit the unique draft index": {},
+        "import service > derives ready status when category is patched onto a needs_review row": {},
+        "import service > derives needs_review when core review fields are patched onto an invalid row": {},
+        "import service > derives invalidReason when an invalid row stays invalid after partial correction": {},
+        "import service > derives invalid status when a row loses required review fields": {},
+        "import service > persists row field updates without writing derived status columns": {},
+        "import service > updates row selection in batch for a draft and returns derived rows": {},
+        "import service > derives needs_review when sibling refunds make cumulative total exceed target": {},
+        "import service > persists settlement funding and refund-link review values": {},
+        "import service > rejects reviewCounterpartAccountId not in org (two-org isolation)": {},
+        "import service > rejects reviewRefundOf not in org (two-org isolation)": {},
+        "import service > recomputes row status to ready when category is patched onto a needs_review row": {},
+        "import service > recomputes invalid row to needs_review when core review fields are patched": {},
+        "import service > refreshes invalidReason when an invalid row stays invalid after partial correction": {},
+        "import service > adjusts draft counts when a valid row becomes invalid": {},
+        "import service > persists row selection updates": {},
+        "import service > updates row selection in batch for a draft": {}
+      }
+    },
+    "thefixer3x-vortexcore-bc900a1fa22f": {
+      "file": "weak",
+      "note": "the diff removed the vi.mock of AuthContext, so mockAuthContext is no longer connected to LoginForm: T3 (signIn called), T4 (isLoading) and T5 (rejected signIn) configure or assert an object the component never sees. No rule covers it.",
+      "tests": {
+        "LoginForm > renders login form correctly": {},
+        "LoginForm > displays validation errors for empty fields": {},
+        "LoginForm > displays validation error for invalid email format": {},
+        "LoginForm > calls signIn with correct credentials on form submission": {},
+        "LoginForm > shows loading state during authentication": {},
+        "LoginForm > handles authentication error gracefully": {},
+        "LoginForm > provides option to switch to sign up": {},
+        "LoginForm > provides forgot password option": {}
+      }
+    },
+    "threahq-threa-060483878a8c": {
+      "file": "good",
+      "note": "interaction assertions on jobQueue.send are the handler effect (fire-and-forget dispatch)",
+      "tests": {
+        "CompanionHandler > dispatches persona agent for messages in a thread whose root is a scratchpad with companion on": {},
+        "CompanionHandler > ignores the message a slash command was persisted as": {},
+        "CompanionHandler > dispatches for deeply nested threads under a scratchpad (thread of thread of scratchpad)": {},
+        "CompanionHandler > does not dispatch for threads whose root is a channel": {},
+        "CompanionHandler > does not dispatch for messages on end-to-end encrypted streams": {},
+        "CompanionHandler > should not dispatch when the message is in a shared copy": {},
+        "CompanionHandler > carries personaDraftId when the message lands in a bound test scratchpad": {},
+        "CompanionHandler > falls back to the built-in default (never the user/workspace default) for a legacy NULL pointer": {},
+        "CompanionHandler > falls back to the built-in default for an unpinned nested thread via its root scratchpad": {},
+        "CompanionHandler > uses the pinned persona directly when the scratchpad has an active explicit pick": {},
+        "CompanionHandler > does not dispatch for threads under a scratchpad whose companion mode is off": {},
+        "CompanionHandler > wakes the run's persona in a subagent thread under a channel, which has no companion mode": {},
+        "CompanionHandler > stops waking a subagent thread once the run is terminal": {},
+        "CompanionHandler > skips the run lookup entirely for a non-thread stream": {}
+      }
+    },
+    "threahq-threa-aadee30b5de2": {
+      "file": "good",
+      "tests": {
+        "AnalyticsOutboxHandler > should capture message_sent with the workspace group when the author granted consent": {},
+        "AnalyticsOutboxHandler > should not capture when consent is %s": {},
+        "AnalyticsOutboxHandler > should not capture a persona-authored message": {},
+        "AnalyticsOutboxHandler > should not capture anything for an E2E stream": {},
+        "AnalyticsOutboxHandler > should not capture anything when the stream is a shared copy": {},
+        "AnalyticsOutboxHandler > should capture reaction_added with the expected object": {},
+        "AnalyticsOutboxHandler > should capture stream_created with streamType": {},
+        "AnalyticsOutboxHandler > should capture the created thread's own id when stream:created routes to the parent stream": {},
+        "AnalyticsOutboxHandler > should capture stream_joined with the expected object": {},
+        "AnalyticsOutboxHandler > should ignore an unrelated event type and still mark it processed": {},
+        "AnalyticsOutboxHandler > should reuse one E2E lookup for candidates across workspaces": {},
+        "AnalyticsOutboxHandler > should give a replayed outbox row the uuid it had the first time": {},
+        "AnalyticsOutboxHandler > should read consent once per batch with the distinct workspace and actor pairs": {},
+        "AnalyticsOutboxHandler > should capture only in the workspace where the user granted consent when one user id appears in two": {}
+      }
+    },
+    "timstewartj-copilot-bridge-45bd62257e58": {
+      "file": "good",
+      "tests": {
+        "copilot-cli-loader installed-package contract > resolves at least one installed @github/copilot app bundle": {},
+        "copilot-cli-loader installed-package contract > patches the installed bundle at %s": {},
+        "copilot-cli-loader installed-package contract > keeps pending interaction listing runtime-owned at %s": {},
+        "copilot-cli-loader > patches the current simple GitHub MCP config method shape": {},
+        "copilot-cli-loader > keeps the replaceable-tool exclusion from the older GitHub MCP config method shape": {},
+        "copilot-cli-loader > patches call sites when the minified options variable is renamed": {},
+        "copilot-cli-loader > patches call sites that use different minified session variables": {},
+        "copilot-cli-loader > patches the 1.0.68 method shape whose resolver is minified with a $ identifier": {},
+        "copilot-cli-loader > patches call sites whose minified variables contain $ identifiers": {},
+        "copilot-cli-loader > patches the 1.0.70 helper-based GitHub MCP config call sites": {},
+        "copilot-cli-loader > patches the 1.0.71 Fides-aware GitHub MCP config shape": {},
+        "copilot-cli-loader > rejects single-helper-based and mixed legacy/helper config call sites": {},
+        "copilot-cli-loader > rejects SDK drift that removes the runtime pending getters": {},
+        "copilot-cli-loader > rejects SDK drift that removes the runtime elicitation capability probe": {},
+        "copilot-cli-loader > asserts the native pending interaction runtime without rewriting it": {},
+        "copilot-cli-loader > rejects a pending interaction runtime that reverts to JS-owned state": {},
+        "copilot-cli-loader > patches the pending interaction snapshot facade independently": {}
+      }
+    },
+    "tjorim-worktime-1a626e1f906a": {
+      "file": "good",
+      "note": "T10 saves profile changes only checks the input shows the text just typed, which passes even if the save never happens; no rule covers it",
+      "tests": {
+        "SettingsPage Account Section > renders only the sign in button when not authenticated": {},
+        "SettingsPage Account Section > shows sync benefits description when not authenticated": {},
+        "SettingsPage Account Section > calls signinRedirect when Sign In is clicked": {},
+        "SettingsPage Account Section > calls signoutRedirect when Sign Out is clicked (authenticated state)": {},
+        "SettingsPage Account Section > loads profile details and sync stats for authenticated users": {},
+        "SettingsPage Account Section > shows the authenticated privacy notice with a link to the privacy policy": {},
+        "SettingsPage Account Section > renders a self-service account deletion danger zone": {},
+        "SettingsPage Account Section > does not delete the account when the confirmation dialog is cancelled": {},
+        "SettingsPage Account Section > deletes the account and signs out after confirmation": {},
+        "SettingsPage Account Section > shows an inline error when self-service account deletion fails": {},
+        "SettingsPage Account Section > saves profile changes for authenticated users": {},
+        "SettingsPage Account Section > renders account section title regardless of auth state": {},
+        "SettingsPage Account Section > shows sync benefits (backup and cross-device icons) when not authenticated": {},
+        "SettingsPage Account Section > shows signed-out sync messaging when unauthenticated": {},
+        "SettingsPage Account Section > renders sync status alongside the account profile and calls pull action when enabled": {},
+        "SettingsPage Account Section > disables pull action button while sync is in progress": {},
+        "SettingsPage API Tokens Section > shows an empty state when there are no tokens": {},
+        "SettingsPage API Tokens Section > generates a token, reveals it once, and copies it to the clipboard": {},
+        "SettingsPage API Tokens Section > revokes a token after confirmation": {},
+        "SettingsPage API Tokens Section > shows an error message when loading tokens fails": {},
+        "SettingsPage Admin Section > does not fetch admin users or render user management for non-admin accounts": {},
+        "SettingsPage Admin Section > renders the user management list for admin accounts": {},
+        "SettingsPage Admin Section > deletes another user from the admin user management table after confirmation": {},
+        "SettingsPage Admin Section > shows an inline error when deleting a managed user fails": {},
+        "SettingsPage Admin Section > disables self-delete for the current admin in the user management table": {},
+        "SettingsPage Data Section > opens reset confirmation, toggles clear options, and confirms side effects": {},
+        "SettingsPage General Section > handles schedule selection clicks and shows team selection for multi-team schedules": {},
+        "SettingsPage Time Tracking Section > renders the labels and templates panels": {},
+        "SettingsPage Features Section > toggles features and shows cross-border setup when enabled": {},
+        "SettingsPage Account Section > renders connect account and sign in buttons when not authenticated": {},
+        "SettingsPage Account Section > calls signinRedirect when Connect Account is clicked": {}
+      }
+    },
+    "tjorim-worktime-4efbd56fc18f": {
+      "file": "good",
+      "tests": {
+        "AuthContext > initial state > shows validating state when OIDC is loading": {},
+        "AuthContext > initial state > is not authenticated when OIDC returns no user": {},
+        "AuthContext > initial state > is authenticated when OIDC returns a user": {},
+        "AuthContext > initial state > handles missing name in profile and falls back to preferred_username": {},
+        "AuthContext > initial state > returns null displayName when no name or preferred_username in profile": {},
+        "AuthContext > initial state > shows a toast when OIDC reports an authentication error": {},
+        "AuthContext > initial state > does not show duplicate toasts for the same OIDC error object": {},
+        "AuthContext > initial state > shows a toast again when the same OIDC error object recurs after being cleared": {},
+        "AuthContext > initial state > stays silent while a token is merely approaching expiry": {},
+        "AuthContext > initial state > warns with a sign-in action once the access token has expired": {},
+        "AuthContext > initial state > warns when silent token renewal fails": {},
+        "AuthContext > initial state > unsubscribes from OIDC session lifecycle events on unmount": {},
+        "AuthContext > triggerLogin > calls signinRedirect when triggerLogin is invoked": {},
+        "AuthContext > triggerSignup > calls signinRedirect when triggerSignup is invoked": {},
+        "AuthContext > logout > calls signoutRedirect when logout is invoked": {},
+        "AuthContext > renewSession > resolves true when signinSilent returns a renewed user": {},
+        "AuthContext > renewSession > resolves false when the IdP session is gone": {},
+        "AuthContext > renewSession > resolves false when signinSilent throws": {},
+        "AuthContext > useAuth outside provider > throws when used outside AuthProvider": {},
+        "AuthContext > initial state > warns when the access token is about to expire": {},
+        "AuthContext > initial state > shows an error when silent token renewal fails": {}
+      }
+    },
+    "todd866-guns-only-5eb3ca902a3d": {
+      "file": "good",
+      "note": "T23 and T24 regex-match app.js source text, including a cache-bust version that the diff bumps",
+      "tests": {
+        "handoff presentation fails closed before the first simulation snapshot": {},
+        "medevac handoff debrief uses custody and coordination evidence, never combat copy": {},
+        "medevac terminal dispositions preserve capsule custody and never invent a fight": {},
+        "carrier water loss teaches from the recorded physical cause": {},
+        "deck and carrier-structure losses remain physically distinct": {},
+        "carrier qualification makes trap evidence authoritative instead of combat victory copy": {},
+        "carrier qualification reports a bolter even when the generic outcome token is draw": {},
+        "an explicit opponent destruction event retains the combat-loss diagnosis": {},
+        "a numerical terminal guard is not mislabeled as physical settlement": {},
+        "unknown defeat cause fails honest instead of inventing combat": {},
+        "maintenance score copy preserves recovered and incomplete outcomes": {},
+        "drone raid debrief distinguishes containment, penetration, and ownship loss": {},
+        "sorties without G-LOC preserve their established copy exactly": {},
+        "G-LOC teaching decorates combat, carrier, maintenance, and drone results once": {},
+        "sub-threshold push-pull state stays out of the concise G-LOC lesson": {},
+        "sorties without an Auto-GCAS fly-up preserve established copy exactly": {},
+        "an Auto-GCAS intervention teaches the procedural response without guessing cause": {},
+        "G-LOC and Auto-GCAS lessons coexist exactly once": {},
+        "Rapier exceedance evidence queues review without inventing damage or cost": {},
+        "a clean or unfinished lifecycle record adds no debrief clutter": {},
+        "combat handoff presentation preserves every authoritative phase flag": {},
+        "recovered handoff debrief keeps player and relief kills separate": {},
+        "handoff does not hide a subsequent ownship loss or invent reserve evidence": {},
+        "app consumes the pure evidence-based debrief module": {},
+        "carrier debrief keeps physical outcome, full-pass trend, and touchdown facts distinct": {}
+      }
+    },
+    "travistruett-10db-8356d5f5f1fb": {
+      "file": "good",
+      "tests": {
+        "opens a pass on two pages, answers one in place, sends a picture to the other, signs it off, and every view passes axe": {}
+      }
+    },
+    "unexpear-chipblocks-346345ca4085": {
+      "file": "good",
+      "tests": {
+        "crc16Trellis — matches Project Trellis's own implementation > reproduces values from Trellis's compiled C++ over a deterministic byte stream": {},
+        "crc16Trellis — matches Project Trellis's own implementation > is a DIFFERENT checksum from the iCE40 one (poly 0x8005 / init 0x0000)": {},
+        "ECP5_DEVICES — the device table > covers the ten ECP5 parts with distinct IDCODEs and whole-byte frames": {},
+        "parseEcp5Bitstream — reads the container > recovers the device, usercode, comment and frames, with the CRC verified": {},
+        "parseEcp5Bitstream — reads the container > a corrupted frame byte is reported as crcOk=false, not thrown": {},
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > a file with no ECP5 preamble throws": {},
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > frame data before the device is identified throws rather than guessing geometry": {},
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > an unknown IDCODE is reported, and its frame data refused (geometry unknown)": {},
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > a COMPRESSED bitstream is refused, not silently mis-read": {},
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > EBR (block-RAM) data is refused": {},
+        "parseEcp5Bitstream — refuses honestly, never mis-parses > an unknown command byte throws": {},
+        "parseEcp5Bitstream — a GENUINE ecppack bitstream > reads a real vendor bitstream: right device, CRC verified, every frame recovered": {},
+        "parseEcp5Bitstream — a GENUINE ecppack bitstream > frames are stored in the REVERSED order ECP5 streams them in": {},
+        "parseEcp5Bitstream — a GENUINE ecppack bitstream > the config-word BIT ORDER, verified against the real tool rather than derived from its source": {}
+      }
+    },
+    "unexpear-chipblocks-adf72f858fc2": {
+      "file": "good",
+      "tests": {
+        "lowerNetlistToCanvas — a real bitstream becomes canvas gates our own engine runs > lowers to real logic-primitive gates, with a node per cell output and per primary input": {},
+        "lowerNetlistToCanvas — a real bitstream becomes canvas gates our own engine runs > the app's fast logic engine computes the same function: B = A = i0 & i1": {},
+        "lowerNetlistToCanvas — honest about what it cannot lower > a carry-driven input is reported in `unlowered`, not silently mis-wired": {},
+        "lowerNetlistToCanvas — honest about what it cannot lower > a LUT needing INVERTED minterms (XOR2) lowers correctly — the NOT gates are real": {},
+        "lowerNetlistToCanvas — honest about what it cannot lower > a constant-LUT cell lowers to a fixed level, and a registered cell is reported": {},
+        "lowerNetlistToCanvas — computes the SAME function as the FPGA simulator > a driver listed AFTER its consumer is still wired (two-pass lowering)": {},
+        "lowerNetlistToCanvas — computes the SAME function as the FPGA simulator > 100 random LUTs agree with the FPGA simulator on every input, including pins with no source": {},
+        "lowerNetlistToCanvas — registers are real boundaries (Q is the output, D is the LUT) > a registered cell's output is its stored Q; consumers follow Q, not the LUT's D": {},
+        "lowerNetlistToCanvas — registers are real boundaries (Q is the output, D is the LUT) > driving the state nodes from simulateClocked steps the canvas through real cycles": {}
+      }
+    },
+    "xfuel-lab-chit402-e3e4f36a120d": {
+      "file": "good",
+      "note": "copy-pinning tests over HTML and TSX source; the $0.01 USDC match became a negative check because the price was removed from the copy",
+      "tests": {
+        "homepage meta description describes paid /v1 and does not say unmetered": {
+          "unsure": ["integrity/assertions-dropped"],
+          "reason": {
+            "integrity/assertions-dropped": "the shared helper lost its /v1/chat/completions check with no replacement; the $0.01 change is a product copy change, this one is not obviously"
+          }
+        },
+        "homepage og:description describes paid /v1 and does not say unmetered": {
+          "unsure": ["integrity/assertions-dropped"],
+          "reason": {
+            "integrity/assertions-dropped": "the shared helper lost its /v1/chat/completions check with no replacement; the $0.01 change is a product copy change, this one is not obviously"
+          }
+        },
+        "homepage twitter:description matches the paid /v1 door": {
+          "unsure": ["integrity/assertions-dropped"],
+          "reason": {
+            "integrity/assertions-dropped": "the shared helper lost its /v1/chat/completions check with no replacement; the $0.01 change is a product copy change, this one is not obviously"
+          }
+        },
+        "shared layout and homepage copy do not call paid /v1 unmetered, a free path, or lead with $0.01": {},
+        "homepage title and hero lead with the book, not a router": {},
+        "README first paragraph leads with the book": {},
+        "prerendered money pages have unique crawler titles (after build)": {},
+        "shared layout and homepage copy do not call paid /v1 unmetered or a free path": {}
+      }
+    },
+    "yaront1111-moe-s-tavern-740ea4a686b6": {
+      "file": "good",
+      "note": "migrated block calls beforeEach without importing it from vitest; only works if vitest globals are on",
+      "tests": {
+        "addCommentTool validation > rejects content longer than max allowed length": {},
+        "Task comments > adds a comment to a task": {},
+        "Task comments > uses workerId as author when provided": {},
+        "Task comments > preserves all comments when under limit": {},
+        "Task comments > trims oldest comment when adding at limit": {},
+        "Task comments > trims task with 300 existing comments down to max preserving newest": {},
+        "Task comments > handles null/undefined comments array gracefully": {},
+        "Task comments > always preserves newest comments including newly added one": {},
+        "Task comments > rejects empty content": {},
+        "Task comments > rejects missing taskId": {}
+      }
+    },
+    "yunz93-mozi-cd51f5a99c10": {
+      "file": "good",
+      "tests": {
+        "generateTOC > returns empty string when there are no headings": {},
+        "generateTOC > produces anchors that match injected heading ids for ASCII headings": {},
+        "generateTOC > preserves CJK headings instead of collapsing them to empty slugs": {},
+        "generateTOC > disambiguates duplicate headings consistently in TOC and ids": {},
+        "generateTOC > does not overwrite an existing id attribute": {}
+      }
+    }
+  }
+}

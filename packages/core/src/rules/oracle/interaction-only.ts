@@ -2,9 +2,14 @@ import { child, children, isFunction, isNode, str, unwrap, type AstNode } from '
 import { oracleFinding, isDisabled } from './finding.js';
 import type { OracleRule } from './types.js';
 
-// `toHaveReturnedWith(x)` and friends check the value that came back, so they are not here
+// Only "was it called" and "how many times". `toHaveBeenCalledWith(x)` pins what the code handed
+// to a collaborator, which is how a test sees output that leaves through a port (a logger, a
+// sender, an exit function), and `toHaveReturnedWith(x)` checks the value that came back. Neither
+// is here.
 const INTERACTION =
-  /^(toHaveBeen(Nth|Last)?Called|toBeCalled|lastCalledWith|nthCalledWith|toHaveReturned(Times)?$|toReturn(Times)?$)/;
+  /^(toHaveBeenCalled(Times)?|toBeCalled(Times)?|toHaveReturned(Times)?|toReturn(Times)?)$/;
+
+const NO_CALL = /^(toHaveBeenCalled|toBeCalled)$/;
 
 /** The name a chain of calls and property reads starts from: `vi` in `vi.fn().mockReturnValue(1)`. */
 function chainRoot(node: AstNode): AstNode | undefined {
@@ -82,6 +87,9 @@ export const interactionOnly: OracleRule = {
         for (const test of ctx.facts()) {
           if (isDisabled(test.modifier) || test.assertions.length === 0) continue;
           if (!test.assertions.every((a) => INTERACTION.test(a.matcher))) continue;
+          // `not.toHaveBeenCalled()` says nothing was sent: the absence is the behaviour. Counts
+          // and arguments are different: `not.toHaveBeenCalledTimes(2)` passes when calls happened.
+          if (test.assertions.some((a) => a.negated && NO_CALL.test(a.matcher))) continue;
           if (!test.body || !capturesResult(test.body, mocks)) continue;
           findings.push(
             oracleFinding(interactionOnly, ctx.file, {

@@ -1,0 +1,17 @@
+{
+  "id": "5f727fb34e3a",
+  "set": "random",
+  "repo": "itsOmidKarami/kraft",
+  "url": "https://github.com/itsOmidKarami/kraft/blob/b08f1287ae001e6289227f13bc91ba70e7e51171/frontend/src/ng/theme/theme.contrast.test.ts",
+  "commit": "b08f1287ae001e6289227f13bc91ba70e7e51171",
+  "path": "frontend/src/ng/theme/theme.contrast.test.ts",
+  "status": "A",
+  "agent": "claude",
+  "date": "2026-09-30T23:46:51.000Z",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright 2026 Omid Karami",
+  "framework": "vitest",
+  "tests": 2,
+  "hasBefore": false
+}

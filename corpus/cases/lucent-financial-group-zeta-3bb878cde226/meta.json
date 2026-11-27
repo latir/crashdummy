@@ -1,0 +1,17 @@
+{
+  "id": "3bb878cde226",
+  "set": "random",
+  "repo": "Lucent-Financial-Group/Zeta",
+  "url": "https://github.com/Lucent-Financial-Group/Zeta/blob/76c4cc90eebaabf4799681e4af0a7eb90f8108f2/src/Core.TypeScript/hygiene/check-bash-retirement-inventory.test.ts",
+  "commit": "76c4cc90eebaabf4799681e4af0a7eb90f8108f2",
+  "path": "src/Core.TypeScript/hygiene/check-bash-retirement-inventory.test.ts",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-06-30T17:04:55.000-04:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright 2026 Zeta contributors",
+  "framework": "unknown",
+  "tests": 18,
+  "hasBefore": true
+}

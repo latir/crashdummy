@@ -1,0 +1,17 @@
+{
+  "id": "06e5b81353f6",
+  "set": "random",
+  "repo": "githubnext/ado-aw",
+  "url": "https://github.com/githubnext/ado-aw/blob/2eb5ec3d304f3dc3dacd9a1451f2be94009fae40/scripts/ado-script/src/prepare-pr-base/__tests__/index.test.ts",
+  "commit": "2eb5ec3d304f3dc3dacd9a1451f2be94009fae40",
+  "path": "scripts/ado-script/src/prepare-pr-base/__tests__/index.test.ts",
+  "status": "M",
+  "agent": "copilot",
+  "date": "2026-07-31T23:31:27.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 GitHub Next",
+  "framework": "vitest",
+  "tests": 10,
+  "hasBefore": true
+}

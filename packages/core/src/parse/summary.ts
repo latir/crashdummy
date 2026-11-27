@@ -13,6 +13,7 @@ import {
   child,
   children,
   isFunction,
+  isNode,
   isTsValueWrapper,
   isTypeOnly,
   memberPath,
@@ -39,7 +40,7 @@ export interface SummaryOptions {
 }
 
 /** Bump when the summary shape or its derivation changes, so stale caches are ignored. */
-export const SUMMARY_VERSION = 6;
+export const SUMMARY_VERSION = 7;
 
 export function hashText(text: string): string {
   return createHash('sha1').update(text).digest('hex').slice(0, 16);
@@ -200,12 +201,28 @@ function pickModifier(mods: readonly TestModifier[]): TestModifier | undefined {
 // Assertions: expect chains, node:assert, custom helpers
 
 const CHAIN_MODS = new Set(['not', 'resolves', 'rejects']);
-const EXPECT_ROOTS = new Set(['expect', 'expect.soft', 'expect.poll']);
+/** `expectTypeOf(fn).returns`, `.parameters`, `.items`: pick a part of the type to check. */
+const TYPE_SELECTORS = new Set([
+  'returns',
+  'parameters',
+  'constructorParameters',
+  'instance',
+  'items',
+  'guards',
+  'asserts',
+  'branded',
+  'thisParameter',
+]);
+/** `expectTypeOf(fn).parameter(0)`: the same, taking an argument. */
+const TYPE_SELECTOR_CALLS = new Set(['parameter']);
+const EXPECT_ROOTS = new Set(['expect', 'expect.soft', 'expect.poll', 'expectTypeOf']);
 
 interface Assertion {
   ref: MatcherRef;
   /** Matched by `assertFunctionNames`: an opaque helper, not a framework assertion. */
   custom?: true;
+  /** `expectTypeOf(...)`: checks a type, so runtime rules (literals, promises) do not apply. */
+  typeLevel?: true;
   /** The value being checked, for mock detection. */
   subject: AstNode | undefined;
 }
@@ -249,6 +266,11 @@ const STRICT_METHODS: Record<string, string> = {
   notDeepEqual: 'notDeepStrictEqual',
 };
 
+const CALL_WITH = /^(toHaveBeen(Nth|Last)?CalledWith|toBeCalledWith|lastCalledWith|nthCalledWith)$/;
+
+/** A function named like a check: `expectNoViolations`, `assertValid`. Not `expected` or `assertion`. */
+const HELPER_NAME = /^(expect|assert)[A-Z_]/;
+
 const ASSERT_MODULES = new Set(['assert', 'node:assert']);
 const ASSERT_STRICT_MODULES = new Set(['assert/strict', 'node:assert/strict']);
 
@@ -261,6 +283,8 @@ interface BindingInfo {
   assert?: AssertBinding;
   /** A function parameter. In a `node:test` file one of them is the context: `ctx.assert.equal(...)`. */
   param?: boolean;
+  /** A parameter of the function a test runs: where vitest's `({ expect }) => ...` comes from. */
+  testContext?: boolean;
   importFrom?: string;
 }
 
@@ -272,6 +296,8 @@ class AssertionFinder {
     private readonly lookup: (name: string) => BindingInfo | undefined,
     /** Whether the file is a `node:test` file. */
     private readonly isNodeTest: () => boolean,
+    /** Whether a call path names a function or method written in this file, which is followed. */
+    private readonly isLocal: (path: string[]) => boolean,
   ) {}
 
   find(call: AstNode): Assertion | undefined {
@@ -295,6 +321,20 @@ class AssertionFinder {
     if (path[0] !== 'expect' && this.custom.some((re) => re.test(path.join('.')))) {
       return { ref: { name: path.join('.') }, subject: args[0], custom: true };
     }
+    // `expectValid(x)`, `assertNoViolations(x)`: by convention a function named like this checks
+    // something. One imported from another file cannot be followed, so the name has to do. One
+    // written in this file is followed instead, so a local `expectOk` that checks nothing still
+    // counts as nothing.
+    const last = path[path.length - 1] ?? '';
+    if (
+      path[0] !== 'expect' &&
+      path[0] !== 'assert' &&
+      path[0] !== 'expectTypeOf' &&
+      HELPER_NAME.test(last) &&
+      !this.isLocal(path)
+    ) {
+      return { ref: { name: path.join('.') }, subject: args[0], custom: true };
+    }
     return undefined;
   }
 
@@ -308,25 +348,68 @@ class AssertionFinder {
     let obj = unwrap(object);
     let negated = false;
     const modifiers: ResolveModifier[] = [];
-    while (obj.type === 'MemberExpression' && obj['computed'] !== true) {
-      const p = child(obj, 'property');
-      const name = p ? str(p, 'name') : undefined;
-      const inner = child(obj, 'object');
-      if (!name || !CHAIN_MODS.has(name) || !inner) break;
-      if (name === 'not') negated = !negated;
-      else modifiers.push(name as ResolveModifier);
-      obj = unwrap(inner);
+    let selectors = false;
+    for (;;) {
+      if (obj.type === 'MemberExpression' && obj['computed'] !== true) {
+        const p = child(obj, 'property');
+        const name = p ? str(p, 'name') : undefined;
+        const inner = child(obj, 'object');
+        if (!name || !inner) break;
+        if (CHAIN_MODS.has(name)) {
+          if (name === 'not') negated = !negated;
+          else modifiers.push(name as ResolveModifier);
+        } else if (TYPE_SELECTORS.has(name)) {
+          selectors = true;
+        } else break;
+        obj = unwrap(inner);
+      } else if (obj.type === 'CallExpression') {
+        // `expectTypeOf(f).parameter(0).toBeNumber()`: a call that picks a part of the type
+        const callee = child(obj, 'callee');
+        const c = callee ? unwrap(callee) : undefined;
+        const p = c?.type === 'MemberExpression' ? child(c, 'property') : undefined;
+        const name = p ? str(p, 'name') : undefined;
+        const inner = c ? child(c, 'object') : undefined;
+        if (!name || !inner || !TYPE_SELECTOR_CALLS.has(name)) break;
+        selectors = true;
+        obj = unwrap(inner);
+      } else break;
     }
     if (obj.type !== 'CallExpression') return undefined;
     const expectCallee = child(obj, 'callee');
     const root = expectCallee ? this.norm(memberPath(expectCallee))?.join('.') : undefined;
     if (!root || !EXPECT_ROOTS.has(root)) return undefined;
+    const typeLevel = root === 'expectTypeOf';
+    // `.parameter(0)` picks a part of the type: it is followed to the final matcher but is never
+    // an assertion itself, or a projection that checks nothing would count as one
+    if (typeLevel && (TYPE_SELECTOR_CALLS.has(matcher) || TYPE_SELECTORS.has(matcher))) {
+      return undefined;
+    }
+    // selectors only mean something on `expectTypeOf`: `expect(x).returns.toBe(1)` is not one
+    if (selectors && !typeLevel) return undefined;
 
     const subject = children(obj, 'arguments')[0];
     return {
-      ref: { name: matcher, negated, arg: argKind(args[0], this.norm), modifiers },
+      ref: {
+        name: matcher,
+        negated,
+        arg: this.matcherArg(matcher, args),
+        // `resolves` on a type is part of the type, not an await the test must make
+        modifiers: typeLevel ? [] : modifiers,
+      },
       subject: root === 'expect.poll' ? undefined : subject,
+      ...(typeLevel ? { typeLevel: true as const } : {}),
     };
+  }
+
+  /**
+   * What the matcher is given. `toHaveBeenCalledWith(expect.anything(), 'ws_1')` pins its other
+   * arguments, so one `expect.anything()` among them does not make the check an existence one.
+   */
+  private matcherArg(matcher: string, args: AstNode[]): ArgKind {
+    const first = argKind(args[0], this.norm);
+    if (!CALL_WITH.test(matcher) || args.length < 2) return first;
+    const kinds = args.map((a) => argKind(a, this.norm));
+    return kinds.find((k) => k !== 'anything') ?? 'anything';
   }
 
   /**
@@ -664,6 +747,7 @@ type Entry =
       loc: { line: number; col: number };
       subject: AstNode | undefined;
       custom: boolean;
+      typeLevel: boolean;
     }
   /** A reference that may run a local helper: `check()`, `page.expectOk()`, `items.forEach(check)`. */
   | { pos: number; call: string; method?: string; scope: Scope; def?: HelperDef | null }
@@ -740,6 +824,9 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     const fw = binding.framework;
     if (fw?.kind === 'named') return [fw.imported, ...path.slice(1)];
     if (fw?.kind === 'namespace') return path.length > 1 ? path.slice(1) : path;
+    // vitest hands each test its own `expect` through the context: `({ expect }) => { ... }`
+    if (head === 'expect' && binding.testContext === true && binding.importFrom === undefined)
+      return path;
     // other imports (bun:test, chai, ...) stay recognised by name; locals shadow the framework
     return binding.importFrom !== undefined ? path : [`${LOCAL}${head}`, ...path.slice(1)];
   };
@@ -748,6 +835,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     norm,
     (name) => scope.lookup(name),
     () => frameworkImports.includes('node-test'),
+    (path) => {
+      const binding = scope.lookup(path[0] ?? '');
+      return (
+        binding?.helper !== undefined ||
+        (path.length > 1 && binding?.methods?.has(path[1] ?? '') === true)
+      );
+    },
   );
 
   const imports: string[] = [];
@@ -825,11 +919,36 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       if (targets[i]!.kind === 'helper') return targets[i];
     return undefined;
   };
+  /** Named functions that a test or `it` declaration runs as its body: `test('x', body)`. */
+  const testCallbackNames = new Set<string>();
+  /** The declarations of those functions, whose parameters are the test context. */
+  const testCallbackFns = new WeakSet<AstNode>();
+  const collectTestCallbackNames = (node: AstNode): void => {
+    if (isTypeOnly(node)) return;
+    if (node.type === 'CallExpression') {
+      const decl = parseDecl(node, norm);
+      if (decl && decl.kind !== 'describe' && decl.fnRef) {
+        const name = str(decl.fnRef, 'name');
+        if (name) testCallbackNames.add(name);
+      }
+    }
+    for (const key in node) {
+      if (key === 'type' || key === 'start' || key === 'end') continue;
+      const value = node[key];
+      if (Array.isArray(value)) {
+        for (const item of value) if (isNode(item)) collectTestCallbackNames(item);
+      } else if (isNode(value)) collectTestCallbackNames(value);
+    }
+  };
   const bindParams = (fn: AstNode): void => {
     const names: string[] = [];
     const params = children(fn, 'params');
     for (const param of params) patternNames(param, names);
-    for (const name of names) scope.names.set(name, { mock: false, param: true });
+    const testContext =
+      (currentTest !== undefined && currentTest.fn === fn) || testCallbackFns.has(fn);
+    for (const name of names) {
+      scope.names.set(name, { mock: false, param: true, ...(testContext ? { testContext } : {}) });
+    }
   };
 
   /**
@@ -1053,6 +1172,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         loc: ctx.loc(node.start),
         subject: found.subject,
         custom: found.custom === true,
+        typeLevel: found.typeLevel === true,
       });
       return;
     }
@@ -1305,10 +1425,12 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
         if (stmt.type === 'ImportDeclaration') registerImport(stmt);
       }
       hoistDeclarations(children(node, 'body'));
+      collectTestCallbackNames(node);
     },
     FunctionDeclaration(node) {
       const id = child(node, 'id');
       const name = id ? str(id, 'name') : undefined;
+      if (name && testCallbackNames.has(name)) testCallbackFns.add(node);
       // A named function is a helper: its assertions count only where it is called.
       if (name) {
         const binding = scope.names.get(name) ?? { mock: false };
@@ -1389,6 +1511,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
       const init = initRaw ? unwrap(initRaw) : undefined;
 
       if (init && isFunction(init) && id?.type === 'Identifier' && names[0]) {
+        if (testCallbackNames.has(names[0])) testCallbackFns.add(init);
         owner.names.set(names[0], { mock: false, helper: deferFunction(init) });
         targets[targets.length - 1]!.node = node; // popped on the declarator's exit
         return;
@@ -1537,6 +1660,7 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
             viaHelper: !follow,
             known: lattice.resolveMatcher(entry.ref).known,
             custom: entry.custom,
+            typeLevel: entry.typeLevel,
           });
         } else if ('timeout' in entry) out.timeout = entry.timeout;
         else if (follow) {

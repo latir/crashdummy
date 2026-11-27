@@ -1,0 +1,17 @@
+{
+  "id": "5175805aefc3",
+  "set": "random",
+  "repo": "frkim/japon2027-13j",
+  "url": "https://github.com/frkim/japon2027-13j/blob/2aacde1bb4273edfa55bf80149c08cb5e645fb28/src/map-data.test.js",
+  "commit": "2aacde1bb4273edfa55bf80149c08cb5e645fb28",
+  "path": "src/map-data.test.js",
+  "status": "A",
+  "agent": "copilot",
+  "date": "2026-11-01T00:18:41.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 François-Xavier Kim",
+  "framework": "node-test",
+  "tests": 6,
+  "hasBefore": false
+}

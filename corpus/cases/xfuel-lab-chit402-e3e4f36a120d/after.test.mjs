@@ -1,0 +1,127 @@
+/**
+ * Homepage SEO must describe the public door as paid /v1.
+ * x402scan origin copy reads these tags; "unmetered" here is the lie.
+ */
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const html = readFileSync(join(root, 'index.html'), 'utf8');
+
+function metaContent(source, attr, name) {
+  const named = new RegExp(
+    `<meta[^>]+${attr}="${name}"[^>]*content="([^"]*)"`,
+    'i',
+  );
+  const contentFirst = new RegExp(
+    `<meta[^>]+content="([^"]*)"[^>]*${attr}="${name}"`,
+    'i',
+  );
+  return source.match(named)?.[1] ?? source.match(contentFirst)?.[1] ?? null;
+}
+
+function assertPaidDoorCopy(label, text) {
+  assert.ok(text, `${label} is present`);
+  assert.doesNotMatch(text, /unmetered/i, `${label} must not say unmetered`);
+  assert.doesNotMatch(text, /free path/i, `${label} must not say free path`);
+  assert.doesNotMatch(text, /Base \(primary\)/i, `${label} must not rank Base as primary`);
+  assert.doesNotMatch(text, /best available provider/i, `${label} must not claim best available provider`);
+  assert.doesNotMatch(text, /Swap one baseURL/i, `${label} must not hero a baseURL swap`);
+  assert.doesNotMatch(text, /crypto control plane/i, `${label} must not lead with crypto control plane`);
+  assert.doesNotMatch(text, /Not a smart router/, `${label} must not say Not a smart router`);
+  assert.doesNotMatch(text, /Not a model shop/, `${label} must not say Not a model shop`);
+  assert.doesNotMatch(text, /\$0\.01/, `${label} must not lead with $0.01 price`);
+  assert.match(text, /the book/i, `${label} leads with the book`);
+  assert.match(text, /hub, model, and amount/i, `${label} names hub, model, and amount`);
+  assert.match(text, /USDC/i, `${label} names USDC`);
+  assert.match(text, /Base and Solana/i, `${label} names Base and Solana`);
+}
+
+test('homepage meta description describes paid /v1 and does not say unmetered', () => {
+  assertPaidDoorCopy('meta description', metaContent(html, 'name', 'description'));
+});
+
+test('homepage og:description describes paid /v1 and does not say unmetered', () => {
+  assertPaidDoorCopy('og:description', metaContent(html, 'property', 'og:description'));
+});
+
+test('homepage twitter:description matches the paid /v1 door', () => {
+  assertPaidDoorCopy('twitter:description', metaContent(html, 'name', 'twitter:description'));
+});
+
+test('shared layout and homepage copy do not call paid /v1 unmetered, a free path, or lead with $0.01', () => {
+  const layout = readFileSync(join(root, 'src/components/Layout.tsx'), 'utf8');
+  const home = readFileSync(join(root, 'src/pages/Home.tsx'), 'utf8');
+  const pricing = readFileSync(join(root, 'src/pages/Pricing.tsx'), 'utf8');
+  for (const [label, source] of [
+    ['Layout.tsx', layout],
+    ['Home.tsx', home],
+    ['Pricing.tsx', pricing],
+  ]) {
+    assert.doesNotMatch(source, /unmetered/i, `${label} must not say unmetered`);
+    assert.doesNotMatch(source, /free path/i, `${label} must not say free path`);
+    assert.doesNotMatch(source, /Base \(primary\)/i, `${label} must not rank Base as primary`);
+    assert.doesNotMatch(source, /\$0\.01/, `${label} must not lead with $0.01 price`);
+    assert.match(source, /USDC on Base (and|or) Solana/i, `${label} names USDC rails`);
+    assert.match(source, /cost-plus.*quoted.*receipted/i, `${label} uses cost-plus language`);
+  }
+});
+
+test('homepage title and hero lead with the book, not a router', () => {
+  const title = html.match(/<title>([^<]*)<\/title>/i)?.[1] ?? '';
+  assert.match(title, /the book/i, 'title leads with the book');
+  assert.match(title, /Hub, model, amount/i, 'title names hub, model, amount');
+  assert.doesNotMatch(title, /receipt for every routed/i, 'title does not hero the receipt');
+  assert.doesNotMatch(title, /best available provider/i);
+
+  const home = readFileSync(join(root, 'src/pages/Home.tsx'), 'utf8');
+  assert.match(home, /XFuel is the book/);
+  assert.match(home, /This agent spent Y on this job/);
+  assert.match(home, /You hold hub, model, and amount/);
+  assert.doesNotMatch(home, /Not a smart router/);
+  assert.doesNotMatch(home, /Not a model shop/);
+  assert.doesNotMatch(home, /best available provider/i);
+  assert.doesNotMatch(home, /Swap one baseURL/);
+  assert.doesNotMatch(home, /crypto control plane/i);
+
+  assert.doesNotMatch(html, /Not a smart router/);
+  assert.doesNotMatch(html, /Not a model shop/);
+
+  const llms = readFileSync(join(root, 'public/llms.txt'), 'utf8');
+  assert.doesNotMatch(llms, /Not a smart router/);
+  assert.doesNotMatch(llms, /Not a model shop/);
+});
+
+test('README first paragraph leads with the book', () => {
+  const readme = readFileSync(join(root, '../../README.md'), 'utf8').replace(/\r\n/g, '\n');
+  const firstPara = readme.split(/\n\n/)[1] ?? '';
+  assert.match(firstPara, /XFuel is the book/);
+  assert.match(firstPara, /You hold hub, model, and amount/);
+  assert.doesNotMatch(firstPara, /best available provider/i);
+  assert.doesNotMatch(firstPara, /crypto control plane/i);
+  assert.doesNotMatch(firstPara, /Not a smart router/);
+  assert.doesNotMatch(firstPara, /Not a model shop/);
+});
+
+import { existsSync } from 'node:fs';
+
+test('prerendered money pages have unique crawler titles (after build)', { skip: !existsSync(join(root, 'dist')) }, () => {
+  const expectedTitles = {
+    'agent-shop': 'The till for an agent shop | XFuel',
+    'book': 'The book: this agent spent Y on this job | XFuel',
+    'book-bot': 'Paste this. The shop gets a till | XFuel',
+    'v1': 'Pay /v1/chat/completions | XFuel',
+  };
+  
+  for (const [route, expectedTitle] of Object.entries(expectedTitles)) {
+    const filePath = join(root, 'dist', route, 'index.html');
+    assert.ok(existsSync(filePath), `${route}/index.html exists`);
+    const content = readFileSync(filePath, 'utf8');
+    const title = content.match(/<title>([^<]*)<\/title>/i)?.[1] ?? '';
+    assert.equal(title, expectedTitle, `/${route} has correct crawler title`);
+    assert.doesNotMatch(content, /\$0\.01/, `/${route} must not contain $0.01`);
+  }
+});

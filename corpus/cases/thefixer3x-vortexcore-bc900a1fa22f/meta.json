@@ -1,0 +1,17 @@
+{
+  "id": "bc900a1fa22f",
+  "set": "random",
+  "repo": "thefixer3x/vortexcore",
+  "url": "https://github.com/thefixer3x/vortexcore/blob/c66096f32c72dfaef1516a1ef621958614c15a01/src/test/__tests__/components/auth/LoginForm.test.tsx",
+  "commit": "c66096f32c72dfaef1516a1ef621958614c15a01",
+  "path": "src/test/__tests__/components/auth/LoginForm.test.tsx",
+  "status": "M",
+  "agent": "cursor",
+  "date": "2025-08-31T03:58:04.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025 VortexCore contributors",
+  "framework": "vitest",
+  "tests": 8,
+  "hasBefore": true
+}

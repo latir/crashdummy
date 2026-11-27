@@ -202,7 +202,8 @@ export const swallowedAsync: OracleRule = {
             );
           }
           for (const a of test.assertions) {
-            if (seen.has(a.node)) continue;
+            // `expectTypeOf(...).resolves` is part of a type, not a promise the test must await
+            if (seen.has(a.node) || a.typeLevel) continue;
             const ancestors = resolves.get(a.node);
             if (ancestors && !isHandled(ancestors, a.node)) {
               seen.add(a.node);

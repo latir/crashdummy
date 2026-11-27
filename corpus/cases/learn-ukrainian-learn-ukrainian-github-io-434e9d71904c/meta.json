@@ -1,0 +1,17 @@
+{
+  "id": "434e9d71904c",
+  "set": "random",
+  "repo": "learn-ukrainian/learn-ukrainian.github.io",
+  "url": "https://github.com/learn-ukrainian/learn-ukrainian.github.io/blob/264b1fdaa73b3a9f143c3d80f5a2f5e3433f8e16/site/tests/unit/lexicon-daily.test.ts",
+  "commit": "264b1fdaa73b3a9f143c3d80f5a2f5e3433f8e16",
+  "path": "site/tests/unit/lexicon-daily.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-07-31T23:50:28.000Z",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025-2026 Krisztian Koos",
+  "framework": "vitest",
+  "tests": 9,
+  "hasBefore": true
+}

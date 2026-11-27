@@ -1,0 +1,17 @@
+{
+  "id": "402de6675594",
+  "set": "targeted",
+  "repo": "plow-pbc/tkmx-client",
+  "url": "https://github.com/plow-pbc/tkmx-client/blob/cbc7a31232a7af344e76c65616917fca9bd907f2/test/agentsview.test.ts",
+  "commit": "cbc7a31232a7af344e76c65616917fca9bd907f2",
+  "path": "test/agentsview.test.ts",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-07-29T16:43:41.000-04:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025 Sam Odio",
+  "framework": "node-test",
+  "tests": 22,
+  "hasBefore": true
+}

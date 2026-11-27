@@ -1,0 +1,17 @@
+{
+  "id": "cd51f5a99c10",
+  "set": "random",
+  "repo": "Yunz93/Mozi",
+  "url": "https://github.com/Yunz93/Mozi/blob/6bb15b6cb296fbc29ec77eb81ffd9ecbfb53e92f/src/utils/export/toc.test.ts",
+  "commit": "6bb15b6cb296fbc29ec77eb81ffd9ecbfb53e92f",
+  "path": "src/utils/export/toc.test.ts",
+  "status": "A",
+  "agent": "cursor",
+  "date": "2026-06-30T14:38:54.000+08:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Yunz93",
+  "framework": "vitest",
+  "tests": 5,
+  "hasBefore": false
+}

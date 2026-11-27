@@ -25,11 +25,13 @@ import {
   copyrightLine,
   detectFramework,
   findLicenseFile,
+  isRestrictedPath,
   interestingChanges,
   interleave,
   monthWindows,
   parseNameStatus,
   repoDirName,
+  sameLicenseText,
   searchKey,
   usableSource,
   verifyTrailer,
@@ -163,7 +165,7 @@ export async function search(pool, options, io = defaultIo) {
   return { requests, added, rejected };
 }
 
-const git = (io, dir, args, extra = {}) =>
+export const git = (io, dir, args, extra = {}) =>
   run(
     'git',
     [
@@ -182,13 +184,79 @@ const git = (io, dir, args, extra = {}) =>
     },
   );
 
-const showBlob = async (io, dir, rev, path) => {
+export const showBlob = async (io, dir, rev, path) => {
   try {
     return (await git(io, dir, ['show', `${rev}:${path}`])).stdout;
   } catch {
     return undefined;
   }
 };
+
+/** The repository's own licence file at a revision, or null. */
+export async function rootLicense(io, dir, rev) {
+  const names = (await git(io, dir, ['ls-tree', '--name-only', rev])).stdout
+    .split('\n')
+    .filter(Boolean);
+  const file = findLicenseFile(names);
+  if (!file) return null;
+  const text = await showBlob(io, dir, rev, file);
+  return text === undefined ? null : { file, text };
+}
+
+/**
+ * Licence files in the directories above a file, below the repository root. A package in a
+ * monorepo often carries its own copy of the same licence; one that is not permissive, that
+ * cannot be read, or that is a different licence from the root's means the file is not covered
+ * by what NOTICE.md records for the repository. The same text with another copyright line is
+ * fine. Reads trees, and the licence files themselves. Returns null when nothing is wrong, else
+ * the reason.
+ *
+ * `rootText` is the root licence at `sha`; it is read when not given.
+ */
+export async function nestedLicenseProblem(io, dir, sha, path, rootText) {
+  const parts = path.split('/').slice(0, -1);
+  let root = rootText;
+  for (let i = parts.length; i >= 1; i--) {
+    const sub = parts.slice(0, i).join('/');
+    const listed = (await git(io, dir, ['ls-tree', '--name-only', sha, `${sub}/`])).stdout
+      .split('\n')
+      .filter(Boolean)
+      .map((n) => n.slice(sub.length + 1));
+    const file = findLicenseFile(listed);
+    if (!file) continue;
+    const text = await showBlob(io, dir, sha, `${sub}/${file}`);
+    const license = text === undefined ? null : classifyLicense(text);
+    if (!license || !PERMISSIVE.has(license)) return `${sub}/${file} is not permissive`;
+    root ??= (await rootLicense(io, dir, sha))?.text;
+    if (root === undefined || !sameLicenseText(root, text)) {
+      return `${sub}/${file} differs from the root licence`;
+    }
+  }
+  return null;
+}
+
+/**
+ * Whether the file at `path` in revision `rev` may be copied: permissive root licence, outside
+ * restricted directories, and no differing licence on the way. With `reference` (the root
+ * licence of the pinned commit) the root licence at `rev` must also be the same text, so one
+ * copy of the licence covers both sides of a change. Null when fine, else the reason.
+ */
+export async function sourceLicenseProblem(io, dir, rev, path, reference) {
+  const root = await rootLicense(io, dir, rev);
+  if (!root) return 'no licence file';
+  const license = classifyLicense(root.text);
+  if (!license || !PERMISSIVE.has(license)) return `licence is not permissive (${root.file})`;
+  if (reference !== undefined && !sameLicenseText(reference, root.text)) {
+    return `root licence (${root.file}) differs from the pinned commit's`;
+  }
+  if (isRestrictedPath(path)) return 'path is under a restricted directory';
+  return nestedLicenseProblem(io, dir, rev, path, root.text);
+}
+
+/** A file of a revision as bytes, untouched by any text decoding. */
+export async function showBlobBytes(io, dir, rev, path) {
+  return (await git(io, dir, ['show', `${rev}:${path}`], { encoding: 'buffer' })).stdout;
+}
 
 /** Stage 2: fetch each verified commit, check the licence, and keep its test files. */
 export async function fetchCommits(pool, options, io = defaultIo) {
@@ -276,7 +344,10 @@ export async function fetchCommits(pool, options, io = defaultIo) {
         commit.sha,
       ])
     ).stdout;
-    const changes = interestingChanges(parseNameStatus(names));
+    // code under ee/, enterprise/ and the like is licensed apart from the rest of the repository
+    const changes = interestingChanges(parseNameStatus(names)).filter(
+      (c) => !isRestrictedPath(c.path),
+    );
     if (changes.length === 0) {
       finish('no-test-files');
       skip('no-test-files');
@@ -290,6 +361,10 @@ export async function fetchCommits(pool, options, io = defaultIo) {
         capped = true; // files are left over: keep the commit pending so a higher cap can replay it
         break;
       }
+      if (await nestedLicenseProblem(io, dir, commit.sha, change.path, licenseText)) {
+        skip('nested-license');
+        continue;
+      }
       const after = await showBlob(io, dir, commit.sha, change.path);
       if (after === undefined || !usableSource(after)) {
         skip('unusable');
@@ -302,9 +377,16 @@ export async function fetchCommits(pool, options, io = defaultIo) {
       }
       let before;
       if (change.status !== 'A' && parents[0]) {
-        before = await showBlob(io, dir, parents[0], change.oldPath ?? change.path);
-        if (before !== undefined && !usableSource(before, { minLines: 0, maxLines: 4000 }))
-          before = undefined;
+        // the old version is a different revision and maybe a different path: it must be
+        // covered by the same permissive licence, or it is not copied
+        const oldPath = change.oldPath ?? change.path;
+        if (await sourceLicenseProblem(io, dir, parents[0], oldPath, licenseText)) {
+          skip('before-license');
+        } else {
+          before = await showBlob(io, dir, parents[0], oldPath);
+          if (before !== undefined && !usableSource(before, { minLines: 0, maxLines: 4000 }))
+            before = undefined;
+        }
       }
       const id = candidateId(commit.repo, commit.sha, change.path);
       const out = join(pool.dir, 'files', id);

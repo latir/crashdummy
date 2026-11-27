@@ -4,7 +4,8 @@ import type { Finding } from '../../types.js';
 export function gateFinding(
   ruleId: string,
   file: string,
-  rest: Pick<Finding, 'message'> & Partial<Pick<Finding, 'loc' | 'hint' | 'severity' | 'gate'>>,
+  rest: Pick<Finding, 'message'> &
+    Partial<Pick<Finding, 'loc' | 'hint' | 'severity' | 'gate' | 'test' | 'tests'>>,
 ): Finding {
   const finding: Finding = {
     ruleId,
@@ -18,6 +19,9 @@ export function gateFinding(
   };
   if (rest.loc) finding.loc = rest.loc;
   if (rest.hint) finding.hint = rest.hint;
+  if (rest.test) finding.test = rest.test;
+  if (rest.tests && rest.tests.length > 1) finding.tests = [...rest.tests];
+  else if (rest.tests?.length === 1) finding.test = rest.tests[0]!;
   return finding;
 }
 

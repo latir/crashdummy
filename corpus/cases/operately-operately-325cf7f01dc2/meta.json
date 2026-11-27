@@ -1,0 +1,17 @@
+{
+  "id": "325cf7f01dc2",
+  "set": "random",
+  "repo": "operately/operately",
+  "url": "https://github.com/operately/operately/blob/4ad5e93a59fd2d6719318dcfdd05b61599e3e0e8/turboui/src/SearchPage/index.test.tsx",
+  "commit": "4ad5e93a59fd2d6719318dcfdd05b61599e3e0e8",
+  "path": "turboui/src/SearchPage/index.test.tsx",
+  "status": "M",
+  "agent": "cursor",
+  "date": "2026-07-31T15:49:43.000-03:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright 2023-present Operately doo",
+  "framework": "jest",
+  "tests": 7,
+  "hasBefore": true
+}

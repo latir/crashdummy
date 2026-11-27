@@ -1,0 +1,17 @@
+{
+  "id": "18748a85eeb2",
+  "set": "targeted",
+  "repo": "actions-marketplace-validations/github_gh-aw-firewall",
+  "url": "https://github.com/actions-marketplace-validations/github_gh-aw-firewall/blob/10b907bfecd10363e6a8e50425ee5631fc94fa12/containers/api-proxy/routing-runtime.test.js",
+  "commit": "10b907bfecd10363e6a8e50425ee5631fc94fa12",
+  "path": "containers/api-proxy/routing-runtime.test.js",
+  "status": "M",
+  "agent": "copilot",
+  "date": "2026-09-30T23:10:32.000Z",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025 GitHub Next",
+  "framework": "jest",
+  "tests": 19,
+  "hasBefore": true
+}

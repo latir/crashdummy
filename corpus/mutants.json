@@ -1,0 +1,174 @@
+{
+  "seed": "crashdummy-mutants-1",
+  "perOperator": 30,
+  "operators": {
+    "add-only": {
+      "kind": "breaking",
+      "expected": "integrity/modifier-added",
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "add-skip": {
+      "kind": "breaking",
+      "expected": "integrity/modifier-added",
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "add-test": {
+      "kind": "harmless",
+      "expected": null,
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "drop-assertion": {
+      "kind": "breaking",
+      "expected": "integrity/assertions-dropped",
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "remove-test": {
+      "kind": "breaking",
+      "expected": "integrity/test-removed",
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "rename-and-retune": {
+      "kind": "harmless",
+      "expected": null,
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "rename-test": {
+      "kind": "harmless",
+      "expected": null,
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "strengthen-matcher": {
+      "kind": "harmless",
+      "expected": null,
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "strip-assertions": {
+      "kind": "breaking",
+      "expected": "oracle/no-assertion",
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "swallow-async": {
+      "kind": "breaking",
+      "expected": "oracle/swallowed-async",
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "swap-sibling-matcher": {
+      "kind": "harmless",
+      "expected": null,
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "tautology": {
+      "kind": "breaking",
+      "expected": "oracle/tautological-assertion",
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "weaken-all": {
+      "kind": "breaking",
+      "expected": "oracle/weak-matcher",
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    },
+    "weaken-matcher": {
+      "kind": "breaking",
+      "expected": "integrity/matcher-weakened",
+      "n": 30,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
+      "interval": {
+        "low": 0.8864829086095221,
+        "high": 1
+      }
+    }
+  }
+}

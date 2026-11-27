@@ -1,0 +1,17 @@
+{
+  "id": "b3e062f52b6c",
+  "set": "random",
+  "repo": "acolomba/pi-claude-marketplace",
+  "url": "https://github.com/acolomba/pi-claude-marketplace/blob/e40d3dda389929927c9441cf6cf277bf0ab23d8f/tests/domain/source.test.ts",
+  "commit": "e40d3dda389929927c9441cf6cf277bf0ab23d8f",
+  "path": "tests/domain/source.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-09-30T19:19:38.000-04:00",
+  "license": "MIT",
+  "licenseFile": "COPYING",
+  "copyright": "Copyright 2026 Alessandro Colomba (https://github.com/acolomba)",
+  "framework": "node-test",
+  "tests": 11,
+  "hasBefore": true
+}
