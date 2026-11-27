@@ -396,14 +396,25 @@ describe('review round 3', () => {
     expect(ids(`${V}test('x', () => { expect('/health').toReturn200(); });`)).toEqual([]);
   });
 
-  test('interaction aliases from the lattice count as interactions', () => {
+  test('aliases of "was it called" and "how many times" count as interactions', () => {
     const t = (matcher: string) =>
       ids(
         `${V}test('x', () => { const send = vi.fn(); const r = calculate(send); expect(send).${matcher}; });`,
       );
-    expect(t('lastCalledWith(1)')).toEqual(['oracle/interaction-only']);
-    expect(t('nthCalledWith(1, 2)')).toEqual(['oracle/interaction-only']);
+    expect(t('toBeCalled()')).toEqual(['oracle/interaction-only']);
+    expect(t('toBeCalledTimes(2)')).toEqual(['oracle/interaction-only']);
     expect(t('toReturn()')).toEqual(['oracle/interaction-only']);
+  });
+
+  test('pinning the arguments of a call is checking output, not only an interaction', () => {
+    const t = (matcher: string) =>
+      ids(
+        `${V}test('x', () => { const send = vi.fn(); const r = calculate(send); expect(send).${matcher}; });`,
+      );
+    expect(t('toHaveBeenCalledWith(1)')).toEqual([]);
+    expect(t('toHaveBeenCalledExactlyOnceWith(1)')).toEqual([]);
+    expect(t('lastCalledWith(1)')).toEqual([]);
+    expect(t('nthCalledWith(1, 2)')).toEqual([]);
     expect(t('toReturnWith(1)')).toEqual([]);
   });
 

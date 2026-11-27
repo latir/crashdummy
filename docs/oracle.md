@@ -26,6 +26,10 @@ A helper imported from another file cannot be followed, so `oracle/no-assertion`
 
 Local helpers in the same file are followed one level deep without any configuration.
 
+## What `oracle/interaction-only` leaves alone
+
+Only "was it called" and "how many times" count as an interaction check: `toHaveBeenCalled()`, `toHaveBeenCalledTimes(n)` and their aliases. A test that pins the arguments (`toHaveBeenCalledWith(...)`, `toHaveBeenCalledExactlyOnceWith(...)`) is checking what the code handed to a logger, a sender or an exit function, which is its output. It is not reported.
+
 ## What it does not do
 
 - Tests marked `skip`, `todo` or `fixme` are not judged. Turning a test off is the integrity layer's concern.
