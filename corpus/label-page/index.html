@@ -149,6 +149,30 @@ details.help dd { margin: 0; }
 .brief b { font-weight: 600; }
 .keys { font: 12px var(--font-mono); color: var(--muted); }
 kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; background: var(--paper); }
+.qcard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.qhead { padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; border-bottom: 1px solid var(--line); }
+.qhead .qn { font-weight: 600; }
+.why { font-size: 11.5px; border-radius: 999px; padding: 2px 9px; background: var(--paper); border: 1px solid var(--line); color: var(--muted); }
+.why.req { color: var(--ink); border-color: var(--ink); }
+.qq { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+.qq .qr { font: 500 14px var(--font-mono); }
+.qq .qd { font-size: 15px; font-weight: 600; }
+.qeng { padding: 8px 16px; font-size: 13px; background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.qeng b { font-weight: 600; }
+.votes { padding: 10px 16px; display: grid; grid-template-columns: max-content max-content minmax(0, 1fr); gap: 4px 12px; font-size: 13px; align-items: baseline; }
+.vote { font-weight: 600; font-size: 12px; border-radius: 4px; padding: 1px 8px; background: var(--paper); text-align: center; min-width: 52px; }
+.vote.yes { background: var(--yes-bg); color: var(--yes); }
+.vote.unsure { background: var(--unsure-bg); color: var(--unsure); }
+.vote.no { background: var(--ok-bg); color: var(--ok); }
+.vote small { font-weight: 400; opacity: 0.8; }
+.answers { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); align-items: center; }
+.answers .btn { padding: 8px 18px; font-weight: 600; }
+.btn.yes[aria-pressed='true'] { background: var(--yes); color: var(--paper); border-color: var(--yes); }
+.btn.no[aria-pressed='true'] { background: var(--ok); color: var(--paper); border-color: var(--ok); }
+.btn.unsure[aria-pressed='true'] { background: var(--unsure); color: var(--paper); border-color: var(--unsure); }
+.banner { background: var(--ok-bg); color: var(--ok); border-radius: 10px; padding: 10px 14px; font-weight: 600; }
+.qonly .cases { display: none; }
+.qonly .shell { grid-template-columns: minmax(0, 1fr); }
 .toast { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 8px; font-size: 13px; }
 .empty { padding: 40px 16px; text-align: center; color: var(--muted); }
 @media (max-width: 860px) {
@@ -165,6 +189,7 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
   <h1>Test Labelling Desk</h1>
   <div class="meter"><div class="bar"><i id="bar"></i></div><span id="count" class="muted">loading…</span></div>
   <span id="sync" class="muted"></span>
+  <div class="seg" id="modeseg" role="group" aria-label="What to do"></div>
   <div class="seg" id="setseg" role="group" aria-label="Which cases"></div>
   <button class="btn" id="cues" aria-pressed="true">Hints: on</button>
   <button class="btn" id="next">Next unreviewed</button>
@@ -172,7 +197,8 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
 </div>
 
 <details class="help">
-  <summary>How to label (read once)</summary>
+  <summary>How this works (read once)</summary>
+  <p class="muted"><b>Review queue</b> is the short path: about 115 required questions, then optional audits. Each card asks one thing, shows what the tool and the three models said, and takes y / n / u. <b>Label tests</b> is the full labelling view, if you want it.</p>
   <p class="muted">For each test, tick every problem you see. A test you mark <b>Reviewed</b> with nothing ticked counts as "no problem" for every rule. Click a problem row once for <b>yes</b>, twice for <b>unsure</b>, three times to clear. Each row spells out what the problem means, so you do not need to look it up. Judge from the code alone. Each test shows the helpers it calls, so you rarely need to leave the card. Keys: <kbd>j</kbd>/<kbd>k</kbd> move, <kbd>1</kbd>–<kbd>9</kbd> cycle a problem, <kbd>Enter</kbd> marks reviewed and moves on. Full definitions are in <code>corpus/LABELING.md</code>.</p>
   <dl id="rules"></dl>
 </details>
@@ -218,6 +244,7 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
   var data = null, db = null, cur = null, view = 'tests', hideDone = false;
   var setFilter = lsGet('cd-set-filter') || 'random';
   var showCues = lsGet('cd-cues') !== 'off', focus = 0;
+  var mode = lsGet('cd-mode') || 'queue', queue = [], answers = {}, qpos = 0;
   var state = {};            // caseId -> { file, note, tests: { testId: { r, y:[], u:[] } } }
   var saveTimers = {}, dirty = 0;
   var $ = function (id) { return document.getElementById(id); };
@@ -353,6 +380,7 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
   }
 
   function render(keepScroll) {
+    if (mode === 'queue' && queue.length) { renderQueue(keepScroll); return; }
     var y = window.scrollY;
     renderMeter(); renderList();
     var main = $('main'); main.textContent = '';
@@ -413,6 +441,121 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
     if (keepScroll) window.scrollTo(0, y);
   }
 
+  var CASE = function (id) { return data.cases.filter(function (c) { return c.id === id; })[0]; };
+  var WHY = { integrity: 'integrity gate', contested: 'models disagree', disputed: 'models say not a problem', missed: 'a model saw a problem the tool missed', flipped: 'models changed their mind', 'audit-hit': 'audit: all agreed', 'audit-clear': 'audit: all agreed no problem' };
+
+  /** The diff hunks that touch a test: the new side for a test that exists, the old side for a removed one. */
+  function hunksFor(diff, t, removed) {
+    if (!diff) return '';
+    var parts = diff.split(/\n(?=@@ )/), out = [];
+    parts.forEach(function (h) {
+      var m = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/.exec(h); if (!m) return;
+      var start = removed ? +m[1] : +m[3], len = removed ? (m[2] === undefined ? 1 : +m[2]) : (m[4] === undefined ? 1 : +m[4]);
+      if (start <= t.endLine && start + len - 1 >= t.line) out.push(h);
+    });
+    return out.join('\n');
+  }
+
+  function saveAnswer(item, a) {
+    if (answers[item.id] === a) delete answers[item.id]; else answers[item.id] = a;
+    var v = answers[item.id];
+    try { if (v) localStorage.setItem('cd-review-' + item.id, v); else localStorage.removeItem('cd-review-' + item.id); } catch (e) {}
+    if (db) {
+      var ref = db.doc('review/' + item.id);
+      (v ? ref.set({ answer: v, key: item.case + '|' + item.test + '|' + item.rule, at: Date.now() }) : ref.delete()).then(function () { $('sync').textContent = 'all saved'; }, function () { $('sync').textContent = 'could not save — export before closing'; });
+    }
+    if (v) { var n = qpos + 1; if (n < queue.length) qpos = n; }
+    render();
+  }
+
+  function renderQueue() {
+    var main = $('main'); main.textContent = '';
+    var done = 0, req = 0, reqDone = 0;
+    queue.forEach(function (i) { var a = !!answers[i.id]; if (a) done++; if (i.required) { req++; if (a) reqDone++; } });
+    $('count').textContent = done + ' of ' + queue.length + ' answered (' + reqDone + ' of ' + req + ' required)';
+    $('bar').style.width = (100 * done / queue.length) + '%';
+    var item = queue[qpos], c = CASE(item.case);
+    var all = c ? c.tests.concat(c.removed) : [], t = all.filter(function (x) { return x.id === item.test; })[0];
+    var removed = c && c.removed.indexOf(t) >= 0;
+
+    if (reqDone === req && req > 0) main.appendChild(el('div', { class: 'banner', text: 'Every required item is answered. The rest are audits: stop whenever you like.' }));
+
+    var card = el('article', { class: 'qcard' });
+    var head = el('div', { class: 'qhead' }, [el('span', { class: 'qn', text: 'Item ' + (qpos + 1) + ' of ' + queue.length })]);
+    item.why.forEach(function (w) { head.appendChild(el('span', { class: 'why' + (item.required ? ' req' : ''), text: WHY[w] || w })); });
+    if (!item.required) head.appendChild(el('span', { class: 'why', text: 'optional' }));
+    card.appendChild(head);
+
+    card.appendChild(el('div', { class: 'qq' }, [
+      el('span', { class: 'muted', text: (c ? c.repo + ' · ' + c.path : item.case) + (removed ? ' · removed in this change' : '') }),
+      el('span', { class: 'qd', text: 'Does this test have this problem?' }),
+      el('span', { class: 'qr', text: item.rule }),
+      el('span', { text: RULES[item.rule] || '' }),
+      showCues && CUES[item.rule] ? el('span', { class: 'muted', text: 'Yes if: ' + CUES[item.rule][0] + '   No if: ' + CUES[item.rule][1] }) : null
+    ]));
+    card.appendChild(el('div', { class: 'qeng' }, item.engine
+      ? [el('b', { text: 'crashdummy says: ' }), document.createTextNode(item.engine)]
+      : [el('b', { text: 'crashdummy ' }), document.createTextNode('reports nothing for this test and rule.')]));
+
+    var vg = el('div', { class: 'votes' });
+    ['opus', 'sonnet', 'haiku'].forEach(function (m) {
+      var v = item.votes[m] || {}, r2 = v.r2 || '—', r1 = v.r1 || '—';
+      vg.appendChild(el('span', { text: m }));
+      vg.appendChild(el('span', { class: 'vote ' + (v.r2 || ''), text: r2 }, r1 !== r2 ? [el('small', { text: '  (was ' + r1 + ')' })] : []));
+      vg.appendChild(el('span', { class: 'muted', text: item.reasons[m] || '' }));
+    });
+    card.appendChild(vg);
+
+    if (c && t) {
+      if (item.rule.indexOf('integrity/') === 0) {
+        var h = hunksFor(c.diff, t, removed);
+        card.appendChild(el('div', { class: 'qeng', text: 'What changed around this test:' }));
+        card.appendChild(h ? diffBlock(h) : el('div', { class: 'qeng muted', text: 'No diff lines overlap this test.' }));
+      }
+      card.appendChild(el('div', { class: 'qeng', text: removed ? 'The test as it was before:' : 'The test now:' }));
+      card.appendChild(codeBlock(t.source, t.line));
+      var cx = t.context || { helpers: [] };
+      if (cx.helpers.length) {
+        var det = el('details', { class: 'ctx' }, [el('summary', { text: 'Helpers it calls (' + cx.helpers.length + ')' })]);
+        cx.helpers.forEach(function (hh) { det.appendChild(el('div', { class: 'imp', text: 'Defined in this file: ' + hh.name })); det.appendChild(codeBlock(hh.source, 1)); });
+        card.appendChild(det);
+      }
+    }
+
+    var cur2 = answers[item.id];
+    var ans = el('div', { class: 'answers' });
+    [['yes', 'Yes, it has this problem', 'y'], ['no', 'No', 'n'], ['unsure', 'Unsure', 'u']].forEach(function (p) {
+      ans.appendChild(el('button', { class: 'btn ' + p[0], 'aria-pressed': String(cur2 === p[0]), text: p[1] + ' (' + p[2] + ')', onclick: function () { saveAnswer(item, p[0]); } }));
+    });
+    ans.appendChild(el('span', { class: 'sp', style: 'flex:1' }));
+    ans.appendChild(el('button', { class: 'btn', text: 'Back (b)', onclick: function () { qpos = Math.max(0, qpos - 1); render(); } }));
+    ans.appendChild(el('button', { class: 'btn', text: 'Skip (s)', onclick: function () { qpos = Math.min(queue.length - 1, qpos + 1); render(); } }));
+    ans.appendChild(el('button', { class: 'btn', text: 'Next unanswered (n→)', onclick: function () { nextUnanswered(); } }));
+    card.appendChild(ans);
+    main.appendChild(card);
+    window.scrollTo(0, 0);
+  }
+
+  function nextUnanswered() {
+    for (var i = 1; i <= queue.length; i++) { var k = (qpos + i) % queue.length; if (!answers[queue[k].id]) { qpos = k; render(); return; } }
+    toast('Everything in the queue is answered.');
+  }
+
+  function renderMode() {
+    var box = $('modeseg'); box.textContent = '';
+    if (!queue.length) { box.hidden = true; return; }
+    [['queue', 'Review queue'], ['label', 'Label tests']].forEach(function (p) {
+      box.appendChild(el('button', { text: p[1], 'aria-pressed': String(mode === p[0]), onclick: function () {
+        mode = p[0]; lsSet('cd-mode', mode); document.body.classList.toggle('qonly', mode === 'queue');
+        $('setseg').hidden = mode === 'queue'; $('next').hidden = mode === 'queue'; renderMode();
+        if (mode === 'queue') { var f = null; for (var i = 0; i < queue.length; i++) if (!answers[queue[i].id]) { f = i; break; } qpos = f === null ? 0 : f; }
+        render();
+      } }));
+    });
+    document.body.classList.toggle('qonly', mode === 'queue');
+    $('setseg').hidden = mode === 'queue'; $('next').hidden = mode === 'queue';
+  }
+
   function renderSet() {
     var box = $('setseg'); box.textContent = '';
     [['random', 'Random set'], ['targeted', 'Targeted'], ['all', 'All']].forEach(function (p) {
@@ -463,6 +606,13 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
       if (S.note) entry.note = S.note;
       out.cases[c.id] = entry;
     });
+    // answers from the review queue are human labels for one test and rule each
+    queue.forEach(function (i) {
+      var a = answers[i.id]; if (!a) return;
+      var ce = out.cases[i.case] || (out.cases[i.case] = { tests: {} });
+      var te = ce.tests[i.test] || (ce.tests[i.test] = {});
+      te[i.rule] = { label: a };
+    });
     return JSON.stringify(out, null, 2) + '\n';
   }
 
@@ -499,6 +649,16 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
     document.addEventListener('keydown', function (e) {
       if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
       if (e.key === 'Enter' && e.target && e.target.tagName === 'BUTTON') return;
+      if (mode === 'queue' && queue.length) {
+        var it = queue[qpos];
+        if (e.key === 'y') saveAnswer(it, 'yes');
+        else if (e.key === 'n') saveAnswer(it, 'no');
+        else if (e.key === 'u') saveAnswer(it, 'unsure');
+        else if (e.key === 'b') { qpos = Math.max(0, qpos - 1); render(); }
+        else if (e.key === 's' || e.key === 'ArrowRight') { qpos = Math.min(queue.length - 1, qpos + 1); render(); }
+        else if (e.key === 'ArrowLeft') { qpos = Math.max(0, qpos - 1); render(); }
+        return;
+      }
       if (e.key === 'n') next();
       if (view !== 'tests' || !cur) return;
       var all = allTests(cur);
@@ -522,6 +682,15 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
       if (hit && hit.set !== setFilter) setFilter = 'all';
       renderSet(); render();
       if (hit) open(hit.id); else next();
+      return fetch('review-queue.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    }).then(function (q) {
+      if (q && q.items && q.items.length) {
+        queue = q.items;
+        queue.forEach(function (i) { var v = lsGet('cd-review-' + i.id); if (v) answers[i.id] = v; });
+        var first = 0; for (var k = 0; k < queue.length; k++) if (!answers[queue[k].id]) { first = k; break; }
+        qpos = first;
+        renderMode(); render();
+      } else { mode = 'label'; }
       return claude.use('db');
     }).then(function (handle) {
       db = handle;
@@ -536,6 +705,10 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
         $('sync').textContent = 'all saved';
         render(true);
       }, function () { $('sync').textContent = 'saved in this browser only'; db = null; });
+      db.collection('review').onSnapshot(function (snap) {
+        snap.docs.forEach(function (doc) { var v = doc.data(); if (v && v.answer) answers[doc.id] = v.answer; });
+        if (mode === 'queue' && queue.length) render();
+      }, function () {});
     }).catch(function () {
       $('main').textContent = '';
       $('main').appendChild(el('div', { class: 'empty', text: 'Could not load the case data.' }));
