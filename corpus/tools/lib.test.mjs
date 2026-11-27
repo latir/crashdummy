@@ -19,6 +19,7 @@ import {
   monthWindows,
   parseNameStatus,
   repoDirName,
+  sameLicenseText,
   usableSource,
   verifyTrailer,
 } from './lib.mjs';
@@ -209,6 +210,51 @@ describe('licences', () => {
   test('the copyright line', () => {
     expect(copyrightLine(MIT)).toBe('Copyright (c) 2024 Ada Lovelace');
     expect(copyrightLine(APACHE)).toBeNull();
+  });
+
+  test('the copyright line is not Apache clause 4(c) or the appendix template', () => {
+    const apache = `${APACHE}
+      4. Redistribution.
+      (a) You must give any other recipients of the Work a copy of this License; and
+      (c) You must retain, in the Source form of any Derivative Works that You distribute,
+          all copyright, patent, trademark, and attribution notices from the Source form
+      APPENDIX: How to apply the Apache License to your work.
+      Copyright [yyyy] [name of copyright owner]
+
+   Copyright 2023-present Operately doo
+`;
+    expect(copyrightLine(apache)).toBe('Copyright 2023-present Operately doo');
+    // clause text alone is no copyright line
+    expect(
+      copyrightLine('(c) You must retain, in the Source form\nCopyright [yyyy] [owner]'),
+    ).toBeNull();
+  });
+
+  test.each([
+    ['Copyright (c) Microsoft Corporation', 'Copyright (c) Microsoft Corporation'],
+    ['Copyright © 2024 Ada', 'Copyright © 2024 Ada'],
+    ['© 2024 Ada', '© 2024 Ada'],
+    ['(c) 2024 Ada', '(c) 2024 Ada'],
+    ['copyright license to reproduce\nCopyright 2020 Bo', 'Copyright 2020 Bo'],
+    ['(c) You must retain\n(c) 2019 Cy', '(c) 2019 Cy'],
+  ])('copyright line of %j', (text, expected) => {
+    expect(copyrightLine(text)).toBe(expected);
+  });
+});
+
+describe('sameLicenseText', () => {
+  const MIT =
+    'MIT License\n\nCopyright (c) 2024 Ada Lovelace\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software.\n';
+  const ISC =
+    'ISC License\n\nCopyright (c) 2024 Ada\n\nPermission to use, copy, modify, and/or distribute this software for any purpose.\n';
+  test('ignores whitespace, case and copyright lines', () => {
+    expect(sameLicenseText(MIT, MIT.replace('Ada Lovelace', 'Someone Else'))).toBe(true);
+    expect(sameLicenseText(MIT, MIT.replace(/\n/g, '\r\n').toUpperCase())).toBe(true);
+    expect(sameLicenseText(MIT, `${MIT}\n\nCopyright (c) 2025 Another`)).toBe(true);
+  });
+  test('a different text is different', () => {
+    expect(sameLicenseText(MIT, `${MIT}\nAdditional clause.`)).toBe(false);
+    expect(sameLicenseText(MIT, ISC)).toBe(false);
   });
 });
 

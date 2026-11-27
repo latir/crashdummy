@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
@@ -13,6 +13,8 @@ afterEach(() => rmSync(dir, { recursive: true, force: true }));
 
 const MIT =
   'MIT License\n\nCopyright (c) 2024 Ada\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software, to deal in the Software without restriction.\n';
+const ISC =
+  'ISC License\n\nCopyright (c) 2024 Bo\n\nPermission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted.\n';
 const GPL = 'GNU GENERAL PUBLIC LICENSE\nVersion 3, 29 June 2007\n';
 const body = (name, n = 14) =>
   `import { test, expect } from 'vitest';\n${Array.from({ length: n }, (_, i) => `// ${name} ${i}`).join('\n')}\ntest('${name}', () => { expect(1).toBe(1); });\n`;
@@ -96,6 +98,79 @@ describe('fetchCommits', () => {
     expect(readFileSync(join(pool.dir, 'files', a.id, 'before.txt'), 'utf8')).toContain('// a 0');
     const b = kept.find((c) => c.path === 'src/b.spec.ts');
     expect(b).toMatchObject({ status: 'A', hasBefore: false });
+  });
+
+  /** A repository from commits given as {path: text|null}, the last of them the one fetched. */
+  function history(name, commits) {
+    const path = join(dir, 'remotes', name);
+    mkdirSync(path, { recursive: true });
+    const git = (...args) =>
+      execFileSync('git', ['-c', 'user.email=a@b.c', '-c', 'user.name=t', ...args], {
+        cwd: path,
+        encoding: 'utf8',
+      });
+    git('init', '-q', '-b', 'main');
+    git('config', 'uploadpack.allowAnySHA1InWant', 'true');
+    git('config', 'uploadpack.allowFilter', 'true');
+    commits.forEach((files, i) => {
+      for (const [file, text] of Object.entries(files)) {
+        if (text === null) git('rm', '-q', file);
+        else {
+          mkdirSync(join(path, file, '..'), { recursive: true });
+          writeFileSync(join(path, file), text);
+        }
+      }
+      git('add', '-A');
+      git('commit', '-q', '-m', `c${i}\n\nCo-Authored-By: Claude <noreply@anthropic.com>`);
+    });
+    return { path, sha: git('rev-parse', 'HEAD').trim() };
+  }
+
+  test('the old version of a file renamed out of a restricted directory is not kept', async () => {
+    const r = history('renamed', [
+      { LICENSE: MIT, 'ee/x.test.ts': body('x') },
+      { 'ee/x.test.ts': null, 'src/x.test.ts': body('x').replace('// x 3', '// x three') },
+    ]);
+    const pool = new Pool(join(dir, 'pool'));
+    pool.append(pool.commits, commit('acme/renamed', r.sha));
+    const stats = await fetchCommits(
+      pool,
+      { limit: 100, perRepo: 5 },
+      io({ 'acme/renamed': r.path }),
+    );
+    const kept = pool.readLines(pool.candidates);
+    expect(kept).toHaveLength(1);
+    expect(kept[0]).toMatchObject({ path: 'src/x.test.ts', status: 'R', hasBefore: false });
+    expect(existsSync(join(pool.dir, 'files', kept[0].id, 'before.txt'))).toBe(false);
+    expect(stats.skipped['before-license']).toBe(1);
+  });
+
+  test('the old version is not kept when the parent commit had another licence', async () => {
+    const r = history('relicensed', [
+      { LICENSE: ISC, 'src/y.test.ts': body('y') },
+      { LICENSE: MIT, 'src/y.test.ts': body('y-changed') },
+    ]);
+    const pool = new Pool(join(dir, 'pool'));
+    pool.append(pool.commits, commit('acme/relicensed', r.sha));
+    await fetchCommits(pool, { limit: 100, perRepo: 5 }, io({ 'acme/relicensed': r.path }));
+    const kept = pool.readLines(pool.candidates);
+    expect(kept).toHaveLength(1);
+    expect(kept[0]).toMatchObject({ license: 'MIT', hasBefore: false });
+  });
+
+  test('a file in a package with a different permissive licence is not taken', async () => {
+    const r = history('mixed', [
+      { LICENSE: MIT, 'packages/isc/LICENSE': ISC, 'packages/isc/z.test.ts': body('z') },
+    ]);
+    const pool = new Pool(join(dir, 'pool'));
+    pool.append(pool.commits, commit('acme/mixed', r.sha));
+    const stats = await fetchCommits(
+      pool,
+      { limit: 100, perRepo: 5 },
+      io({ 'acme/mixed': r.path }),
+    );
+    expect(pool.readLines(pool.candidates)).toEqual([]);
+    expect(stats.skipped['nested-license']).toBe(1);
   });
 
   test('a file under a licence that does not allow copying is not taken', async () => {
@@ -362,6 +437,11 @@ describe('nested licences', () => {
     write('packages/a/src/x.test.ts', body('x'));
     write('packages/b/LICENSE.md', GPL);
     write('packages/b/y.test.ts', body('y'));
+    write('packages/d/LICENSE', ISC);
+    write('packages/d/w.test.ts', body('w'));
+    // the same text as the root with another holder is still the root's licence
+    write('packages/e/LICENSE', MIT.replace('Ada', 'Cy'));
+    write('packages/e/v.test.ts', body('v'));
     write('c/z.test.ts', body('z'));
     git('add', '-A');
     git('commit', '-q', '-m', 'init');
@@ -378,6 +458,18 @@ describe('nested licences', () => {
     expect(await nestedLicenseProblem(defaultIo, path, sha, 'packages/b/y.test.ts')).toBe(
       'packages/b/LICENSE.md is not permissive',
     );
+  });
+
+  test('a package under another permissive licence is not the root licence', async () => {
+    const { path, sha } = monorepo();
+    expect(await nestedLicenseProblem(defaultIo, path, sha, 'packages/d/w.test.ts')).toBe(
+      'packages/d/LICENSE differs from the root licence',
+    );
+  });
+
+  test('the same licence text with another copyright holder is fine', async () => {
+    const { path, sha } = monorepo();
+    expect(await nestedLicenseProblem(defaultIo, path, sha, 'packages/e/v.test.ts')).toBeNull();
   });
 
   test('a directory with no licence of its own is covered by the root', async () => {
