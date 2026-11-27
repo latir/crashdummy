@@ -4,55 +4,86 @@
 //
 //   node corpus/tools/audit.mjs
 
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defaultIo, git, nestedLicenseProblem, showBlob } from './harvest.mjs';
-import {
-  PERMISSIVE,
-  classifyLicense,
-  findLicenseFile,
-  isRestrictedPath,
-  repoDirName,
-} from './lib.mjs';
+import { defaultIo, git, rootLicense, sourceLicenseProblem } from './harvest.mjs';
+import { parseNameStatus, repoDirName } from './lib.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-/** Why a case must not be used, or null when it passes. */
+
+/**
+ * Why a case must not be used, or null when it passes. Both sides are checked: the new file at
+ * the pinned commit, and, for a case with a before file, the old file at the parent commit and
+ * its old path (a rename can come out of a restricted directory, and a licence can change
+ * between the two commits).
+ */
 export async function auditCase(io, repoDir, meta) {
-  const names = (await git(io, repoDir, ['ls-tree', '--name-only', meta.commit])).stdout.split(
-    '\n',
-  );
-  const file = findLicenseFile(names.filter(Boolean));
-  if (!file) return 'no licence file';
-  const text = await showBlob(io, repoDir, meta.commit, file);
-  if (text === undefined) return `could not read ${file}`;
-  const license = classifyLicense(text);
-  if (!license || !PERMISSIVE.has(license)) return `licence is not permissive (${file})`;
-  if (isRestrictedPath(meta.path)) return 'path is under a restricted directory';
-  const nested = await nestedLicenseProblem(io, repoDir, meta.commit, meta.path);
-  if (nested) return nested;
+  const after = await sourceLicenseProblem(io, repoDir, meta.commit, meta.path);
+  if (after) return after;
+  if (meta.hasBefore === true) {
+    const before = await beforeProblem(io, repoDir, meta);
+    if (before) return `before: ${before}`;
+  }
   return null;
 }
 
-async function main() {
-  const casesDir = join(root, 'cases');
+async function beforeProblem(io, repoDir, meta) {
+  const parents = (await git(io, repoDir, ['rev-list', '--parents', '-n', '1', meta.commit])).stdout
+    .trim()
+    .split(' ')
+    .slice(1);
+  if (parents.length !== 1) return 'cannot find the parent commit';
+  const diff = (
+    await git(io, repoDir, [
+      'diff-tree',
+      '-z',
+      '--root',
+      '--no-commit-id',
+      '--name-status',
+      '-r',
+      '-M',
+      meta.commit,
+    ])
+  ).stdout;
+  const change = parseNameStatus(diff).find((c) => c.path === meta.path);
+  const oldPath = change?.oldPath ?? meta.path;
+  const reference = (await rootLicense(io, repoDir, meta.commit))?.text;
+  if (reference === undefined) return 'no licence file';
+  return sourceLicenseProblem(io, repoDir, parents[0], oldPath, reference);
+}
+
+/** Audits every case folder in `casesDir`. A folder that cannot be read counts as a failure. */
+export async function auditCases(io, casesDir, poolReposDir) {
   const bad = [];
   for (const name of readdirSync(casesDir).sort()) {
     let meta;
     try {
       meta = JSON.parse(readFileSync(join(casesDir, name, 'meta.json'), 'utf8'));
-    } catch {
+      if (typeof meta?.repo !== 'string' || typeof meta.commit !== 'string') {
+        throw new Error('meta.json has no repo or commit');
+      }
+    } catch (err) {
+      bad.push({ id: name, repo: '?', why: `meta.json is missing or invalid: ${firstLine(err)}` });
       continue;
     }
-    const dir = join(root, '.pool', 'repos', repoDirName(meta.repo));
     let why;
     try {
-      why = await auditCase(defaultIo, dir, meta);
+      const dir = join(poolReposDir, repoDirName(meta.repo));
+      if (!existsSync(dir)) throw new Error('no clone of the repository in the pool');
+      why = await auditCase(io, dir, meta);
     } catch (err) {
-      why = `could not check: ${String(err.message ?? err).split('\n')[0]}`;
+      why = `could not check: ${firstLine(err)}`;
     }
     if (why) bad.push({ id: name, repo: meta.repo, why });
   }
+  return bad;
+}
+
+const firstLine = (err) => String(err?.message ?? err).split('\n')[0];
+
+async function main() {
+  const bad = await auditCases(defaultIo, join(root, 'cases'), join(root, '.pool', 'repos'));
   for (const b of bad) console.log(`${b.id}  ${b.repo}: ${b.why}`);
   console.log(`${bad.length} case(s) fail`);
   return bad.length ? 1 : 0;

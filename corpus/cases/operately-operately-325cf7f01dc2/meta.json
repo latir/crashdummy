@@ -10,7 +10,7 @@
   "date": "2026-07-31T15:49:43.000-03:00",
   "license": "Apache-2.0",
   "licenseFile": "LICENSE",
-  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "copyright": "Copyright 2023-present Operately doo",
   "framework": "jest",
   "tests": 7,
   "hasBefore": true

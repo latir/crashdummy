@@ -10,7 +10,7 @@
   "date": "2026-06-30T17:04:55.000-04:00",
   "license": "Apache-2.0",
   "licenseFile": "LICENSE",
-  "copyright": "(c) You must retain, in the Source form of any Derivative Works",
+  "copyright": "Copyright 2026 Zeta contributors",
   "framework": "unknown",
   "tests": 18,
   "hasBefore": true
