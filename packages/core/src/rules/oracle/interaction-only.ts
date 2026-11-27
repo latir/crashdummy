@@ -2,9 +2,12 @@ import { child, children, isFunction, isNode, str, unwrap, type AstNode } from '
 import { oracleFinding, isDisabled } from './finding.js';
 import type { OracleRule } from './types.js';
 
-// `toHaveReturnedWith(x)` and friends check the value that came back, so they are not here
+// Only "was it called" and "how many times". `toHaveBeenCalledWith(x)` pins what the code handed
+// to a collaborator, which is how a test sees output that leaves through a port (a logger, a
+// sender, an exit function), and `toHaveReturnedWith(x)` checks the value that came back. Neither
+// is here.
 const INTERACTION =
-  /^(toHaveBeen(Nth|Last)?Called|toBeCalled|lastCalledWith|nthCalledWith|toHaveReturned(Times)?$|toReturn(Times)?$)/;
+  /^(toHaveBeenCalled(Times)?|toBeCalled(Times)?|toHaveReturned(Times)?|toReturn(Times)?)$/;
 
 const NO_CALL = /^(toHaveBeenCalled|toBeCalled)$/;
 

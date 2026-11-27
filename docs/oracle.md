@@ -43,6 +43,10 @@ It reports a test only when none of its assertions checks what a value is. One r
 
 A test that asserts `not.toHaveBeenCalled()` is checking that nothing was sent. That is the behaviour, so it is not reported.
 
+## What `oracle/interaction-only` leaves alone
+
+Only "was it called" and "how many times" count as an interaction check: `toHaveBeenCalled()`, `toHaveBeenCalledTimes(n)` and their aliases. A test that pins the arguments (`toHaveBeenCalledWith(...)`, `toHaveBeenCalledExactlyOnceWith(...)`) is checking what the code handed to a logger, a sender or an exit function, which is its output. It is not reported.
+
 ## What it does not do
 
 - Tests marked `skip`, `todo` or `fixme` are not judged. Turning a test off is the integrity layer's concern.
