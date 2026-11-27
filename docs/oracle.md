@@ -18,13 +18,15 @@ Oracle rules ask one question of a single test file: does each test check what t
 
 ## Custom assertion helpers
 
-A helper imported from another file cannot be followed, so `oracle/no-assertion` would report tests that only call it. List its name in `assertFunctionNames` (`*` is a wildcard, matched against the dotted call path):
+A helper imported from another file cannot be followed, so crashdummy goes by its name. A function called `expectX` or `assertX` (an upper-case letter or `_` after the prefix, so `expectNoViolations` and `assertValid_`, not `expected` or `assertion`) counts as an assertion without any configuration, and so does a method such as `helpers.expectOk()`. What it checks is up to the helper, so it counts as an assertion but never as a strong one.
+
+Any other name has to be listed in `assertFunctionNames` (`*` is a wildcard, matched against the dotted call path):
 
 ```json
-{ "assertFunctionNames": ["expectValid", "check*", "helpers.expectOk"] }
+{ "assertFunctionNames": ["verifyReady", "check*", "helpers.verify*"] }
 ```
 
-Local helpers in the same file are followed one level deep without any configuration.
+Helpers in the same file are followed one level deep without any configuration, whatever they are called. That includes one named `expectOk`: if its body asserts nothing, calling it is not an assertion. The name is only trusted when the code cannot be read.
 
 ## What counts as an assertion
 

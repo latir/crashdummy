@@ -40,7 +40,7 @@ export interface SummaryOptions {
 }
 
 /** Bump when the summary shape or its derivation changes, so stale caches are ignored. */
-export const SUMMARY_VERSION = 6;
+export const SUMMARY_VERSION = 7;
 
 export function hashText(text: string): string {
   return createHash('sha1').update(text).digest('hex').slice(0, 16);
@@ -268,6 +268,9 @@ const STRICT_METHODS: Record<string, string> = {
 
 const CALL_WITH = /^(toHaveBeen(Nth|Last)?CalledWith|toBeCalledWith|lastCalledWith|nthCalledWith)$/;
 
+/** A function named like a check: `expectNoViolations`, `assertValid`. Not `expected` or `assertion`. */
+const HELPER_NAME = /^(expect|assert)[A-Z_]/;
+
 const ASSERT_MODULES = new Set(['assert', 'node:assert']);
 const ASSERT_STRICT_MODULES = new Set(['assert/strict', 'node:assert/strict']);
 
@@ -293,6 +296,8 @@ class AssertionFinder {
     private readonly lookup: (name: string) => BindingInfo | undefined,
     /** Whether the file is a `node:test` file. */
     private readonly isNodeTest: () => boolean,
+    /** Whether a call path names a function or method written in this file, which is followed. */
+    private readonly isLocal: (path: string[]) => boolean,
   ) {}
 
   find(call: AstNode): Assertion | undefined {
@@ -314,6 +319,20 @@ class AssertionFinder {
     if (asserted) return asserted;
 
     if (path[0] !== 'expect' && this.custom.some((re) => re.test(path.join('.')))) {
+      return { ref: { name: path.join('.') }, subject: args[0], custom: true };
+    }
+    // `expectValid(x)`, `assertNoViolations(x)`: by convention a function named like this checks
+    // something. One imported from another file cannot be followed, so the name has to do. One
+    // written in this file is followed instead, so a local `expectOk` that checks nothing still
+    // counts as nothing.
+    const last = path[path.length - 1] ?? '';
+    if (
+      path[0] !== 'expect' &&
+      path[0] !== 'assert' &&
+      path[0] !== 'expectTypeOf' &&
+      HELPER_NAME.test(last) &&
+      !this.isLocal(path)
+    ) {
       return { ref: { name: path.join('.') }, subject: args[0], custom: true };
     }
     return undefined;
@@ -816,6 +835,13 @@ export function createSummaryCollector(options: SummaryOptions = {}): SummaryCol
     norm,
     (name) => scope.lookup(name),
     () => frameworkImports.includes('node-test'),
+    (path) => {
+      const binding = scope.lookup(path[0] ?? '');
+      return (
+        binding?.helper !== undefined ||
+        (path.length > 1 && binding?.methods?.has(path[1] ?? '') === true)
+      );
+    },
   );
 
   const imports: string[] = [];
