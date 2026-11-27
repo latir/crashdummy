@@ -103,6 +103,11 @@ export interface Finding {
   loc?: { line: number; col: number };
   /** The test it is about, as `TestCase.id`, when it is about one test. Scores are per test. */
   test?: string;
+  /**
+   * The tests it is about, when one finding covers several (`modifier-added` groups the tests that
+   * were turned off together). `test` is set instead when there is just one.
+   */
+  tests?: string[];
   /** One line, agent-readable. */
   message: string;
   /** How to fix it. */

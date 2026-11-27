@@ -27,6 +27,7 @@ export const assertionsDropped: IntegrityRule = {
       findings.push(
         gateFinding(this.id, ctx.file, {
           loc: after.loc,
+          test: after.id,
           message: `test '${after.id}' has ${now} assertion${now === 1 ? '' : 's'}, it had ${was}`,
           hint: 'Restore the removed assertions. If dropping them is intended, add `// crashdummy-allow integrity/assertions-dropped: <reason>` above the test.',
         }),
