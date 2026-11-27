@@ -213,28 +213,12 @@ used under the licence of the repository it came from, listed below. Each case f
 - Commit: e79b3fad0f37
 - Files: 1
 
-## getsentry/sentry
-
-- Licence: Apache-2.0
-- Copyright 2008-2024 Functional Software, Inc. dba Sentry
-- Source: https://github.com/getsentry/sentry
-- Commit: cb61c7825c5c
-- Files: 2
-
 ## githubnext/ado-aw
 
 - Licence: MIT
 - Copyright (c) 2026 GitHub Next
 - Source: https://github.com/githubnext/ado-aw
 - Commit: 2eb5ec3d304f
-- Files: 1
-
-## goosy-benchmark/sentry-graphite
-
-- Licence: Apache-2.0
-- Copyright 2008-2024 Functional Software, Inc. dba Sentry
-- Source: https://github.com/goosy-benchmark/sentry-graphite
-- Commit: 5c74d412fa80
 - Files: 1
 
 ## gregmeyer/some-useful-agents
@@ -298,14 +282,6 @@ used under the licence of the repository it came from, listed below. Each case f
 - Copyright (c) 2026 devswha
 - Source: https://github.com/jeanlorencini/herdr-web-ui
 - Commit: a32ffd97420c
-- Files: 1
-
-## jkalasas/lightdash
-
-- Licence: MIT
-- Copyright (c) 2021-present Telescope Technology Limited (trading as “Lightdash”)
-- Source: https://github.com/jkalasas/lightdash
-- Commit: e484d8ffb45f
 - Files: 1
 
 ## Kenastark/Provenance
@@ -444,14 +420,6 @@ used under the licence of the repository it came from, listed below. Each case f
 - Commit: 1d23cb6962f5
 - Files: 1
 
-## neokapi/neokapi
-
-- Licence: Apache-2.0
-- (c) You must retain, in the Source form of any Derivative Works
-- Source: https://github.com/neokapi/neokapi
-- Commit: 9ed3c94b9581
-- Files: 1
-
 ## nubbymong/ai-code-conductor
 
 - Licence: MIT
@@ -522,14 +490,6 @@ used under the licence of the repository it came from, listed below. Each case f
 - Copyright (c) 2026 sinmentis (shunlyu.com)
 - Source: https://github.com/sinmentis/rummycube
 - Commit: db2a1aca501c
-- Files: 1
-
-## sricharan-technoidentity/Kody
-
-- Licence: Apache-2.0
-- Copyright 2026 Kent C. Dodds
-- Source: https://github.com/sricharan-technoidentity/Kody
-- Commit: 285ad37a2474
 - Files: 1
 
 ## tamirarnesty/ploutizo

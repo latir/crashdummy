@@ -130,7 +130,7 @@ export function describeTests(core, path, source) {
   return { tests };
 }
 
-export async function buildLabelData({ casesDir, core }) {
+export async function buildLabelData({ casesDir, core, selection }) {
   const cases = [];
   for (const name of readdirSync(casesDir).sort()) {
     const dir = join(casesDir, name);
@@ -182,12 +182,21 @@ export async function buildLabelData({ casesDir, core }) {
       removed,
     });
   }
-  return { schema: 1, rules: [...ORACLE_RULES, ...DIFF_RULES, ...REMOVED_RULES], cases };
+  // cases taken out of the corpus after labelling started (see selection.json); label files may
+  // still mention them
+  const removed = (selection?.removed ?? []).map((r) => r.id);
+  return {
+    schema: 1,
+    rules: [...ORACLE_RULES, ...DIFF_RULES, ...REMOVED_RULES],
+    removed,
+    cases,
+  };
 }
 
 async function main() {
   const core = await import(pathToFileURL(join(root, 'packages/core/dist/index.js')).href);
-  const data = await buildLabelData({ casesDir: join(root, 'corpus/cases'), core });
+  const selection = JSON.parse(readFileSync(join(root, 'corpus/selection.json'), 'utf8'));
+  const data = await buildLabelData({ casesDir: join(root, 'corpus/cases'), core, selection });
   writeFileSync(join(root, 'corpus/label-data.json'), JSON.stringify(data) + '\n');
   const tests = data.cases.reduce((n, c) => n + c.tests.length + c.removed.length, 0);
   console.log(`${data.cases.length} cases, ${tests} tests`);

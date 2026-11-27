@@ -104,10 +104,13 @@ export function findLicenseFile(names) {
  */
 export function classifyLicense(text) {
   const t = text.replace(/\s+/g, ' ').toLowerCase();
+  // Whatever the grant says, a restriction anywhere in the text means it is no longer the
+  // standard licence. This comes first: the Functional Source License and similar name Apache 2.0
+  // as the licence the code turns into later, which is not the licence it has now.
+  if (RESTRICTION.test(t) || DEFERRED_GRANT.test(t)) return null;
   if (t.includes('apache license') && t.includes('version 2.0')) return 'Apache-2.0';
-  // MIT, ISC and BSD are short, and people append their own conditions to them. Whatever the
-  // grant says, a restriction anywhere in the text means it is no longer the standard licence.
-  if (RESTRICTION.test(t)) return null;
+  // MIT, ISC and BSD are short, and people append their own conditions or carve-outs to them
+  if (CARVE_OUT.test(t)) return null;
   if (t.includes('permission is hereby granted, free of charge')) return 'MIT';
   if (t.includes('permission to use, copy, modify, and/or distribute this software')) return 'ISC';
   if (t.includes('redistribution and use in source and binary forms')) {
@@ -123,6 +126,24 @@ export function classifyLicense(text) {
 
 const RESTRICTION =
   /non-?commercial|not for commercial|no commercial use|commercial use (is )?(prohibited|not (allowed|permitted))|(may|can) not be (used|sold|redistributed) (commercially|for)|only be used for|for (personal|educational|research) (use )?only|additional condition/;
+
+/** Source-available licences: free to read, with limits, or free only after a delay. */
+const DEFERRED_GRANT =
+  /functional source license|business source license|fair source|elastic license|sustainable use license|server side public license|polyform|commons clause|source[- ]available|competing use|change date|change license|future license/;
+
+/** A permissive licence that leaves parts of the repository under something else. */
+const CARVE_OUT =
+  /(except|excluding|excluded|other than|not covered by|separate licen[cs]e|different licen[cs]e)\b[^.]{0,200}(\/ee\b|\bee\/|enterprise|commercial|proprietary)/;
+
+/**
+ * Directories repositories use for code under a different, usually commercial, licence. A path
+ * inside one is not covered by the licence at the top of the repository.
+ */
+const RESTRICTED_DIRS = /(^|\/)(ee|enterprise|commercial|proprietary|premium)(\/|$)/i;
+
+export function isRestrictedPath(path) {
+  return RESTRICTED_DIRS.test(path);
+}
 
 export const PERMISSIVE = new Set(['MIT', 'Apache-2.0', 'ISC', 'BSD-2-Clause', 'BSD-3-Clause']);
 

@@ -34,7 +34,8 @@ export function validate(data, labels) {
   for (const [caseId, entry] of Object.entries(cases)) {
     const c = byCase.get(caseId);
     if (!c) {
-      errors.push(`unknown case ${caseId}`);
+      // taken out of the corpus after labelling started
+      if (!(data.removed ?? []).includes(caseId)) errors.push(`unknown case ${caseId}`);
       continue;
     }
     if (entry.file !== 'good' && entry.file !== 'weak')

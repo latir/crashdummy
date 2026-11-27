@@ -56,7 +56,6 @@
     "lucent-financial-group-zeta-3bb878cde226",
     "ljcl-intervals-mcp-5f27b9fa475a",
     "commandershadow9-sicherheitsdienst-tool-adc2482e6625",
-    "getsentry-sentry-59d4566a5f45",
     "itsomidkarami-kraft-5f727fb34e3a",
     "andreisavu-ambion-15d37b11b140",
     "cbrown564-alt-unitedstats-0265770b5432",
@@ -69,8 +68,6 @@
     "broomva-genesis-4a39a355b7a9",
     "bamr87-zer0-mistakes-229c2fcb2dd3",
     "181192-brasscribe-5a01aa49fb7f",
-    "neokapi-neokapi-ed1c6a19c2c3",
-    "getsentry-sentry-8f76b130aa5a",
     "sinmentis-rummycube-6ab519ae3c0f",
     "mattbalza-buzz-dd821639a04a",
     "leozhengliu-pixel-flow-8833ea3282e8",
@@ -92,14 +89,12 @@
     "nampt102-devflow-912214a6755e",
     "xfuel-lab-chit402-e3e4f36a120d",
     "tjorim-worktime-1a626e1f906a",
-    "sricharan-technoidentity-kody-2eda7024f897",
     "tjorim-worktime-4efbd56fc18f",
     "cogvera-labs-next-expo-supabase-agent-harness-5b7d33a22ec8",
     "cbrown564-alt-unitedstats-0b34131ac5a1",
     "aelmanaa-hardhat-kms-0ea6aca93503",
     "actions-marketplace-validations-github-gh-aw-fir-18748a85eeb2",
     "decdn-sdk-typescript-1e28f9fd2141",
-    "goosy-benchmark-sentry-graphite-3558d7b474b8",
     "plow-pbc-tkmx-client-402de6675594",
     "timstewartj-copilot-bridge-45bd62257e58",
     "gambitnl-aralia-6e43db7b7afc",
@@ -109,7 +104,6 @@
     "acolomba-pi-claude-marketplace-063720f82ffe",
     "andreisavu-ambion-20cac635bb5d",
     "christopher-buss-bedrock-2137ed581feb",
-    "jkalasas-lightdash-02ccbbc41001",
     "threahq-threa-060483878a8c"
   ],
   "targetedFindings": {
@@ -122,5 +116,37 @@
     "oracle/swallowed-async": 1,
     "oracle/tautological-assertion": 7,
     "oracle/weak-matcher": 76
-  }
+  },
+  "removed": [
+    {
+      "id": "getsentry-sentry-59d4566a5f45",
+      "repo": "getsentry/sentry",
+      "why": "licence is not permissive (LICENSE.md)"
+    },
+    {
+      "id": "getsentry-sentry-8f76b130aa5a",
+      "repo": "getsentry/sentry",
+      "why": "licence is not permissive (LICENSE.md)"
+    },
+    {
+      "id": "goosy-benchmark-sentry-graphite-3558d7b474b8",
+      "repo": "goosy-benchmark/sentry-graphite",
+      "why": "licence is not permissive (LICENSE.md)"
+    },
+    {
+      "id": "jkalasas-lightdash-02ccbbc41001",
+      "repo": "jkalasas/lightdash",
+      "why": "path is under a restricted directory"
+    },
+    {
+      "id": "neokapi-neokapi-ed1c6a19c2c3",
+      "repo": "neokapi/neokapi",
+      "why": "bowrain/LICENSE is not permissive"
+    },
+    {
+      "id": "sricharan-technoidentity-kody-2eda7024f897",
+      "repo": "sricharan-technoidentity/Kody",
+      "why": "licence is not permissive (LICENSE)"
+    }
+  ]
 }

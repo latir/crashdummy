@@ -25,6 +25,7 @@ import {
   copyrightLine,
   detectFramework,
   findLicenseFile,
+  isRestrictedPath,
   interestingChanges,
   interleave,
   monthWindows,
@@ -163,7 +164,7 @@ export async function search(pool, options, io = defaultIo) {
   return { requests, added, rejected };
 }
 
-const git = (io, dir, args, extra = {}) =>
+export const git = (io, dir, args, extra = {}) =>
   run(
     'git',
     [
@@ -182,7 +183,7 @@ const git = (io, dir, args, extra = {}) =>
     },
   );
 
-const showBlob = async (io, dir, rev, path) => {
+export const showBlob = async (io, dir, rev, path) => {
   try {
     return (await git(io, dir, ['show', `${rev}:${path}`])).stdout;
   } catch {
@@ -191,6 +192,29 @@ const showBlob = async (io, dir, rev, path) => {
 };
 
 /** Stage 2: fetch each verified commit, check the licence, and keep its test files. */
+/**
+ * Licence files in the directories above a file, below the repository root. A package in a
+ * monorepo often carries its own copy of the same licence; one that is not permissive, or that
+ * cannot be read, means the file is not covered by the root licence. Reads trees, and the licence
+ * files themselves. Returns null when nothing is wrong, else the reason.
+ */
+export async function nestedLicenseProblem(io, dir, sha, path) {
+  const parts = path.split('/').slice(0, -1);
+  for (let i = parts.length; i >= 1; i--) {
+    const sub = parts.slice(0, i).join('/');
+    const listed = (await git(io, dir, ['ls-tree', '--name-only', sha, `${sub}/`])).stdout
+      .split('\n')
+      .filter(Boolean)
+      .map((n) => n.slice(sub.length + 1));
+    const file = findLicenseFile(listed);
+    if (!file) continue;
+    const text = await showBlob(io, dir, sha, `${sub}/${file}`);
+    const license = text === undefined ? null : classifyLicense(text);
+    if (!license || !PERMISSIVE.has(license)) return `${sub}/${file} is not permissive`;
+  }
+  return null;
+}
+
 export async function fetchCommits(pool, options, io = defaultIo) {
   const state = pool.readJson(pool.fetched, {});
   const seenContent = new Set(pool.readLines(pool.candidates).map((c) => c.contentHash));
@@ -276,7 +300,10 @@ export async function fetchCommits(pool, options, io = defaultIo) {
         commit.sha,
       ])
     ).stdout;
-    const changes = interestingChanges(parseNameStatus(names));
+    // code under ee/, enterprise/ and the like is licensed apart from the rest of the repository
+    const changes = interestingChanges(parseNameStatus(names)).filter(
+      (c) => !isRestrictedPath(c.path),
+    );
     if (changes.length === 0) {
       finish('no-test-files');
       skip('no-test-files');
@@ -289,6 +316,10 @@ export async function fetchCommits(pool, options, io = defaultIo) {
       if ((perRepo.get(commit.repo) ?? 0) >= options.perRepo || total >= options.limit) {
         capped = true; // files are left over: keep the commit pending so a higher cap can replay it
         break;
+      }
+      if (await nestedLicenseProblem(io, dir, commit.sha, change.path)) {
+        skip('nested-license');
+        continue;
       }
       const after = await showBlob(io, dir, commit.sha, change.path);
       if (after === undefined || !usableSource(after)) {

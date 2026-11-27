@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
-import { Pool, defaultIo, fetchCommits, search, status } from './harvest.mjs';
+import { Pool, defaultIo, fetchCommits, nestedLicenseProblem, search, status } from './harvest.mjs';
 
 let dir;
 beforeEach(() => {
@@ -340,5 +340,48 @@ describe('search', () => {
       },
     };
     await expect(search(pool, options, broken)).rejects.toThrow('down');
+  });
+});
+
+describe('nested licences', () => {
+  function monorepo() {
+    const path = join(dir, 'mono');
+    mkdirSync(path, { recursive: true });
+    const git = (...args) =>
+      execFileSync('git', ['-c', 'user.email=a@b.c', '-c', 'user.name=t', ...args], {
+        cwd: path,
+        encoding: 'utf8',
+      });
+    const write = (file, text) => {
+      mkdirSync(join(path, file, '..'), { recursive: true });
+      writeFileSync(join(path, file), text);
+    };
+    git('init', '-q');
+    write('LICENSE', MIT);
+    write('packages/a/LICENSE', MIT);
+    write('packages/a/src/x.test.ts', body('x'));
+    write('packages/b/LICENSE.md', GPL);
+    write('packages/b/y.test.ts', body('y'));
+    write('c/z.test.ts', body('z'));
+    git('add', '-A');
+    git('commit', '-q', '-m', 'init');
+    return { path, sha: git('rev-parse', 'HEAD').trim() };
+  }
+
+  test('a package carrying the same permissive licence is fine', async () => {
+    const { path, sha } = monorepo();
+    expect(await nestedLicenseProblem(defaultIo, path, sha, 'packages/a/src/x.test.ts')).toBeNull();
+  });
+
+  test('a package under a different licence is reported', async () => {
+    const { path, sha } = monorepo();
+    expect(await nestedLicenseProblem(defaultIo, path, sha, 'packages/b/y.test.ts')).toBe(
+      'packages/b/LICENSE.md is not permissive',
+    );
+  });
+
+  test('a directory with no licence of its own is covered by the root', async () => {
+    const { path, sha } = monorepo();
+    expect(await nestedLicenseProblem(defaultIo, path, sha, 'c/z.test.ts')).toBeNull();
   });
 });

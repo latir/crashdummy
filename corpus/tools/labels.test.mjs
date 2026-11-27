@@ -73,3 +73,12 @@ describe('expand', () => {
     expect(out.cases.c1.tests.gone).toBeUndefined();
   });
 });
+
+describe('removed cases', () => {
+  it('a label file may still mention a case that was taken out of the corpus', () => {
+    const withRemoved = { ...data, removed: ['old'] };
+    const labels = { labeller: 'x', cases: { old: { file: 'good', tests: { t: {} } } } };
+    expect(validate(withRemoved, labels).errors).toEqual([]);
+    expect(validate(data, labels).errors.join('\n')).toContain('unknown case old');
+  });
+});

@@ -8,6 +8,7 @@ import {
   shuffle,
   candidateId,
   classifyLicense,
+  isRestrictedPath,
   contentHash,
   copyrightLine,
   detectFramework,
@@ -146,6 +147,21 @@ describe('licences', () => {
     'This is free and unencumbered software released into the public domain.',
     '',
   ])('does not accept %j', (text) => expect(classifyLicense(text)).toBeNull());
+
+  test('a licence that only turns into Apache 2.0 later is not Apache 2.0', () => {
+    const fsl =
+      '# Functional Source License, Version 1.1, ALv2 Future License\n\nCopyright 2026 Ada\n\n### Grant of Future License\n\nOn the second anniversary of the date the Software is made available, the Software will be made available under the Apache License, Version 2.0 ...';
+    expect(classifyLicense(fsl)).toBeNull();
+    expect(
+      classifyLicense('Business Source License 1.1\n\nChange License: Apache License, Version 2.0'),
+    ).toBeNull();
+  });
+
+  test('an MIT licence that leaves a directory under another licence is not MIT', () => {
+    const carved = `${MIT}\n\nThe above applies to everything except the /ee directory, which has a separate license.`;
+    expect(classifyLicense(carved)).toBeNull();
+    expect(classifyLicense(MIT)).toBe('MIT');
+  });
 
   test('a standard MIT grant with a restriction added is not MIT, wherever it is added', () => {
     const extra = [
@@ -376,4 +392,18 @@ describe('selection helpers', () => {
     expect(slug).toMatch(/^[a-z0-9-]+$/);
     expect(caseSlug({ repo: 'a/b', id: '1' })).not.toBe(caseSlug({ repo: 'a/b', id: '2' }));
   });
+});
+
+describe('restricted paths', () => {
+  test.each([
+    'packages/backend/src/ee/services/a.test.ts',
+    'ee/billing.test.ts',
+    'apps/web/enterprise/sso.spec.ts',
+    'src/Commercial/x.test.ts',
+  ])('%s is under a restricted directory', (p) => expect(isRestrictedPath(p)).toBe(true));
+
+  test.each(['src/employee/a.test.ts', 'src/feed/a.test.ts', 'tests/premium-plan.test.ts'])(
+    '%s is not',
+    (p) => expect(isRestrictedPath(p)).toBe(false),
+  );
 });
