@@ -86,8 +86,8 @@
     {
       "id": "collections",
       "levels": [
-        { "strength": 3, "matchers": ["toHaveLength", "toContain", "toContainEqual"] },
-        { "strength": 2, "matchers": ["toMatch", "toBeInstanceOf", "toBeTypeOf", "toSatisfy"] }
+        { "strength": 3, "matchers": ["toHaveLength", "toContain", "toContainEqual", "toMatch"] },
+        { "strength": 2, "matchers": ["toBeInstanceOf", "toBeTypeOf", "toSatisfy"] }
       ]
     },
     {
