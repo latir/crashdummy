@@ -1,0 +1,17 @@
+{
+  "id": "adc2482e6625",
+  "set": "random",
+  "repo": "Commandershadow9/sicherheitsdienst-tool",
+  "url": "https://github.com/Commandershadow9/sicherheitsdienst-tool/blob/cf3fed13f0721eb93cbecbb8503b2717c38b1e68/frontend/src/features/common/listParams.test.ts",
+  "commit": "cf3fed13f0721eb93cbecbb8503b2717c38b1e68",
+  "path": "frontend/src/features/common/listParams.test.ts",
+  "status": "A",
+  "agent": "codex",
+  "date": "2025-09-13T07:23:20.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025 Commandershadow9",
+  "framework": "vitest",
+  "tests": 3,
+  "hasBefore": false
+}

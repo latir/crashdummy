@@ -1,0 +1,17 @@
+{
+  "id": "45bd62257e58",
+  "set": "targeted",
+  "repo": "TimStewartJ/copilot-bridge",
+  "url": "https://github.com/TimStewartJ/copilot-bridge/blob/4459fa601761f580fb6c91d3e9da1ec311a13cfd/src/server/__tests__/copilot-cli-loader.test.ts",
+  "commit": "4459fa601761f580fb6c91d3e9da1ec311a13cfd",
+  "path": "src/server/__tests__/copilot-cli-loader.test.ts",
+  "status": "M",
+  "agent": "copilot",
+  "date": "2026-07-31T15:47:45.000-07:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Tim Stewart",
+  "framework": "vitest",
+  "tests": 16,
+  "hasBefore": true
+}

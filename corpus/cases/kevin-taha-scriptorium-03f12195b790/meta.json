@@ -1,0 +1,17 @@
+{
+  "id": "03f12195b790",
+  "set": "random",
+  "repo": "Kevin-Taha/Scriptorium",
+  "url": "https://github.com/Kevin-Taha/Scriptorium/blob/a848025b16d305f29a1c691a7d509ce85b6d0d45/e2e/csp.spec.ts",
+  "commit": "a848025b16d305f29a1c691a7d509ce85b6d0d45",
+  "path": "e2e/csp.spec.ts",
+  "status": "A",
+  "agent": "copilot",
+  "date": "2026-10-31T15:36:57.000-07:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Kevin Taha",
+  "framework": "playwright",
+  "tests": 1,
+  "hasBefore": false
+}

@@ -1,0 +1,17 @@
+{
+  "id": "740ea4a686b6",
+  "set": "random",
+  "repo": "yaront1111/Moe-s-Tavern",
+  "url": "https://github.com/yaront1111/Moe-s-Tavern/blob/a22af4cd59acaf727f039a11ba5e362444d0f79a/packages/moe-daemon/src/tools/addComment.test.ts",
+  "commit": "a22af4cd59acaf727f039a11ba5e362444d0f79a",
+  "path": "packages/moe-daemon/src/tools/addComment.test.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-08-01T02:50:25.000+03:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2024-2026 Moe's Tavern Contributors",
+  "framework": "vitest",
+  "tests": 10,
+  "hasBefore": true
+}

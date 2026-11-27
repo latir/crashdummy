@@ -1,0 +1,17 @@
+{
+  "id": "81400ca06a35",
+  "set": "targeted",
+  "repo": "181192/brasscribe",
+  "url": "https://github.com/181192/brasscribe/blob/fd03995a468b348bcd895ffd0f55b9371b88f8d4/studio/browser/appearance.spec.ts",
+  "commit": "fd03995a468b348bcd895ffd0f55b9371b88f8d4",
+  "path": "studio/browser/appearance.spec.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-10-01T01:43:32.000+02:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Kristoffer-Andre Kalliainen",
+  "framework": "playwright",
+  "tests": 7,
+  "hasBefore": true
+}

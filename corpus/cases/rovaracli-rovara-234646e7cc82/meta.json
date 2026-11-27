@@ -1,0 +1,17 @@
+{
+  "id": "234646e7cc82",
+  "set": "random",
+  "repo": "rovaracli/rovara",
+  "url": "https://github.com/rovaracli/rovara/blob/50b73a24f25496eed792277efdc0789ecf572d28/tests/contract/audit-hooks-plan1.test.ts",
+  "commit": "50b73a24f25496eed792277efdc0789ecf572d28",
+  "path": "tests/contract/audit-hooks-plan1.test.ts",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-10-31T18:24:23.000-04:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 PrepLabs",
+  "framework": "vitest",
+  "tests": 41,
+  "hasBefore": true
+}

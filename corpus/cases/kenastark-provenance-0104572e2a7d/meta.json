@@ -1,0 +1,17 @@
+{
+  "id": "0104572e2a7d",
+  "set": "targeted",
+  "repo": "Kenastark/Provenance",
+  "url": "https://github.com/Kenastark/Provenance/blob/1471074ddf6ebd1cd55e263c6b19c098040ab96d/apps/web/e2e/accessibility.spec.ts",
+  "commit": "1471074ddf6ebd1cd55e263c6b19c098040ab96d",
+  "path": "apps/web/e2e/accessibility.spec.ts",
+  "status": "M",
+  "agent": "claude",
+  "date": "2026-09-01T01:49:42.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Provenance",
+  "framework": "playwright",
+  "tests": 15,
+  "hasBefore": true
+}

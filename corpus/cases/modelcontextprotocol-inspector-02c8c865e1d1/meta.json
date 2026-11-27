@@ -1,0 +1,17 @@
+{
+  "id": "02c8c865e1d1",
+  "set": "targeted",
+  "repo": "modelcontextprotocol/inspector",
+  "url": "https://github.com/modelcontextprotocol/inspector/blob/138dd59bee3a117822a3b4770a15e86eb839c8a5/clients/daemon-cli/__tests__/daemon-coverage.test.ts",
+  "commit": "138dd59bee3a117822a3b4770a15e86eb839c8a5",
+  "path": "clients/daemon-cli/__tests__/daemon-coverage.test.ts",
+  "status": "M",
+  "agent": "copilot",
+  "date": "2026-09-30T15:26:16.000-07:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2024-2025 Model Context Protocol a Series of LF Projects, LLC.",
+  "framework": "vitest",
+  "tests": 50,
+  "hasBefore": true
+}

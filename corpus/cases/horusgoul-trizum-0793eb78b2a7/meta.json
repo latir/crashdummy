@@ -1,0 +1,17 @@
+{
+  "id": "0793eb78b2a7",
+  "set": "random",
+  "repo": "HorusGoul/trizum",
+  "url": "https://github.com/HorusGoul/trizum/blob/8a786c8d87f637acbaf10b4130aced9f0e8eaa4b/packages/pwa/src/hooks/usePremiumDialogs.test.tsx",
+  "commit": "8a786c8d87f637acbaf10b4130aced9f0e8eaa4b",
+  "path": "packages/pwa/src/hooks/usePremiumDialogs.test.tsx",
+  "status": "R",
+  "agent": "codex",
+  "date": "2026-10-01T00:33:22.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2024 Horus Lugo",
+  "framework": "vitest",
+  "tests": 8,
+  "hasBefore": true
+}

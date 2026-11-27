@@ -1,0 +1,17 @@
+{
+  "id": "b22064cdedeb",
+  "set": "random",
+  "repo": "MatiDegli/oversight",
+  "url": "https://github.com/MatiDegli/oversight/blob/1d829ea0dec1afb247131197713b5a825194a42e/frontend/src/graph/RoutingOmissions.test.tsx",
+  "commit": "1d829ea0dec1afb247131197713b5a825194a42e",
+  "path": "frontend/src/graph/RoutingOmissions.test.tsx",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-10-31T22:53:12.000Z",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 MatiDegli",
+  "framework": "vitest",
+  "tests": 1,
+  "hasBefore": true
+}

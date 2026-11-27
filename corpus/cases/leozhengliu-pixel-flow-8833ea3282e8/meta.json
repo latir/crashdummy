@@ -1,0 +1,17 @@
+{
+  "id": "8833ea3282e8",
+  "set": "random",
+  "repo": "leozhengliu-pixel/flow",
+  "url": "https://github.com/leozhengliu-pixel/flow/blob/f207a1399a061b86f10e1acc800a8119b7278726/web/e2e/mobile-projects.spec.ts",
+  "commit": "f207a1399a061b86f10e1acc800a8119b7278726",
+  "path": "web/e2e/mobile-projects.spec.ts",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-10-31T16:57:53.000-07:00",
+  "license": "Apache-2.0",
+  "licenseFile": "LICENSE",
+  "copyright": null,
+  "framework": "playwright",
+  "tests": 12,
+  "hasBefore": true
+}

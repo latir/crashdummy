@@ -19,6 +19,14 @@ beforeEach(() => {
 });
 afterEach(() => rmSync(dir, { recursive: true, force: true }));
 
+/** Licence texts come from real clones, which these tests do not have. */
+const collectLicenses = async (_io, _dir, entries) =>
+  [...new Set(entries.map((e) => e.repo))].map((repo) => ({
+    repo,
+    dir: repo.replace('/', '__'),
+    files: [{ name: 'LICENSE', bytes: Buffer.from(`licence of ${repo}`) }],
+  }));
+
 /** A pool with n files from n/2 repositories, written the way harvest.mjs writes it. */
 function makePool(n, { extra = {} } = {}) {
   const pool = new Pool(join(dir, 'pool'));
@@ -147,7 +155,7 @@ describe('select', () => {
   test('writes cases, provenance, a notice and the selection record', async () => {
     makePool(12);
     const core = fakeCore({ findings: () => ['oracle/weak-matcher'] });
-    const r = await select(opts({ random: 4, target: 2 }), { core });
+    const r = await select(opts({ random: 4, target: 2 }), { core, collectLicenses });
     const cases = readdirSync(join(dir, 'out', 'cases'));
     expect(cases).toHaveLength(r.cases.length);
 
@@ -179,12 +187,35 @@ describe('select', () => {
     const text = readFileSync(join(dir, 'out', 'NOTICE.md'), 'utf8');
     expect(text).toContain(`## ${first.repo}`);
     expect(text).toContain('Licence: MIT');
+    // the licence texts go with the cases, and NOTICE.md points at them
+    expect(text).toContain(`\`licenses/${first.repo.replace('/', '__')}/LICENSE\``);
+    expect(
+      readFileSync(join(dir, 'out', 'licenses', first.repo.replace('/', '__'), 'LICENSE'), 'utf8'),
+    ).toBe(`licence of ${first.repo}`);
+  });
+
+  test('a licence that cannot be read stops the run before the old cases are replaced', async () => {
+    makePool(12);
+    await select(opts({ random: 4, write: true }), { core: fakeCore(), collectLicenses });
+    const before = readdirSync(join(dir, 'out', 'cases')).sort();
+    await expect(
+      select(opts({ random: 2, write: true, seed: 'other' }), {
+        core: fakeCore(),
+        collectLicenses: async () => {
+          throw new Error('cannot read LICENSE');
+        },
+      }),
+    ).rejects.toThrow('cannot read LICENSE');
+    expect(readdirSync(join(dir, 'out', 'cases')).sort()).toEqual(before);
   });
 
   test('running it again replaces the old cases instead of adding to them', async () => {
     makePool(12);
-    await select(opts({ random: 6, write: true }), { core: fakeCore() });
-    await select(opts({ random: 3, write: true, seed: 'other' }), { core: fakeCore() });
+    await select(opts({ random: 6, write: true }), { core: fakeCore(), collectLicenses });
+    await select(opts({ random: 3, write: true, seed: 'other' }), {
+      core: fakeCore(),
+      collectLicenses,
+    });
     expect(readdirSync(join(dir, 'out', 'cases'))).toHaveLength(3);
   });
 });
@@ -201,5 +232,14 @@ describe('notice', () => {
     expect(text).toContain('Files: 2');
     expect(text).toContain('Commits: aaaaaaaaaaaa, cccccccccccc');
     expect(text).toContain('Licence: Apache-2.0');
+    expect(text).not.toContain('Licence text');
+  });
+
+  test('points at the bundled licence texts', () => {
+    const text = notice(
+      [{ repo: 'a/one', license: 'Apache-2.0', copyright: null, sha: 'a'.repeat(40) }],
+      new Map([['a/one', ['licenses/a__one/LICENSE', 'licenses/a__one/NOTICE']]]),
+    );
+    expect(text).toContain('- Licence texts: `licenses/a__one/LICENSE`, `licenses/a__one/NOTICE`');
   });
 });

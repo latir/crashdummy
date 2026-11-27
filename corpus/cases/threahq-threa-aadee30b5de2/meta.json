@@ -1,0 +1,17 @@
+{
+  "id": "aadee30b5de2",
+  "set": "random",
+  "repo": "threahq/threa",
+  "url": "https://github.com/threahq/threa/blob/7974c2c3f7772a58073b594546d6c6dc6cd221c0/apps/backend/src/features/analytics/outbox-handler.test.ts",
+  "commit": "7974c2c3f7772a58073b594546d6c6dc6cd221c0",
+  "path": "apps/backend/src/features/analytics/outbox-handler.test.ts",
+  "status": "M",
+  "agent": "codex",
+  "date": "2026-10-30T17:23:07.000+01:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Threa contributors",
+  "framework": "unknown",
+  "tests": 14,
+  "hasBefore": true
+}

@@ -1,0 +1,17 @@
+{
+  "id": "2e6ffe236302",
+  "set": "random",
+  "repo": "kingithegreat/Sadie",
+  "url": "https://github.com/kingithegreat/Sadie/blob/4fc8f6ee3124683d58df6debf3c115a6b73dd96b/widget/src/main/__tests__/rag-home-boundary.test.ts",
+  "commit": "4fc8f6ee3124683d58df6debf3c115a6b73dd96b",
+  "path": "widget/src/main/__tests__/rag-home-boundary.test.ts",
+  "status": "A",
+  "agent": "codex",
+  "date": "2026-09-30T22:29:27.000Z",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2025 Aden Kingi",
+  "framework": "jest",
+  "tests": 4,
+  "hasBefore": false
+}

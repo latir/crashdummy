@@ -1,0 +1,17 @@
+{
+  "id": "bb87463c9d1c",
+  "set": "random",
+  "repo": "sanity-io/react-rx",
+  "url": "https://github.com/sanity-io/react-rx/blob/4d9b61332a48a2de053e966ffcbd92f1c5e8ec4f/packages/react-rx/src/__tests__/useObservablePromise.activity.test.tsx",
+  "commit": "4d9b61332a48a2de053e966ffcbd92f1c5e8ec4f",
+  "path": "packages/react-rx/src/__tests__/useObservablePromise.activity.test.tsx",
+  "status": "A",
+  "agent": "cursor",
+  "date": "2026-07-31T10:15:31.000+02:00",
+  "license": "MIT",
+  "licenseFile": "LICENSE",
+  "copyright": "Copyright (c) 2026 Sanity.io",
+  "framework": "vitest",
+  "tests": 5,
+  "hasBefore": false
+}
