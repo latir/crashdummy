@@ -123,3 +123,12 @@ describe('sampling and summaries', () => {
     expect(failing(summarize(results)).sort()).toEqual(['brk', 'quiet']);
   });
 });
+
+describe('looksBoolean', () => {
+  it('knows a yes/no subject from a value', async () => {
+    const { looksBoolean } = await import('./mutants.mjs');
+    for (const t of ['!x', 'a === b', 'list.includes(x)', 'result.success', 'user.isAdmin()'])
+      expect(looksBoolean(t), t).toBe(true);
+    for (const t of ['add(1, 2)', 'user.name', 'render()']) expect(looksBoolean(t), t).toBe(false);
+  });
+});

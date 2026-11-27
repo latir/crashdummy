@@ -150,18 +150,12 @@
       "kind": "breaking",
       "expected": "oracle/weak-matcher",
       "n": 30,
-      "ok": 29,
-      "failures": [
-        {
-          "case": "dotnet-skills-c1acda4fb74b",
-          "test": "OrderService > creates returns truthy",
-          "got": []
-        }
-      ],
-      "rate": 0.9666666666666667,
+      "ok": 30,
+      "failures": [],
+      "rate": 1,
       "interval": {
-        "low": 0.8332924860304112,
-        "high": 0.9940915620051425
+        "low": 0.8864829086095221,
+        "high": 1
       }
     },
     "weaken-matcher": {

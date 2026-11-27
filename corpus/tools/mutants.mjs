@@ -45,6 +45,12 @@ function editAll(source, edits) {
   return out;
 }
 
+const BOOLEAN_SUBJECT =
+  /^!|===|!==|==|!=|<=|>=|<|>|\binstanceof\b|\.(includes|some|every|startsWith|endsWith|has|test|hasOwnProperty)\(|\.(ok|success|valid|enabled|disabled|exists|is[A-Z]\w*|has[A-Z]\w*)(\(\))?$/;
+
+/** Whether source text reads as a yes/no value. */
+export const looksBoolean = (text) => BOOLEAN_SUBJECT.test(text.trim());
+
 /** The assertions of a test that are plain `expect(...).matcher(...)` chains written in the test. */
 function expectChains(f) {
   return f.assertions.filter(
@@ -147,7 +153,18 @@ export function candidates(analysis, source) {
           chains.map((a) => ({ from: a.node.start, to: a.node.end, text: 'void 0' })),
         ),
       });
-      const weakable = chains.filter((a) => !a.negated && a.node.callee.property);
+      // a yes/no value is already as strong as a check on it gets, so turning `toBe(true)` into
+      // `toBeTruthy()` is not a weakening and the rule rightly leaves it alone
+      const weakable = chains.filter(
+        (a) =>
+          !a.negated &&
+          a.node.callee.property &&
+          !looksBoolean(a.subjectText ?? '') &&
+          !(
+            a.node.arguments?.[0]?.type === 'Literal' &&
+            typeof a.node.arguments[0].value === 'boolean'
+          ),
+      );
       if (weakable.length === chains.length) {
         add({
           op: 'weaken-all',

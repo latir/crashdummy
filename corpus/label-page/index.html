@@ -165,6 +165,8 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
 .vote.unsure { background: var(--unsure-bg); color: var(--unsure); }
 .vote.no { background: var(--ok-bg); color: var(--ok); }
 .vote small { font-weight: 400; opacity: 0.8; }
+.note-q { width: 100%; min-height: 56px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 8px; padding: 8px 10px; font: inherit; resize: vertical; }
+.notes-box { padding: 10px 16px; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); }
 .answers { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--line); align-items: center; }
 .answers .btn { padding: 8px 18px; font-weight: 600; }
 .btn.yes[aria-pressed='true'] { background: var(--yes); color: var(--paper); border-color: var(--yes); }
@@ -244,7 +246,7 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
   var data = null, db = null, cur = null, view = 'tests', hideDone = false;
   var setFilter = lsGet('cd-set-filter') || 'random';
   var showCues = lsGet('cd-cues') !== 'off', focus = 0;
-  var mode = lsGet('cd-mode') || 'queue', queue = [], answers = {}, qpos = 0;
+  var mode = lsGet('cd-mode') || 'queue', queue = [], answers = {}, notes = {}, general = '', qpos = 0;
   var state = {};            // caseId -> { file, note, tests: { testId: { r, y:[], u:[] } } }
   var saveTimers = {}, dirty = 0;
   var $ = function (id) { return document.getElementById(id); };
@@ -456,16 +458,28 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
     return out.join('\n');
   }
 
+  var noteTimer = {};
+  function persistReview(item) {
+    var v = answers[item.id], note = notes[item.id] || '';
+    try {
+      if (v) localStorage.setItem('cd-review-' + item.id, v); else localStorage.removeItem('cd-review-' + item.id);
+      if (note) localStorage.setItem('cd-note-' + item.id, note); else localStorage.removeItem('cd-note-' + item.id);
+    } catch (e) {}
+    if (!db) return;
+    var ref = db.doc('review/' + item.id);
+    var done = function () { $('sync').textContent = 'all saved'; }, fail = function () { $('sync').textContent = 'could not save — export before closing'; };
+    if (v || note) ref.set({ answer: v || '', note: note, key: item.case + '|' + item.test + '|' + item.rule, at: Date.now() }).then(done, fail);
+    else ref.delete().then(done, fail);
+  }
   function saveAnswer(item, a) {
     if (answers[item.id] === a) delete answers[item.id]; else answers[item.id] = a;
-    var v = answers[item.id];
-    try { if (v) localStorage.setItem('cd-review-' + item.id, v); else localStorage.removeItem('cd-review-' + item.id); } catch (e) {}
-    if (db) {
-      var ref = db.doc('review/' + item.id);
-      (v ? ref.set({ answer: v, key: item.case + '|' + item.test + '|' + item.rule, at: Date.now() }) : ref.delete()).then(function () { $('sync').textContent = 'all saved'; }, function () { $('sync').textContent = 'could not save — export before closing'; });
-    }
-    if (v) { var n = qpos + 1; if (n < queue.length) qpos = n; }
+    persistReview(item);
+    if (answers[item.id]) { var n = qpos + 1; if (n < queue.length) qpos = n; }
     render();
+  }
+  function saveGeneral() {
+    try { localStorage.setItem('cd-notes-general', general); } catch (e) {}
+    if (db) db.doc('notes/general').set({ text: general, at: Date.now() }).then(function () {}, function () {});
   }
 
   function renderQueue() {
@@ -479,6 +493,15 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
     var removed = c && c.removed.indexOf(t) >= 0;
 
     if (reqDone === req && req > 0) main.appendChild(el('div', { class: 'banner', text: 'Every required item is answered. The rest are audits: stop whenever you like.' }));
+
+    var gen = el('details', { class: 'help' }, [el('summary', { text: 'General notes on this review' })]);
+    var gta = el('textarea', { class: 'note-q', id: 'gnote', placeholder: 'Anything that applies across items: patterns you noticed, things to fix, questions.' });
+    gta.value = general;
+    gta.addEventListener('keydown', function (e) { e.stopPropagation(); });
+    var gt; gta.addEventListener('input', function () { general = gta.value; clearTimeout(gt); gt = setTimeout(saveGeneral, 500); });
+    gen.appendChild(gta);
+    if (general) gen.open = true;
+    main.appendChild(gen);
 
     var card = el('article', { class: 'qcard' });
     var head = el('div', { class: 'qhead' }, [el('span', { class: 'qn', text: 'Item ' + (qpos + 1) + ' of ' + queue.length })]);
@@ -522,6 +545,16 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
       }
     }
 
+    var nbox = el('div', { class: 'notes-box' }, [el('label', { class: 'muted', for: 'qnote', text: 'Notes for this item (optional): what you saw, why you answered this way' })]);
+    var ta = el('textarea', { class: 'note-q', id: 'qnote', placeholder: 'For example: the rewrite changed the behaviour, so the new assertion is fine.' });
+    ta.value = notes[item.id] || '';
+    ta.addEventListener('keydown', function (e) { e.stopPropagation(); });
+    ta.addEventListener('input', function () {
+      notes[item.id] = ta.value; clearTimeout(noteTimer[item.id]);
+      noteTimer[item.id] = setTimeout(function () { persistReview(item); }, 500);
+    });
+    nbox.appendChild(ta);
+    card.appendChild(nbox);
     var cur2 = answers[item.id];
     var ans = el('div', { class: 'answers' });
     [['yes', 'Yes, it has this problem', 'y'], ['no', 'No', 'n'], ['unsure', 'Unsure', 'u']].forEach(function (p) {
@@ -611,8 +644,9 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
       var a = answers[i.id]; if (!a) return;
       var ce = out.cases[i.case] || (out.cases[i.case] = { tests: {} });
       var te = ce.tests[i.test] || (ce.tests[i.test] = {});
-      te[i.rule] = { label: a };
+      te[i.rule] = notes[i.id] ? { label: a, reason: notes[i.id] } : { label: a };
     });
+    if (general) out.note = general;
     return JSON.stringify(out, null, 2) + '\n';
   }
 
@@ -686,7 +720,8 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
     }).then(function (q) {
       if (q && q.items && q.items.length) {
         queue = q.items;
-        queue.forEach(function (i) { var v = lsGet('cd-review-' + i.id); if (v) answers[i.id] = v; });
+        queue.forEach(function (i) { var v = lsGet('cd-review-' + i.id); if (v) answers[i.id] = v; var n = lsGet('cd-note-' + i.id); if (n) notes[i.id] = n; });
+        general = lsGet('cd-notes-general') || '';
         var first = 0; for (var k = 0; k < queue.length; k++) if (!answers[queue[k].id]) { first = k; break; }
         qpos = first;
         renderMode(); render();
@@ -706,8 +741,9 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-radius:
         render(true);
       }, function () { $('sync').textContent = 'saved in this browser only'; db = null; });
       db.collection('review').onSnapshot(function (snap) {
-        snap.docs.forEach(function (doc) { var v = doc.data(); if (v && v.answer) answers[doc.id] = v.answer; });
-        if (mode === 'queue' && queue.length) render();
+        var typing = document.activeElement && document.activeElement.tagName === 'TEXTAREA';
+        snap.docs.forEach(function (doc) { var v = doc.data(); if (!v) return; if (v.answer) answers[doc.id] = v.answer; if (v.note && !noteTimer[doc.id]) notes[doc.id] = v.note; });
+        if (mode === 'queue' && queue.length && !typing) render();
       }, function () {});
     }).catch(function () {
       $('main').textContent = '';

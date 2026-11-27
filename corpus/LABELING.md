@@ -111,7 +111,7 @@ assert.ok(paths.includes('/match/1'));
 
 - `yes`: the test's only assertions are `toHaveBeenCalled*` or mock call counts, and a returned value or observable state exists to check.
 - `no`: the call itself is the behaviour (a callback contract, an event emitter, a fire-and-forget notifier with no result), the assertion is that nothing was called (`not.toHaveBeenCalled`), or the test also checks a result.
-- Edge: asserting call **arguments** is stronger than asserting a call happened, but it is still interaction-only if nothing checks the outcome. Label `yes`, and say so in the reason.
+- Edge: asserting call **arguments** (`toHaveBeenCalledWith(...)`) is `no`. What the code hands to a logger, a sender or an exit function is its output. Only "was it called" and "how many times" are interaction-only.
 
 ```ts
 // yes: the result is captured and ignored
