@@ -111,10 +111,15 @@ describe('custom assertion helpers', () => {
   test('assertFunctionNames matches dotted paths', () => {
     const s2 = summarize(
       'a.test.ts',
-      `test('x', () => { helpers.expectOk(1); other.expectOk(2); });`,
-      { assertFunctionNames: ['helpers.expect*'] },
+      `test('x', () => { helpers.verifyOk(1); other.verifyOk(2); });`,
+      { assertFunctionNames: ['helpers.verify*'] },
     );
-    expect(shape(s2)).toEqual({ x: ['helpers.expectOk:2'] });
+    expect(shape(s2)).toEqual({ x: ['helpers.verifyOk:2'] });
+  });
+
+  test('a function named expectX or assertX counts by its name, as a custom assertion', () => {
+    const s2 = summarize('a.test.ts', `test('x', () => { helpers.expectOk(1); assertValid(2); });`);
+    expect(shape(s2)).toEqual({ x: ['helpers.expectOk:2', 'assertValid:2'] });
   });
 
   test('a test whose body is a named local function follows it', () => {
