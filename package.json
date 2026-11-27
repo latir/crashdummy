@@ -17,6 +17,7 @@
     "check:deps": "node scripts/check-prod-deps.mjs",
     "corpus:update": "node corpus/tools/measure.mjs",
     "corpus:check": "node corpus/tools/measure.mjs --check",
+    "corpus:mutants": "node corpus/tools/mutants.mjs",
     "changeset": "changeset",
     "release": "pnpm build && changeset publish"
   },
