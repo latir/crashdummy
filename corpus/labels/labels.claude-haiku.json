@@ -117,9 +117,7 @@
       "note": "Routing enforcement tests (screening, enforcement body transform, rejecting upgrades) were removed and the routing path is now observe-only; no surviving test covers the removed behaviour. Remaining routing tests mostly check forwarding of mocked adapter values.",
       "tests": {
         "createProviderServer > passes the adapter request signer to the HTTP proxy pipeline": {
-          "unsure": [
-            "oracle/tautological-mock"
-          ],
+          "unsure": ["oracle/tautological-mock"],
           "reason": {
             "oracle/tautological-mock": "thin wrapper: adapter signer and host are forwarded unchanged to proxyRequest; unsure whether forwarding is the behaviour"
           }
@@ -127,9 +125,7 @@
         "createProviderServer > fails closed for WebSocket upgrades when AWS request signing is configured": {},
         "createProviderServer > shutdownConnections closes tracked upgraded sockets": {},
         "createProviderServer routing enforcement > observes a routed request without rejecting it": {
-          "unsure": [
-            "oracle/tautological-mock"
-          ],
+          "unsure": ["oracle/tautological-mock"],
           "reason": {
             "oracle/tautological-mock": "thin wrapper: adapter body transform and host are forwarded unchanged to proxyRequest; unsure whether forwarding is the behaviour"
           }
@@ -137,25 +133,19 @@
         "createProviderServer routing enforcement > composes the observe-only routing transform with the adapter transform": {},
         "createProviderServer routing enforcement > proxies an upgrade while routing is active": {},
         "createProviderServer routing enforcement > screens an inference request before revealing adapter configuration": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "screening of unconfigured adapters removed; no equivalent test remains"
           }
         },
         "createProviderServer routing enforcement > uses the enforcement body transform for an admitted routed request": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "enforcement body transform removed; replaced by an observe-only composition test, not equivalent"
           }
         },
         "createProviderServer routing enforcement > rejects an upgrade while routing is active": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "rejecting upgrades while routing is active removed; the replacement asserts the reverse (proxied)"
           }
@@ -168,17 +158,13 @@
       "tests": {
         "AWS KMS adapter > returns the key's public key and KMS's DER signature of the digest, unchanged": {},
         "AWS KMS adapter > signs digests with the key ARN from GetPublicKey, never the alias, and MessageType DIGEST": {
-          "yes": [
-            "oracle/interaction-only"
-          ],
+          "yes": ["oracle/interaction-only"],
           "reason": {
             "oracle/interaction-only": "asserts only KMS call arguments; the returned signature is discarded and never checked"
           }
         },
         "AWS KMS adapter > looks the ARN up first if asked to sign before the public key": {
-          "yes": [
-            "oracle/interaction-only"
-          ],
+          "yes": ["oracle/interaction-only"],
           "reason": {
             "oracle/interaction-only": "asserts only the order of SDK calls; the signature result is never checked"
           }
@@ -188,9 +174,7 @@
         "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on GetPublicKey: ${name}`": {},
         "AWS KMS adapter > refuses keys and responses that are not what it asked for > `on Sign: ${name}`": {},
         "AWS KMS adapter > works with multi-region keys, whose ARNs use mrk- ids": {
-          "yes": [
-            "oracle/interaction-only"
-          ],
+          "yes": ["oracle/interaction-only"],
           "reason": {
             "oracle/interaction-only": "asserts only the KeyId sent to Sign; the signature result is discarded"
           }
@@ -199,9 +183,7 @@
         "AWS KMS adapter > passes other SDK errors on unchanged": {},
         "AWS KMS adapter > does not keep the ARN from a call that was abandoned": {},
         "AWS KMS adapter > signs exactly like Hardhat's local accounts, even from high-S DER signatures": {
-          "unsure": [
-            "integrity/test-removed"
-          ],
+          "unsure": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "Hardhat signer vectors (address, personal message) no longer tested here; may be covered in a signer suite not visible"
           }
@@ -210,17 +192,13 @@
         "AWS KMS adapter > describes the key without its values, and closes the client": {},
         "AWS KMS adapter > rejects a Sign response whose key id differs, even only in case": {},
         "AWS KMS adapter > rejects an SDK module that does not look like @aws-sdk/client-kms": {
-          "unsure": [
-            "integrity/test-removed"
-          ],
+          "unsure": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "SDK module shape check removed; may be covered elsewhere, not visible"
           }
         },
         "AWS KMS adapter > refuses keys of other providers": {
-          "unsure": [
-            "integrity/test-removed"
-          ],
+          "unsure": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "other-provider key rejection removed; may be covered by config resolution tests, not visible"
           }
@@ -307,9 +285,7 @@
         "context chips do not force a 2400px stream > keeps the full artifact ref on the chip and shortens only the glyphs": {},
         "the DFM chip is the engine equivalent, not a per-message flag > shows the two §6.4 controls only when a part's DFM document is in hand": {},
         "the DFM chip is the engine equivalent, not a per-message flag > names the absence when no part is selected and does not fake DFM chrome": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "named DFM absence marker test removed; the replacement asserts the marker is absent, so the behaviour is not covered"
           }
@@ -347,9 +323,7 @@
       "note": "Single coverage-style test. The title claims defaults and readiness, but defaults are only checked with toBeDefined and readiness only echoes campaignId.",
       "tests": {
         "AiDmService unit coverage tests > manages AI DM seat configuration, defaults, and readiness": {
-          "unsure": [
-            "oracle/weak-matcher"
-          ],
+          "unsure": ["oracle/weak-matcher"],
           "reason": {
             "oracle/weak-matcher": "defaults are only checked with toBeDefined; other checks in the test are real, so unclear whether the defaults claim is meant"
           }
@@ -361,9 +335,7 @@
       "note": "Coverage-style smoke test on an empty campaign: checks only empty results, a dry-run flag and a non-negative size.",
       "tests": {
         "AttachmentsService unit coverage tests > manages attachment storage stats and listing": {
-          "unsure": [
-            "oracle/weak-matcher"
-          ],
+          "unsure": ["oracle/weak-matcher"],
           "reason": {
             "oracle/weak-matcher": "storage totalBytes is only checked with >= 0; other checks are real, so unclear whether the size claim is meant"
           }
@@ -474,17 +446,13 @@
       "note": "The loaders set process.env without restoring it, so test order can leak between cases.",
       "tests": {
         "buildProfile defaults to full outside Vercel preview": {
-          "unsure": [
-            "integrity/assertions-dropped"
-          ],
+          "unsure": ["integrity/assertions-dropped"],
           "reason": {
             "integrity/assertions-dropped": "staticBuildDynamicParams assertion deleted with nothing in the diff replacing it; unsure whether the function was removed too"
           }
         },
         "buildProfile follows VERCEL_ENV=preview": {
-          "unsure": [
-            "integrity/assertions-dropped"
-          ],
+          "unsure": ["integrity/assertions-dropped"],
           "reason": {
             "integrity/assertions-dropped": "staticBuildDynamicParams assertion deleted with nothing in the diff replacing it; unsure whether the function was removed too"
           }
@@ -737,17 +705,13 @@
         "site context > opens the site without a gateway URL": {},
         "site context > does not take an arbitrary numeric subdomain for a namespace host": {},
         "DecdnClient.open > picks the context from the gateway URL and token": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "token-based loopback context no longer tested here; renamed test drops the token case, and the feature may be intentionally removed"
           }
         },
         "DecdnClient.open > refuses a token without a host, and no gateway outside a site page": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "token-without-host refusal removed; only the non-token refusals survive in a new test"
           }
@@ -756,49 +720,37 @@
         "public context > maps a pool that cannot pay to POOL_UNFUNDED": {},
         "public context > answers the empty blob with no proof": {},
         "public context > admits a window of a raw blob by its chunk-group span": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "raw-blob range admitted (206) before; the replacement test refuses ranges on blobs, so the behaviour is reversed"
           }
         },
         "loopback context > sends the token and host and verifies a blob": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "token and host headers no longer asserted; the renamed replacement asserts no credential, so the behaviour is reversed"
           }
         },
         "loopback context > refuses content without the token, before any request": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "refusal of content without a token removed; no equivalent test remains"
           }
         },
         "loopback context > maps a wrong token to UNAUTHORIZED and an uncovered host to PAYMENT_REQUIRED": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "wrong-token UNAUTHORIZED mapping removed; only the no-capability case survives"
           }
         },
         "site context > opens a loopback gateway named by URL, for its delegate API": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "positive delegate API check (address shape, origin, path) no longer in this file; the replacement only checks the context"
           }
         },
         "site context > opens the gateway a token names, and the site without a gateway URL": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "token-named gateway case removed; the site-without-URL part survives in a new test"
           }
@@ -810,60 +762,45 @@
       "note": "Deliberately weak fixture for assertion quality. The diff only removes a 'missing await' comment; the await is still missing, so the un-awaited resolves stays.",
       "tests": {
         "OrderService > creates an order": {
-          "yes": [
-            "oracle/weak-matcher"
-          ],
+          "yes": ["oracle/weak-matcher"],
           "reason": {
             "oracle/weak-matcher": "only toBeDefined on the created order"
           }
         },
         "OrderService > creates returns truthy": {
-          "yes": [
-            "oracle/weak-matcher"
-          ],
+          "yes": ["oracle/weak-matcher"],
           "reason": {
             "oracle/weak-matcher": "only toBeTruthy on the created order"
           }
         },
         "OrderService > creates returns not null": {
-          "yes": [
-            "oracle/weak-matcher"
-          ],
+          "yes": ["oracle/weak-matcher"],
           "reason": {
             "oracle/weak-matcher": "only not.toBeNull on the created order"
           }
         },
         "OrderService > list returns array": {},
         "OrderService > always true": {
-          "yes": [
-            "oracle/tautological-assertion"
-          ],
+          "yes": ["oracle/tautological-assertion"],
           "reason": {
             "oracle/tautological-assertion": "expect(true).toBe(true)"
           }
         },
         "OrderService > confirms order resolves": {
-          "yes": [
-            "oracle/swallowed-async",
-            "oracle/weak-matcher"
-          ],
+          "yes": ["oracle/swallowed-async", "oracle/weak-matcher"],
           "reason": {
             "oracle/swallowed-async": "resolves is not awaited or returned, so a rejection cannot fail the test",
             "oracle/weak-matcher": "only toBeDefined on the resolved value"
           }
         },
         "OrderService > does not equal something irrelevant": {
-          "yes": [
-            "oracle/weak-matcher"
-          ],
+          "yes": ["oracle/weak-matcher"],
           "reason": {
             "oracle/weak-matcher": "not.toBe an arbitrary string proves nothing about the id"
           }
         },
         "OrderService > round trip identity": {
-          "yes": [
-            "oracle/tautological-assertion"
-          ],
+          "yes": ["oracle/tautological-assertion"],
           "reason": {
             "oracle/tautological-assertion": "expect(o.id).toBe(o.id)"
           }
@@ -896,9 +833,7 @@
         "Query Operation Edge Cases > getProgress returns correct progress": {},
         "Query Operation Edge Cases > getProgress returns null for non-active job": {},
         "Queue Control Edge Cases > concurrent pause/resume should handle correctly": {
-          "yes": [
-            "oracle/weak-matcher"
-          ],
+          "yes": ["oracle/weak-matcher"],
           "reason": {
             "oracle/weak-matcher": "only typeof isPaused is checked; any state passes, so 'handle correctly' is unverified"
           }
@@ -918,9 +853,7 @@
         "Boundary Condition Tests > push with zero delay should be immediately ready": {},
         "Boundary Condition Tests > push with negative delay should be treated as zero": {},
         "Boundary Condition Tests > ack with complex nested result": {
-          "yes": [
-            "oracle/weak-matcher"
-          ],
+          "yes": ["oracle/weak-matcher"],
           "reason": {
             "oracle/weak-matcher": "stored result only checked with toBeDefined; its contents are never compared"
           }
@@ -967,9 +900,7 @@
         "Job Management - Not Found Paths > moveToDelayed on waiting job moves it to delayed": {},
         "Job Management - Not Found Paths > changePriority on active job returns false": {},
         "Batch Operations - Race Conditions > ackBatch with some invalid job IDs should handle gracefully": {
-          "yes": [
-            "oracle/weak-matcher"
-          ],
+          "yes": ["oracle/weak-matcher"],
           "reason": {
             "oracle/weak-matcher": "active <= 1 holds whether or not the valid job was acked, and try/catch hides the batch error"
           }
@@ -978,9 +909,7 @@
         "Progress Message Edge Cases > updateProgress with message should store message": {},
         "Progress Message Edge Cases > updateProgress without message should preserve null": {},
         "Job Management - Not Found Paths > moveToDelayed on waiting job returns false": {
-          "yes": [
-            "integrity/test-removed"
-          ],
+          "yes": ["integrity/test-removed"],
           "reason": {
             "integrity/test-removed": "same scenario with the expectation reversed (returned false, now moves to delayed); the old no-op behaviour is no longer asserted"
           }
@@ -1186,42 +1115,32 @@
         "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Expands to Show Tool Names and Query Detail": {},
         "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Header Counts Unique Tool Types Not Total Calls": {},
         "Journey 52: Tool Call Indicator and Reasoning Section > Web Search Button is NOT Visible When Tool is Disabled on Mentor": {
-          "yes": [
-            "oracle/swallowed-async"
-          ],
+          "yes": ["oracle/swallowed-async"],
           "reason": {
             "oracle/swallowed-async": "expect(true).toBe(false) sits inside try and catch swallows it, so the web search button check cannot fail"
           }
         },
         "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Does Not Appear When Web Search is Enabled But Not Activated": {
-          "yes": [
-            "oracle/swallowed-async"
-          ],
+          "yes": ["oracle/swallowed-async"],
           "reason": {
             "oracle/swallowed-async": "the no-tool-call-indicator check is expect(true).toBe(false) inside try/catch and can never fail"
           }
         },
         "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Renders and Auto-Collapses to Thought After Streaming": {
-          "yes": [
-            "oracle/swallowed-async"
-          ],
+          "yes": ["oracle/swallowed-async"],
           "reason": {
             "oracle/swallowed-async": "the auto-collapse wait and the visibility expect are inside try/catch, so a timeout or failure is ignored"
           }
         },
         "Journey 52: Tool Call Indicator and Reasoning Section > Reasoning Section Does Not Appear When Model Does Not Produce Reasoning Tokens": {
-          "yes": [
-            "oracle/no-assertion"
-          ],
+          "yes": ["oracle/no-assertion"],
           "reason": {
             "oracle/no-assertion": "the reasoning-absence check only logs a warning when reasoning appears, so nothing can fail"
           }
         },
         "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator and Reasoning Section Both Render in the Same Message": {},
         "Journey 52: Tool Call Indicator and Reasoning Section > Tool Call Indicator Is Hidden When Verbose Reasoning Is Off": {
-          "yes": [
-            "oracle/swallowed-async"
-          ],
+          "yes": ["oracle/swallowed-async"],
           "reason": {
             "oracle/swallowed-async": "the hidden-indicator check is expect(true).toBe(false) inside try/catch and can never fail"
           }
@@ -1255,33 +1174,25 @@
       "note": "The no-violation checks depend on the imported expectNoCriticalA11yViolations, which is not visible here; unsure on the four tests that rely only on it.",
       "tests": {
         "`${route.name} has no critical accessibility violations (dark)`": {
-          "unsure": [
-            "oracle/no-assertion"
-          ],
+          "unsure": ["oracle/no-assertion"],
           "reason": {
             "oracle/no-assertion": "no expect in the body; relies entirely on imported expectNoCriticalA11yViolations from ./support, not visible"
           }
         },
         "`${route.name} has no critical accessibility violations (light)`": {
-          "unsure": [
-            "oracle/no-assertion"
-          ],
+          "unsure": ["oracle/no-assertion"],
           "reason": {
             "oracle/no-assertion": "no expect in the body; relies entirely on imported expectNoCriticalA11yViolations from ./support, not visible"
           }
         },
         "admin screen (admin role) > has no critical accessibility violations (dark)": {
-          "unsure": [
-            "oracle/no-assertion"
-          ],
+          "unsure": ["oracle/no-assertion"],
           "reason": {
             "oracle/no-assertion": "no expect in the body; relies entirely on imported expectNoCriticalA11yViolations from ./support, not visible"
           }
         },
         "admin screen (admin role) > has no critical accessibility violations (light)": {
-          "unsure": [
-            "oracle/no-assertion"
-          ],
+          "unsure": ["oracle/no-assertion"],
           "reason": {
             "oracle/no-assertion": "no expect in the body; relies entirely on imported expectNoCriticalA11yViolations from ./support, not visible"
           }
@@ -1593,9 +1504,7 @@
         "daemon coverage > ping and daemon/status report stopping during shutdown": {},
         "daemon coverage > waitForDaemonExit resolves for a dead pid and times out on a live one": {},
         "daemon coverage > waitForDaemonExit falls back to socket reachability without a pid": {
-          "unsure": [
-            "oracle/no-assertion"
-          ],
+          "unsure": ["oracle/no-assertion"],
           "reason": {
             "oracle/no-assertion": "no expect; the test only passes if waitForDaemonExit does not throw, and its fallback result is not checked"
           }
@@ -1613,18 +1522,14 @@
         "daemon coverage > connections/use via handle and blank IPC lines": {},
         "mcp connection coverage > covers connections/use, daemon status, @connection connect, and stop no-op": {},
         "mcp connection coverage > rejects connect with no target and invalid --format": {
-          "unsure": [
-            "oracle/no-assertion"
-          ],
+          "unsure": ["oracle/no-assertion"],
           "reason": {
             "oracle/no-assertion": "no expect in body; relies entirely on imported expectCliFailure, not visible here"
           }
         },
         "mcp connection coverage > connects an ad-hoc stdio target": {},
         "mcp connection coverage > treats a URL positional as ad-hoc": {
-          "unsure": [
-            "oracle/no-assertion"
-          ],
+          "unsure": ["oracle/no-assertion"],
           "reason": {
             "oracle/no-assertion": "no expect in body; relies entirely on imported expectCliFailure, not visible here"
           }

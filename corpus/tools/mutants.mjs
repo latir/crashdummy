@@ -10,7 +10,7 @@
 //   breaking   a known defect, expected to produce a specific finding on a specific test
 //   harmless   an edit that changes nothing that matters; expected to produce no new finding
 
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { seededRandom, shuffle } from './lib.mjs';
